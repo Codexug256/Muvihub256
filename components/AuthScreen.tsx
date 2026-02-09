@@ -42,64 +42,73 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-5 bg-black/90 backdrop-blur-xl">
-      <div className="w-full max-w-md bg-[#141414] border border-[#E50914]/30 rounded-3xl p-8 relative overflow-hidden shadow-2xl">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#E50914] to-[#ff4d4d]"></div>
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0a0a0a]">
+      {/* Immersive Background Decorations */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#E50914]/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#E50914]/5 rounded-full blur-[120px]"></div>
+      </div>
+
+      <div className="w-full max-w-lg bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 sm:p-12 relative overflow-hidden shadow-[0_20px_100px_rgba(0,0,0,0.5)]">
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#E50914] to-transparent opacity-50"></div>
         
-        <h2 className="text-3xl font-black text-center mb-8 relative">
-          {isLogin ? 'Welcome Back 🍿' : 'Join MuviHub 🎬'}
-        </h2>
+        <div className="flex flex-col items-center mb-10">
+          <div className="w-20 h-20 mb-6 drop-shadow-[0_0_15px_rgba(229,9,20,0.5)]">
+            <img src="https://iili.io/f6WKiPV.png" alt="Logo" className="w-full h-full object-contain" />
+          </div>
+          <h2 className="text-4xl font-black text-center uppercase tracking-tighter">
+            {isLogin ? 'Welcome Back' : 'Create Account'}
+          </h2>
+          <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.4em] mt-2">MuviHub UG Entertainment</p>
+        </div>
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/30 text-red-500 p-4 rounded-xl text-sm flex items-center gap-3 mb-6">
-            <i className="fas fa-exclamation-circle"></i> {error}
+          <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-2xl text-[11px] font-bold flex items-center gap-3 mb-8 uppercase tracking-wider animate-shake">
+            <i className="fas fa-exclamation-circle text-sm"></i> {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {!isLogin && (
-            <div className="space-y-1.5">
-              <label className="text-sm font-bold text-white/60 ml-1">Full Name</label>
+            <div className="group">
+              <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-[#E50914] transition-colors">Full Name</label>
               <div className="relative">
-                <i className="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-white/30"></i>
                 <input 
                   type="text" 
                   required 
                   value={form.name}
                   onChange={e => setForm({...form, name: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-5 focus:border-[#E50914] outline-none" 
-                  placeholder="John Doe" 
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-5 px-6 focus:border-[#E50914] focus:bg-white/[0.08] outline-none transition-all text-sm font-medium" 
+                  placeholder="Enter your name" 
                 />
               </div>
             </div>
           )}
 
-          <div className="space-y-1.5">
-            <label className="text-sm font-bold text-white/60 ml-1">Email</label>
+          <div className="group">
+            <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-[#E50914] transition-colors">Email Address</label>
             <div className="relative">
-              <i className="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-white/30"></i>
               <input 
                 type="email" 
                 required 
                 value={form.email}
                 onChange={e => setForm({...form, email: e.target.value})}
-                className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-5 focus:border-[#E50914] outline-none" 
-                placeholder="email@example.com" 
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-5 px-6 focus:border-[#E50914] focus:bg-white/[0.08] outline-none transition-all text-sm font-medium" 
+                placeholder="example@mail.com" 
               />
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-sm font-bold text-white/60 ml-1">Password</label>
+          <div className="group">
+            <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-[#E50914] transition-colors">Password</label>
             <div className="relative">
-              <i className="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-white/30"></i>
               <input 
                 type="password" 
                 required 
                 value={form.password}
                 onChange={e => setForm({...form, password: e.target.value})}
-                className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-5 focus:border-[#E50914] outline-none" 
-                placeholder="••••••" 
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-5 px-6 focus:border-[#E50914] focus:bg-white/[0.08] outline-none transition-all text-sm font-medium" 
+                placeholder="••••••••" 
                 minLength={6}
               />
             </div>
@@ -108,18 +117,23 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full py-4 bg-[#E50914] text-white font-black rounded-xl hover:bg-[#ff0a16] shadow-xl shadow-[#E50914]/20 transition-all disabled:opacity-50"
+            className="w-full py-5 bg-[#E50914] text-white font-black rounded-2xl text-sm uppercase tracking-[0.2em] shadow-[0_15px_35px_rgba(229,9,20,0.3)] hover:bg-[#ff0a16] hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 mt-4 flex items-center justify-center gap-3"
           >
-            {loading ? <i className="fas fa-circle-notch fa-spin"></i> : (isLogin ? 'LOG IN' : 'SIGN UP')}
+            {loading ? <i className="fas fa-circle-notch fa-spin"></i> : (isLogin ? 'Log In Securely' : 'Start Free Trial')}
           </button>
         </form>
 
-        <p className="text-center text-sm text-white/50 mt-8">
-          {isLogin ? "Don't have an account?" : "Already have an account?"}
-          <button onClick={() => setIsLogin(!isLogin)} className="text-[#E50914] font-black ml-2 hover:underline">
-            {isLogin ? 'Sign up' : 'Log in'}
-          </button>
-        </p>
+        <div className="mt-12 pt-8 border-t border-white/5 text-center">
+          <p className="text-sm text-white/30 font-medium">
+            {isLogin ? "New to MuviHub?" : "Already a member?"}
+            <button 
+              onClick={() => setIsLogin(!isLogin)} 
+              className="text-[#E50914] font-black ml-2 uppercase text-xs tracking-widest hover:underline"
+            >
+              {isLogin ? 'Create Account' : 'Log In Instead'}
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );

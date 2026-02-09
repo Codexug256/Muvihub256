@@ -4,84 +4,156 @@ import { Media } from '../types';
 
 interface Props {
   onClose: () => void;
-  onContinue: () => void;
+  onContinue: () => void; // Keeping for interface compatibility but focusing on individual plan selection
   media: Media | null;
 }
 
 const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
   const plans = [
-    { title: 'Daily', price: '1,500', period: '24 Hours', icon: 'fa-bolt', popular: false },
-    { title: 'Weekly', price: '5,000', period: '7 Days', icon: 'fa-star', popular: true },
-    { title: 'Monthly', price: '15,000', period: '30 Days', icon: 'fa-heart', popular: false },
-    { title: 'Yearly', price: '45,000', period: '365 Days', icon: 'fa-crown', popular: false },
+    { 
+      title: 'Daily Pass', 
+      price: '1,500', 
+      period: '24 Hours', 
+      icon: 'fa-bolt', 
+      popular: false,
+      desc: 'Perfect for a movie night',
+      url: 'https://pay.flexiicash.com/checkout/pay/1b884c40ee9f103b'
+    },
+    { 
+      title: 'Weekly Pass', 
+      price: '5,000', 
+      period: '7 Days', 
+      icon: 'fa-star', 
+      popular: true,
+      desc: 'Binge-watcher favorite',
+      url: 'https://pay.flexiicash.com/checkout/pay/c8ff5fe36a636ea5'
+    },
+    { 
+      title: 'Monthly Pass', 
+      price: '15,000', 
+      period: '30 Days', 
+      icon: 'fa-heart', 
+      popular: false,
+      desc: 'Full month of translated hits',
+      url: 'https://pay.flexiicash.com/checkout/pay/d1377f839858bb7d'
+    },
+    { 
+      title: 'Yearly Access', 
+      price: '45,000', 
+      period: '365 Days', 
+      icon: 'fa-crown', 
+      popular: false,
+      desc: 'The ultimate entertainment value',
+      url: 'https://pay.flexiicash.com/checkout/pay/7435d0aab66aab6c'
+    },
   ];
 
+  const handlePlanSelect = (url: string) => {
+    window.location.href = url;
+  };
+
   const displayTitle = media 
-    ? `Watching or downloading "${media.title}"`
-    : 'Upgrade to MuviHub Premium';
+    ? `Watch "${media.title}"`
+    : 'MuviHub Premium';
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-5 bg-black/95 backdrop-blur-2xl animate-fade-in">
-      <div className="w-full max-w-2xl bg-[#141414] border border-[#E50914]/30 rounded-[2.5rem] p-8 relative overflow-hidden shadow-[0_0_100px_rgba(229,9,20,0.2)]">
-        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#E50914] via-[#F40612] to-[#E50914]"></div>
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6 bg-black/95 backdrop-blur-3xl animate-fade-in overflow-y-auto">
+      <div className="w-full max-w-4xl bg-[#0a0a0a] border border-white/10 rounded-[3rem] p-8 sm:p-12 relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)] my-auto">
+        {/* Visual Flair */}
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#E50914]/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
         
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-all"
+          className="absolute top-8 right-8 w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all z-20"
         >
-          <i className="fas fa-times"></i>
+          <i className="fas fa-times text-lg"></i>
         </button>
 
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-[#E50914] rounded-2xl flex items-center justify-center text-white mx-auto mb-6 shadow-2xl animate-pulse">
-            <i className="fas fa-crown text-2xl"></i>
+        <div className="text-center mb-12 relative">
+          <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-[#E50914] mb-8 shadow-xl">
+            <i className="fas fa-crown"></i> Go Premium
           </div>
           
-          <h2 className="text-3xl font-black mb-2">Premium Access Required</h2>
-          <p className="text-[#98a8c7] text-sm leading-relaxed max-w-md mx-auto">
-            {displayTitle} requires an active subscription. Choose a plan that fits you best for unlimited home entertainment.
+          <h2 className="text-4xl sm:text-5xl font-black mb-4 uppercase tracking-tighter drop-shadow-lg leading-tight">
+            Choose Your Plan
+          </h2>
+          <p className="text-white/40 text-sm font-medium max-w-lg mx-auto leading-relaxed">
+            {media 
+              ? `You're one step away from watching "${media.title}". Choose a pass to unlock instant access to high-quality translated content.` 
+              : 'Select a subscription plan that fits your entertainment lifestyle. Unlock unlimited movies, series, and high-speed downloads.'}
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {plans.map((plan, i) => (
             <div 
               key={i} 
-              onClick={onContinue}
-              className={`relative p-5 rounded-3xl border-2 cursor-pointer transition-all hover:scale-[1.02] active:scale-95 group ${
+              onClick={() => handlePlanSelect(plan.url)}
+              className={`relative flex flex-col p-8 rounded-[2rem] border-2 cursor-pointer transition-all duration-300 group hover:scale-[1.03] active:scale-[0.98] ${
                 plan.popular 
-                  ? 'bg-[#E50914]/10 border-[#E50914] shadow-[0_10px_30px_rgba(229,9,20,0.2)]' 
-                  : 'bg-white/5 border-white/10 hover:border-white/20'
+                  ? 'bg-gradient-to-br from-[#E50914]/20 to-transparent border-[#E50914] shadow-[0_20px_50px_rgba(229,9,20,0.2)]' 
+                  : 'bg-white/[0.03] border-white/10 hover:border-white/30 hover:bg-white/[0.05]'
               }`}
             >
               {plan.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#E50914] text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">Most Popular</span>
+                <div className="absolute top-0 right-8 -translate-y-1/2 bg-[#E50914] text-white text-[9px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-xl">Best Value</div>
               )}
-              <div className="flex flex-col items-center text-center">
-                <i className={`fas ${plan.icon} text-lg mb-3 ${plan.popular ? 'text-[#E50914]' : 'text-white/40'}`}></i>
-                <h3 className="text-lg font-black uppercase tracking-tighter mb-1">{plan.title}</h3>
-                <div className="flex items-baseline gap-1 mb-1">
-                  <span className="text-2xl font-black">{plan.price}</span>
-                  <span className="text-[10px] font-bold text-white/40 uppercase">UGX</span>
+              
+              <div className="flex justify-between items-start mb-6">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${plan.popular ? 'bg-[#E50914] text-white shadow-[0_10px_20px_rgba(229,9,20,0.3)]' : 'bg-white/5 text-white/40 group-hover:text-white transition-colors'}`}>
+                  <i className={`fas ${plan.icon}`}></i>
                 </div>
-                <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">{plan.period}</p>
+                <div className="text-right">
+                  <div className="flex items-baseline justify-end gap-1">
+                    <span className="text-3xl font-black">{plan.price}</span>
+                    <span className="text-[10px] font-black text-white/20 uppercase">UGX</span>
+                  </div>
+                  <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">{plan.period}</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-black uppercase tracking-tight group-hover:text-[#E50914] transition-colors">{plan.title}</h3>
+                  <p className="text-[11px] font-bold text-white/30 uppercase tracking-wider">{plan.desc}</p>
+                </div>
+                
+                <ul className="space-y-2">
+                  <li className="flex items-center gap-2 text-[10px] font-bold text-white/60 uppercase">
+                    <i className="fas fa-check-circle text-[#E50914]"></i> Unlimited Streaming
+                  </li>
+                  <li className="flex items-center gap-2 text-[10px] font-bold text-white/60 uppercase">
+                    <i className="fas fa-check-circle text-[#E50914]"></i> High Quality Audio
+                  </li>
+                </ul>
+
+                <button className={`w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${plan.popular ? 'bg-[#E50914] text-white shadow-lg' : 'bg-white/5 border border-white/10 text-white/60 group-hover:bg-[#E50914] group-hover:text-white group-hover:border-[#E50914]'}`}>
+                  Select {plan.title}
+                </button>
               </div>
             </div>
           ))}
         </div>
-
-        <div className="flex flex-col gap-4">
-          <button 
-            onClick={onContinue}
-            className="w-full py-5 bg-[#E50914] text-white font-black rounded-2xl text-lg shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
-          >
-            <i className="fas fa-lock-open"></i> UNLOCK ALL CONTENT
-          </button>
-        </div>
         
-        <div className="mt-8 flex items-center justify-center gap-6 text-[10px] text-white/20 font-black uppercase tracking-[0.2em]">
-           <span className="flex items-center gap-2"><i className="fas fa-shield-alt text-[#E50914]"></i> SECURE PAYMENT</span>
-           <span className="flex items-center gap-2"><i className="fas fa-infinity text-[#E50914]"></i> UNLIMITED ACCESS</span>
+        <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-8 pt-8 border-t border-white/5">
+           <div className="flex items-center gap-3">
+             <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center text-green-500">
+               <i className="fas fa-shield-alt"></i>
+             </div>
+             <div>
+               <p className="text-[9px] font-black uppercase tracking-widest text-white/60">Secure Checkout</p>
+               <p className="text-[8px] font-bold uppercase tracking-widest text-white/20">FlexiiCash Protected</p>
+             </div>
+           </div>
+           <div className="flex items-center gap-3">
+             <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+               <i className="fas fa-infinity"></i>
+             </div>
+             <div>
+               <p className="text-[9px] font-black uppercase tracking-widest text-white/60">No Commitments</p>
+               <p className="text-[8px] font-bold uppercase tracking-widest text-white/20">Cancel anytime</p>
+             </div>
+           </div>
         </div>
       </div>
     </div>
