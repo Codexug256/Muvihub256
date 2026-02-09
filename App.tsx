@@ -235,6 +235,7 @@ const App: React.FC = () => {
     e.stopPropagation();
     const exists = myList.some(i => i.id === m.id);
     if (exists) {
+      // Fix: 'id' was used instead of 'm.id'
       setMyList(prev => prev.filter(i => i.id !== m.id));
       showToast(`Removed "${m.title}" from My List`);
     } else {
@@ -316,17 +317,19 @@ const App: React.FC = () => {
         />
       ) : (
         <>
-          <Header 
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            searchGenre={searchGenre}
-            setSearchGenre={(g) => { setSearchGenre(g); setActiveScreen('home'); }}
-            allMedia={allMedia}
-            onNotifications={() => { setShowNewUploads(true); setActiveScreen('home'); }}
-            newCount={allMedia.filter(m => (m.createdAt || 0) > (Date.now() - 86400000)).length}
-            onMyList={() => setShowMyList(true)}
-            myListCount={myList.length}
-          />
+          {activeScreen !== 'account' && (
+            <Header 
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              searchGenre={searchGenre}
+              setSearchGenre={(g) => { setSearchGenre(g); setActiveScreen('home'); }}
+              allMedia={allMedia}
+              onNotifications={() => { setShowNewUploads(true); setActiveScreen('home'); }}
+              newCount={allMedia.filter(m => (m.createdAt || 0) > (Date.now() - 86400000)).length}
+              onMyList={() => setShowMyList(true)}
+              myListCount={myList.length}
+            />
+          )}
           
           {isLoading ? (
             <LoadingSkeleton />
@@ -346,7 +349,15 @@ const App: React.FC = () => {
               {activeScreen === 'movies' && <MoviesScreen movies={movies} onMediaClick={handleMediaClick} />}
               {activeScreen === 'series' && <SeriesScreen series={series} onMediaClick={handleMediaClick} />}
               {activeScreen === 'downloads' && <DownloadsScreen downloads={downloads} onDelete={(id) => db.ref(`downloads/${user.uid}/${id}`).remove()} />}
-              {activeScreen === 'account' && <AccountScreen profile={userProfile} onUpload={handleProfileUpload} onLogout={() => auth.signOut()} />}
+              {activeScreen === 'account' && (
+                <AccountScreen 
+                  profile={userProfile} 
+                  onUpload={handleProfileUpload} 
+                  onLogout={() => auth.signOut()} 
+                  onBack={() => setActiveScreen('home')}
+                  onManagePlan={() => { setSubscriptionMedia(null); setShowSubscription(true); }}
+                />
+              )}
             </>
           )}
         </>

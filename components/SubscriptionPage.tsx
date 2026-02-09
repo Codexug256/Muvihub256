@@ -16,6 +16,10 @@ const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
     { title: 'Yearly', price: '45,000', period: '365 Days', icon: 'fa-crown', popular: false },
   ];
 
+  const displayTitle = media 
+    ? `Watching or downloading "${media.title}"`
+    : 'Upgrade to MuviHub Premium';
+
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-5 bg-black/95 backdrop-blur-2xl animate-fade-in">
       <div className="w-full max-w-2xl bg-[#141414] border border-[#E50914]/30 rounded-[2.5rem] p-8 relative overflow-hidden shadow-[0_0_100px_rgba(229,9,20,0.2)]">
@@ -35,7 +39,7 @@ const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
           
           <h2 className="text-3xl font-black mb-2">Premium Access Required</h2>
           <p className="text-[#98a8c7] text-sm leading-relaxed max-w-md mx-auto">
-            Watching or downloading <span className="text-white font-bold">"{media?.title || 'this content'}"</span> requires an active subscription. Choose a plan that fits you best.
+            {displayTitle} requires an active subscription. Choose a plan that fits you best for unlimited home entertainment.
           </p>
         </div>
 
