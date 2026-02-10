@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Media } from '../types';
 import { getTMDBImageUrl } from '../services/tmdb';
@@ -33,7 +32,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false }) => {
       <div className="relative aspect-[2/3] w-full overflow-hidden">
         {!loaded && <div className="absolute inset-0 skeleton"></div>}
         <img 
-          src={imageUrl} 
+          src={imageUrl ?? 'https://iili.io/KOR5eHX.png'} 
           alt={media.title}
           className={`w-full h-full object-cover transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setLoaded(true)}

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Media } from '../types';
 import { getTMDBImageUrl } from '../services/tmdb';
@@ -52,7 +51,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
       {/* Cinematic Hero Section */}
       <div className="relative h-[65vh] sm:h-[80vh] w-full">
         <div className="absolute inset-0">
-          <img src={backdrop} className="w-full h-full object-cover" alt={media.title} />
+          <img src={backdrop ?? 'https://iili.io/KOR5eHX.png'} className="w-full h-full object-cover" alt={media.title} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/40 to-black/10"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent"></div>
         </div>
@@ -160,7 +159,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
                   <div className="relative flex-none w-24 h-16 sm:w-32 sm:h-20 rounded-xl overflow-hidden bg-white/5 shadow-lg">
                     {/* Using series poster as requested or episode image if highly specific */}
                     <img 
-                      src={ep.image || seriesPoster} 
+                      src={ep.image || (seriesPoster ?? 'https://iili.io/KOR5eHX.png')} 
                       className="w-full h-full object-cover" 
                       alt={ep.title} 
                     />
