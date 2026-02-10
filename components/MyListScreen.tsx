@@ -44,7 +44,7 @@ const MyListScreen: React.FC<Props> = ({ isOpen, onClose, list, onMediaClick, on
                     className="rounded-[1.5rem] overflow-hidden border border-white/10 cursor-pointer hover:border-[#E50914] transition-all group-hover:-translate-y-2 shadow-2xl bg-[#141414]"
                   >
                     <img 
-                      src={imageUrl || 'https://iili.io/KOR5eHX.png'} 
+                      src={imageUrl ?? 'https://iili.io/KOR5eHX.png'} 
                       className="w-full h-[240px] object-cover" 
                       alt={item.title} 
                     />

@@ -34,6 +34,10 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
     }
   };
 
+  const apkShareLink = "https://www.mediafire.com/file/ta9wosmui025uoj/MuviHubUg.1.0.4.apk/file";
+  const whatsappJoinLink = "https://chat.whatsapp.com/Kofjdwlr2SWFhDpGOQIjiK?mode=gi_t";
+  const telegramChannelLink = "https://t.me/mandoflix";
+
   return (
     <div className="fixed inset-0 z-[100] bg-[#0a0a0a] overflow-y-auto pb-20 animate-fade-in">
       <style>{`
@@ -49,7 +53,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
 
       <div className="relative h-[65vh] sm:h-[80vh] w-full">
         <div className="absolute inset-0">
-          <img src={backdrop || 'https://iili.io/KOR5eHX.png'} className="w-full h-full object-cover" alt={media.title} />
+          <img src={backdrop ?? 'https://iili.io/KOR5eHX.png'} className="w-full h-full object-cover" alt={media.title} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/40 to-black/10"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent"></div>
         </div>
@@ -104,9 +108,43 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
 
       <div className="px-5 mt-10 max-w-6xl mx-auto space-y-12">
         <section>
-          <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-[#E50914] uppercase tracking-wider">
-            <i className="fas fa-align-left text-sm"></i> Storyline
-          </h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-black flex items-center gap-2 text-[#E50914] uppercase tracking-wider">
+              <i className="fas fa-align-left text-sm"></i> Storyline
+            </h3>
+            <div className="flex gap-2 items-center">
+              {/* App Share via WhatsApp Icon */}
+              <a 
+                href={`https://wa.me/?text=Download%20the%20MuviHub%20UG%20Pro%20Max%20App%20now:%20${apkShareLink}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 flex items-center justify-center bg-white/5 text-white/60 rounded-lg border border-white/10 hover:bg-[#E50914] hover:text-white transition-all shadow-lg"
+                title="Share App"
+              >
+                <i className="fas fa-share-nodes text-xs"></i>
+              </a>
+              {/* WhatsApp Icon Redirect */}
+              <a 
+                href={whatsappJoinLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 flex items-center justify-center bg-green-500/10 text-green-500 rounded-lg border border-green-500/20 hover:bg-green-500 hover:text-white transition-all shadow-lg"
+                title="Join WhatsApp"
+              >
+                <i className="fab fa-whatsapp text-sm"></i>
+              </a>
+              {/* Telegram Icon Redirect */}
+              <a 
+                href={telegramChannelLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 flex items-center justify-center bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20 hover:bg-blue-400 hover:text-white transition-all shadow-lg"
+                title="Join Telegram"
+              >
+                <i className="fab fa-telegram-plane text-sm"></i>
+              </a>
+            </div>
+          </div>
           <p className="text-white/60 text-base sm:text-lg leading-relaxed font-medium max-w-4xl">
             {media.description || media.tmdbData?.overview || "Exclusively brought to you by MuviHub UG."}
           </p>
@@ -148,7 +186,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
                 >
                   <div className="relative flex-none w-24 h-16 sm:w-32 sm:h-20 rounded-xl overflow-hidden bg-white/5 shadow-lg">
                     <img 
-                      src={ep.image || (seriesPoster || 'https://iili.io/KOR5eHX.png')} 
+                      src={ep.image ?? (seriesPoster ?? 'https://iili.io/KOR5eHX.png')} 
                       className="w-full h-full object-cover" 
                       alt={ep.title} 
                     />
