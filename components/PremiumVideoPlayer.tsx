@@ -143,11 +143,17 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
       onClick={() => { setShowControls(true); resetControlsTimeout(); setShowSpeedMenu(false); }}
       style={{ cursor: showControls ? 'default' : 'none' }}
     >
+      {/* Background Poster (remains while loading) */}
+      <div className={`absolute inset-0 transition-opacity duration-1000 ${isBuffering || currentTime < 1 ? 'opacity-40' : 'opacity-0'}`}>
+        <img src={poster} className="w-full h-full object-cover blur-sm" alt="Background" />
+        <div className="absolute inset-0 bg-black/60"></div>
+      </div>
+
       <video 
         ref={videoRef}
         src={url}
         poster={poster}
-        className="w-full h-full object-contain"
+        className="w-full h-full object-contain relative z-10"
         onTimeUpdate={handleTimeUpdate}
         onLoadStart={() => setIsBuffering(true)}
         onWaiting={() => setIsBuffering(true)}
@@ -159,37 +165,36 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
       />
 
       {isBuffering && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[4px] z-[50] pointer-events-none transition-opacity duration-300">
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-[50] pointer-events-none transition-opacity duration-300">
           <div className="relative w-24 h-24">
-             <div className="absolute inset-[-10px] bg-[#9f1239]/10 rounded-full blur-xl animate-pulse"></div>
-             <div className="absolute inset-0 border-[6px] border-white/5 rounded-full"></div>
-             <div className="absolute inset-0 border-[6px] border-transparent border-t-[#9f1239] rounded-full animate-spin"></div>
+             <div className="absolute inset-[-10px] bg-[#9f1239]/20 rounded-full blur-xl animate-pulse"></div>
+             <div className="absolute inset-0 border-[4px] border-white/5 rounded-full"></div>
+             <div className="absolute inset-0 border-[4px] border-transparent border-t-[#9f1239] rounded-full animate-spin"></div>
              <div className="absolute inset-0 flex items-center justify-center">
-               <img src="https://iili.io/f6WKiPV.png" className="w-8 h-8 opacity-40" alt="Logo" />
+               <img src="https://iili.io/f6WKiPV.png" className="w-8 h-8 opacity-60" alt="Logo" />
              </div>
           </div>
           <div className="mt-8 flex flex-col items-center gap-2">
-            <p className="text-white font-black uppercase tracking-[0.5em] text-[12px] animate-pulse drop-shadow-[0_0_10px_rgba(159,18,57,0.8)]">Loading...</p>
-            <p className="text-white/40 text-[9px] font-bold uppercase tracking-widest">MuviHub Premium Quality</p>
+            <p className="text-white font-black uppercase tracking-[0.5em] text-[10px] animate-pulse drop-shadow-[0_0_10px_rgba(159,18,57,0.8)]">VJ Buffer...</p>
           </div>
         </div>
       )}
 
-      <div className={`absolute inset-0 bg-gradient-to-t from-black/95 via-transparent to-black/80 transition-opacity duration-500 ease-out ${showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+      <div className={`absolute inset-0 z-20 bg-gradient-to-t from-black/95 via-transparent to-black/80 transition-opacity duration-500 ease-out ${showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         
         <div className="absolute top-0 left-0 w-full p-8 flex justify-between items-start">
           <div className="flex items-center gap-5">
-            <button onClick={onClose} className="w-14 h-14 flex items-center justify-center bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl text-white hover:bg-[#9f1239] transition-all group">
+            <button onClick={onClose} className="w-12 h-12 flex items-center justify-center bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl text-white hover:bg-[#9f1239] hover:border-[#9f1239] transition-all group">
               <i className="fas fa-chevron-left group-hover:-translate-x-1 transition-transform"></i>
             </button>
             <div className="max-w-md sm:max-w-xl">
-              <h2 className="text-2xl font-black truncate drop-shadow-lg leading-tight uppercase tracking-tighter">{title}</h2>
-              <p className="text-white/40 text-[10px] font-black tracking-[0.2em] uppercase mt-1">MuviHub Premium Stream • 1080p</p>
+              <h2 className="text-xl font-black truncate drop-shadow-lg leading-tight uppercase tracking-tighter">{title}</h2>
+              <p className="text-[#9f1239] text-[8px] font-black tracking-[0.3em] uppercase mt-1">MuviHub Pro Max Stream</p>
             </div>
           </div>
           <div className="flex gap-4">
-             <button onClick={onDownload} className="w-14 h-14 flex items-center justify-center bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl text-white hover:bg-white/20 transition-all">
-               <i className="fas fa-download"></i>
+             <button onClick={onDownload} className="w-12 h-12 flex items-center justify-center bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl text-white/70 hover:text-white hover:bg-white/10 transition-all">
+               <i className="fas fa-download text-sm"></i>
              </button>
           </div>
         </div>
@@ -199,29 +204,31 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
           <div className={`absolute bottom-32 right-8 transition-all duration-500 ${showControls ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
             <button 
               onClick={(e) => { e.stopPropagation(); handleSkipIntro(); }}
-              className="bg-white/10 backdrop-blur-2xl border border-white/20 text-white px-6 py-3 rounded-2xl flex items-center gap-3 font-black uppercase tracking-widest text-[10px] hover:bg-[#9f1239] hover:border-[#9f1239] transition-all shadow-2xl active:scale-95"
+              className="bg-white/5 backdrop-blur-3xl border border-white/20 text-white px-6 py-3 rounded-2xl flex items-center gap-3 font-black uppercase tracking-widest text-[9px] hover:bg-[#9f1239] hover:border-[#9f1239] transition-all shadow-2xl active:scale-95"
             >
               Skip Intro <i className="fas fa-forward"></i>
             </button>
           </div>
         )}
 
-        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-12 sm:gap-24 transition-all duration-300 ${isBuffering ? 'opacity-0 scale-90' : 'opacity-100 scale-100'}`}>
-           <button onClick={(e) => { e.stopPropagation(); skip(-10); }} className="text-white/60 hover:text-white transition-all text-2xl sm:text-4xl hover:scale-110 active:scale-90">
-             <i className="fas fa-undo-alt"></i>
-             <span className="block text-[10px] font-black mt-2 text-center uppercase">10s</span>
+        {/* MODERN TRANSPARENT CENTER CONTROLS */}
+        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-10 sm:gap-20 transition-all duration-300 ${isBuffering ? 'opacity-0 scale-90' : 'opacity-100 scale-100'}`}>
+           <button onClick={(e) => { e.stopPropagation(); skip(-10); }} className="text-white/40 hover:text-[#9f1239] transition-all text-xl sm:text-3xl group">
+             <i className="fas fa-undo-alt group-active:rotate-[-45deg] transition-transform"></i>
+             <span className="block text-[8px] font-black mt-2 text-center uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">10s</span>
            </button>
 
            <button 
              onClick={(e) => { e.stopPropagation(); togglePlay(); }}
-             className="w-24 h-24 sm:w-32 sm:h-32 bg-[#9f1239] rounded-full flex items-center justify-center text-white text-3xl sm:text-5xl shadow-[0_0_80px_rgba(159,18,57,0.6)] hover:scale-110 active:scale-90 transition-all border-4 border-white/10"
+             className="w-24 h-24 sm:w-28 sm:h-28 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center text-white text-3xl sm:text-4xl shadow-2xl hover:scale-110 active:scale-90 transition-all border border-white/10 group relative"
            >
-             <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play ml-3'}`}></i>
+             <div className="absolute inset-[-8px] border border-[#9f1239]/0 group-hover:border-[#9f1239]/20 rounded-full transition-all"></div>
+             <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play ml-2'} transition-all group-hover:text-[#9f1239]`}></i>
            </button>
 
-           <button onClick={(e) => { e.stopPropagation(); skip(10); }} className="text-white/60 hover:text-white transition-all text-2xl sm:text-4xl hover:scale-110 active:scale-90">
-             <i className="fas fa-redo-alt"></i>
-             <span className="block text-[10px] font-black mt-2 text-center uppercase">10s</span>
+           <button onClick={(e) => { e.stopPropagation(); skip(10); }} className="text-white/40 hover:text-[#9f1239] transition-all text-xl sm:text-3xl group">
+             <i className="fas fa-redo-alt group-active:rotate-[45deg] transition-transform"></i>
+             <span className="block text-[8px] font-black mt-2 text-center uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">10s</span>
            </button>
         </div>
 
@@ -229,33 +236,33 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
           
           <div className="relative mb-6 group">
             <div 
-              className="h-1.5 w-full bg-white/20 rounded-full cursor-pointer transition-all group-hover:h-3 overflow-hidden relative"
+              className="h-1 w-full bg-white/10 rounded-full cursor-pointer transition-all group-hover:h-2 overflow-hidden relative"
               onClick={handleSeek}
             >
               <div 
-                className="absolute top-0 left-0 h-full bg-[#9f1239] shadow-[0_0_20px_rgba(159,18,57,1)] rounded-full transition-all" 
+                className="absolute top-0 left-0 h-full bg-[#9f1239] shadow-[0_0_15px_rgba(159,18,57,0.8)] rounded-full transition-all" 
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
             <div 
-              className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)] border-2 border-[#9f1239] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
-              style={{ left: `calc(${progress}% - 8px)` }}
+              className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-xl border border-[#9f1239] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
+              style={{ left: `calc(${progress}% - 6px)` }}
             ></div>
           </div>
 
           <div className="flex justify-between items-center px-2">
             <div className="flex items-center gap-8">
-              <div className="flex items-center gap-4 text-white font-black text-xs tracking-widest tabular-nums">
+              <div className="flex items-center gap-4 text-white font-black text-[10px] tracking-widest tabular-nums">
                 <span className="text-white drop-shadow-lg">{formatTime(currentTime)}</span>
-                <span className="text-white/30">/</span>
+                <span className="text-white/20">/</span>
                 <span className="text-white/40">{formatTime(duration)}</span>
               </div>
               
               <div className="flex items-center gap-4 group/vol">
-                <button onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }} className="text-white/60 hover:text-white text-lg transition-all">
+                <button onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }} className="text-white/40 hover:text-white text-base transition-all">
                    <i className={`fas ${isMuted || volume === 0 ? 'fa-volume-mute' : volume < 0.5 ? 'fa-volume-down' : 'fa-volume-up'}`}></i>
                 </button>
-                <div className="w-0 group-hover/vol:w-24 transition-all duration-300 overflow-hidden flex items-center">
+                <div className="w-0 group-hover/vol:w-20 transition-all duration-500 overflow-hidden flex items-center">
                   <input 
                     type="range" 
                     min="0" 
@@ -268,7 +275,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
                       setIsMuted(false); 
                       if(videoRef.current) videoRef.current.volume = val; 
                     }}
-                    className="w-full h-1 appearance-none bg-white/20 rounded-full overflow-hidden [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-0 [&::-webkit-slider-thumb]:h-0 [&::-webkit-slider-thumb]:shadow-[-100px_0_0_100px_rgba(159,18,57,0.8)] cursor-pointer"
+                    className="w-full h-0.5 appearance-none bg-white/10 rounded-full overflow-hidden [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-0 [&::-webkit-slider-thumb]:h-0 [&::-webkit-slider-thumb]:shadow-[-100px_0_0_100px_rgba(159,18,57,1)] cursor-pointer"
                   />
                 </div>
               </div>
@@ -278,19 +285,19 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
                <div className="relative">
                  <button 
                   onClick={(e) => { e.stopPropagation(); setShowSpeedMenu(!showSpeedMenu); }}
-                  className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-white/10 transition-all text-white/80"
+                  className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase hover:bg-white/10 transition-all text-white/60 hover:text-white"
                  >
                     {playbackSpeed}x
                  </button>
                  
                  {showSpeedMenu && (
-                   <div className="absolute bottom-full right-0 mb-4 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl min-w-[100px] animate-slide-up">
-                      <div className="p-3 border-b border-white/5 text-[8px] font-black text-white/30 uppercase tracking-[0.2em] text-center">Speed</div>
+                   <div className="absolute bottom-full right-0 mb-4 bg-black/90 backdrop-blur-3xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl min-w-[110px] animate-slide-up">
+                      <div className="p-3 border-b border-white/5 text-[7px] font-black text-white/20 uppercase tracking-[0.3em] text-center">Playback Speed</div>
                       {speeds.map(s => (
                         <button
                           key={s}
                           onClick={(e) => { e.stopPropagation(); handleSpeedChange(s); }}
-                          className={`w-full px-5 py-3 text-[10px] font-black uppercase tracking-widest text-center transition-all ${playbackSpeed === s ? 'bg-[#9f1239] text-white' : 'text-white/60 hover:bg-white/5'}`}
+                          className={`w-full px-5 py-3 text-[10px] font-black uppercase tracking-widest text-center transition-all ${playbackSpeed === s ? 'bg-[#9f1239] text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}
                         >
                           {s}x
                         </button>
@@ -299,11 +306,11 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
                  )}
                </div>
 
-               <button className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-white/10 transition-all text-white/80">
-                  <i className="fas fa-cog text-white/40"></i> 1080P
+               <button className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase hover:bg-white/10 transition-all text-white/60">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.5)]"></span> HD
                </button>
                
-               <button onClick={(e) => { e.stopPropagation(); videoRef.current?.requestFullscreen(); }} className="text-white/60 hover:text-white transition-all text-xl">
+               <button onClick={(e) => { e.stopPropagation(); videoRef.current?.requestFullscreen(); }} className="text-white/40 hover:text-white transition-all text-lg">
                  <i className="fas fa-expand"></i>
                </button>
             </div>

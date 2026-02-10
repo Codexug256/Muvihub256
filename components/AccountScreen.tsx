@@ -7,9 +7,10 @@ interface Props {
   onLogout: () => void;
   onBack: () => void;
   onManagePlan: () => void;
+  onMyList: () => void;
 }
 
-const AccountScreen: React.FC<Props> = ({ profile, onUpload, onLogout, onBack, onManagePlan }) => {
+const AccountScreen: React.FC<Props> = ({ profile, onUpload, onLogout, onBack, onManagePlan, onMyList }) => {
   const avatarUrl = profile.photoURL || `https://iili.io/fLBIYdl.jpg`;
 
   const handleHelpCenter = () => {
@@ -67,8 +68,21 @@ const AccountScreen: React.FC<Props> = ({ profile, onUpload, onLogout, onBack, o
         </button>
       </div>
 
-      {/* Simplified List Menu */}
+      {/* List Menu */}
       <div className="space-y-3 mb-12">
+        <button 
+          onClick={onMyList}
+          className="w-full flex items-center justify-between p-5 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.05] transition-all group"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-[#9f1239]/10 flex items-center justify-center text-[#9f1239]">
+              <i className="fas fa-heart"></i>
+            </div>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white">My List</span>
+          </div>
+          <i className="fas fa-chevron-right text-[9px] text-white/30"></i>
+        </button>
+
         <button 
           onClick={handleHelpCenter}
           className="w-full flex items-center justify-between p-5 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.05] transition-all group"

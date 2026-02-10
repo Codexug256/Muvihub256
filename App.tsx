@@ -20,6 +20,7 @@ import PremiumVideoPlayer from './components/PremiumVideoPlayer';
 import LoadingSkeleton from './components/LoadingSkeleton';
 import SubscriptionPage from './components/SubscriptionPage';
 import AccessGate from './components/AccessGate';
+import CategoriesModal from './components/CategoriesModal';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<any>(null);
@@ -39,6 +40,7 @@ const App: React.FC = () => {
   const [selectedGenreSeeAll, setSelectedGenreSeeAll] = useState('');
   const [showAllMovies, setShowAllMovies] = useState(false);
   const [showNewUploads, setShowNewUploads] = useState(false);
+  const [showCategories, setShowCategories] = useState(false);
   
   const [playPageMedia, setPlayPageMedia] = useState<Media | null>(null);
   const [playerData, setPlayerData] = useState<{url: string, title: string, poster: string} | null>(null);
@@ -342,6 +344,13 @@ const App: React.FC = () => {
         onRemove={(id) => setMyList(prev => prev.filter(i => i.id !== id))}
       />
 
+      <CategoriesModal 
+        isOpen={showCategories}
+        onClose={() => setShowCategories(false)}
+        onSelect={(g) => { setSearchGenre(g); setActiveScreen('home'); }}
+        allMedia={allMedia}
+      />
+
       {showSubscription && (
         <SubscriptionPage 
           media={subscriptionMedia} 
@@ -384,8 +393,7 @@ const App: React.FC = () => {
               allMedia={allMedia}
               onNotifications={() => { setShowNewUploads(true); setActiveScreen('home'); }}
               newCount={movies.filter(m => (m.createdAt || 0) > (Date.now() - 86400000)).length}
-              onMyList={() => setShowMyList(true)}
-              myListCount={myList.length}
+              onOpenCategories={() => setShowCategories(true)}
             />
           )}
           
@@ -428,6 +436,7 @@ const App: React.FC = () => {
                       onLogout={() => auth.signOut()} 
                       onBack={() => setActiveScreen('home')}
                       onManagePlan={() => { setSubscriptionMedia(null); setShowSubscription(true); }}
+                      onMyList={() => setShowMyList(true)}
                     />
                   )}
                 </>
