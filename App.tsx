@@ -235,7 +235,6 @@ const App: React.FC = () => {
     e.stopPropagation();
     const exists = myList.some(i => i.id === m.id);
     if (exists) {
-      // Fix: 'id' was used instead of 'm.id'
       setMyList(prev => prev.filter(i => i.id !== m.id));
       showToast(`Removed "${m.title}" from My List`);
     } else {
