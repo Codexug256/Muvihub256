@@ -21,11 +21,6 @@ export const CATEGORY_GROUPS = [
     tags: ["Action", "Adventure", "Thriller", "War", "Martial Arts"]
   },
   {
-    title: "Fantasy",
-    icon: "fas fa-wand-sparkles",
-    tags: ["Fantasy", "Magic", "Mythology", "Supernatural"]
-  },
-  {
     title: "Animation",
     icon: "fas fa-pencil-alt",
     tags: ["Animation", "Anime", "Cartoon", "Kids"]
@@ -49,5 +44,10 @@ export const CATEGORY_GROUPS = [
     title: "Comedy & Musical",
     icon: "fas fa-laugh",
     tags: ["Comedy", "Musical", "Satire"]
+  },
+  {
+    title: "Fantasy",
+    icon: "fas fa-wand-sparkles",
+    tags: ["Fantasy", "Magic", "Mythology", "Supernatural"]
   },
 ];
