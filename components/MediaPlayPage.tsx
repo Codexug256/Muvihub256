@@ -157,15 +157,15 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
             </h3>
             <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
               {cast.map((actor: any) => (
-                <div key={actor.id} className="flex-none w-24 sm:w-28 group">
-                  <div className="aspect-square rounded-2xl overflow-hidden mb-2 border border-white/10 group-hover:border-[#E50914] transition-all duration-300 bg-white/5">
+                <div key={actor.id} className="flex-none w-16 sm:w-20 group text-center">
+                  <div className="aspect-square rounded-full overflow-hidden mb-2 border border-white/10 group-hover:border-[#E50914] transition-all duration-300 bg-white/5">
                     <img 
                       src={getTMDBImageUrl(actor.profile_path, 'w185') || `https://ui-avatars.com/api/?name=${encodeURIComponent(actor.name)}&background=141414&color=fff`} 
                       className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
                       alt={actor.name}
                     />
                   </div>
-                  <h4 className="text-[10px] font-black text-white truncate uppercase">{actor.name}</h4>
+                  <h4 className="text-[9px] font-black text-white truncate uppercase">{actor.name}</h4>
                 </div>
               ))}
             </div>
