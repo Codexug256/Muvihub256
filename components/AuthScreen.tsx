@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { auth, db } from '../services/firebase';
 
@@ -48,7 +47,7 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#050505]">
-      {/* Background Decor */}
+      {/* Cinematic Background Decoration */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-15%] left-[-10%] w-[60%] h-[60%] bg-[#9f1239]/5 rounded-full blur-[120px]"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#9f1239]/5 rounded-full blur-[120px]"></div>
@@ -60,9 +59,9 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
             <img src="https://iili.io/f6WKiPV.png" alt="Logo" className="w-full h-full object-contain" />
           </div>
           <h2 className="text-3xl font-black text-center uppercase tracking-tighter leading-none">
-            {isLogin ? 'Welcome Back' : 'Create Account'}
+            {isLogin ? 'Sign In' : 'Join Us'}
           </h2>
-          <p className="text-white/20 text-[9px] font-black uppercase tracking-[0.5em] mt-3">MuviHub Cinema</p>
+          <p className="text-white/20 text-[9px] font-black uppercase tracking-[0.5em] mt-3">MuviHub Cinema Experience</p>
         </div>
 
         {error && (
@@ -81,7 +80,7 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
                 value={form.name}
                 onChange={e => setForm({...form, name: e.target.value})}
                 className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:border-[#9f1239] outline-none transition-all text-sm font-medium" 
-                placeholder="Cinema Lover" 
+                placeholder="Enter your name" 
               />
             </div>
           )}
@@ -136,13 +135,13 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
             disabled={loading}
             className="w-full py-5 bg-[#9f1239] text-white font-black rounded-2xl text-[10px] uppercase tracking-[0.4em] shadow-xl hover:bg-[#be123c] hover:scale-[1.01] active:scale-[0.98] transition-all disabled:opacity-50 mt-4 flex items-center justify-center gap-3"
           >
-            {loading ? <i className="fas fa-circle-notch fa-spin"></i> : (isLogin ? 'Enter Cinema' : 'Start Trial')}
+            {loading ? <i className="fas fa-circle-notch fa-spin"></i> : (isLogin ? 'Enter Cinema' : 'Get Access')}
           </button>
         </form>
 
         <div className="mt-10 pt-8 border-t border-white/5 text-center">
           <p className="text-[10px] text-white/20 font-bold uppercase tracking-widest">
-            {isLogin ? "No access yet?" : "Already a member?"}
+            {isLogin ? "New to MuviHub?" : "Already joined?"}
             <button 
               onClick={() => setIsLogin(!isLogin)} 
               className="text-[#9f1239] font-black ml-3 hover:underline tracking-widest"
