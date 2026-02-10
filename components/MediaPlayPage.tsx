@@ -91,7 +91,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
             <span className="bg-[#E50914] text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest">
               VJ TRANSLATED
             </span>
-            <span className="text-white/80 font-bold text-xs bg-black/40 px-2 py-0.5 rounded-md backdrop-blur-md border border-white/10">
+            <span className="text-white/90 font-bold text-xs bg-black/40 px-2 py-0.5 rounded-md backdrop-blur-md border border-white/10">
               {media.genre}
             </span>
             {media.tmdbData?.vote_average && (
@@ -118,7 +118,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
                 href={`https://wa.me/?text=Download%20the%20MuviHub%20UG%20Pro%20Max%20App%20now:%20${apkShareLink}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 flex items-center justify-center bg-white/5 text-white/60 rounded-lg border border-white/10 hover:bg-[#E50914] hover:text-white transition-all shadow-lg"
+                className="w-8 h-8 flex items-center justify-center bg-white/5 text-white/80 rounded-lg border border-white/10 hover:bg-[#E50914] hover:text-white transition-all shadow-lg"
                 title="Share App"
               >
                 <i className="fas fa-share-nodes text-xs"></i>
@@ -145,7 +145,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
               </a>
             </div>
           </div>
-          <p className="text-white/60 text-base sm:text-lg leading-relaxed font-medium max-w-4xl">
+          <p className="text-white/80 text-base sm:text-lg leading-relaxed font-medium max-w-4xl">
             {media.description || media.tmdbData?.overview || "Exclusively brought to you by MuviHub UG."}
           </p>
         </section>
@@ -165,7 +165,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
                       alt={actor.name}
                     />
                   </div>
-                  <h4 className="text-[10px] font-black text-white/90 truncate uppercase">{actor.name}</h4>
+                  <h4 className="text-[10px] font-black text-white truncate uppercase">{actor.name}</h4>
                 </div>
               ))}
             </div>

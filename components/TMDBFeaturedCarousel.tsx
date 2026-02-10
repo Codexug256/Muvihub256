@@ -64,7 +64,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick }) => {
               {m.title}
             </h2>
             
-            <p className="text-white/70 text-sm sm:text-lg mb-8 line-clamp-3 max-w-2xl font-medium drop-shadow-md leading-relaxed">
+            <p className="text-white/90 text-sm sm:text-lg mb-8 line-clamp-3 max-w-2xl font-medium drop-shadow-md leading-relaxed">
               {m.overview}
             </p>
             

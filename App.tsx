@@ -50,6 +50,7 @@ const App: React.FC = () => {
   const [isUnlocked, setIsUnlocked] = useState(() => sessionStorage.getItem('muvihub_unlocked') === 'true');
   const [showAccessGate, setShowAccessGate] = useState(false);
   const [pendingMedia, setPendingMedia] = useState<Media | null>(null);
+  const [pendingAction, setPendingAction] = useState<'play' | 'download' | null>(null);
 
   // Use refs to prevent infinite loop during enrichment
   const enrichedIds = useRef<Set<string>>(new Set());
@@ -241,6 +242,7 @@ const App: React.FC = () => {
       setPlayerData({ url: m.video || '', title: m.title, poster: m.poster || m.image || '' });
     } else {
       setPendingMedia(m);
+      setPendingAction('play');
       setShowAccessGate(true);
     }
   };
@@ -250,8 +252,13 @@ const App: React.FC = () => {
     sessionStorage.setItem('muvihub_unlocked', 'true');
     setShowAccessGate(false);
     if (pendingMedia) {
-      setPlayerData({ url: pendingMedia.video || '', title: pendingMedia.title, poster: pendingMedia.poster || pendingMedia.image || '' });
+      if (pendingAction === 'play') {
+        setPlayerData({ url: pendingMedia.video || '', title: pendingMedia.title, poster: pendingMedia.poster || pendingMedia.image || '' });
+      } else if (pendingAction === 'download') {
+        showToast(`Starting download for "${pendingMedia.title}"...`, "success");
+      }
       setPendingMedia(null);
+      setPendingAction(null);
     }
   };
 
@@ -272,8 +279,9 @@ const App: React.FC = () => {
       showToast(`Starting download for "${m.title}"...`, "success");
       // Logic for actual download would go here if available
     } else {
-      setSubscriptionMedia(m);
-      setShowSubscription(true);
+      setPendingMedia(m);
+      setPendingAction('download');
+      setShowAccessGate(true);
     }
   };
 
@@ -298,7 +306,7 @@ const App: React.FC = () => {
         <div className="w-48 h-48 mb-8 splash-logo">
           <img src="https://iili.io/f6WKiPV.png" alt="MuviHub UG Logo" className="w-full h-full object-contain" />
         </div>
-        <p className="mt-8 text-white/40 font-black uppercase tracking-[0.5em] text-[10px]">MuviHub UG</p>
+        <p className="mt-8 text-white/80 font-black uppercase tracking-[0.5em] text-[10px]">Muvihub Ug Company</p>
       </div>
     );
   }

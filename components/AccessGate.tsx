@@ -29,7 +29,7 @@ const AccessGate: React.FC<Props> = ({ onUnlock, onGoToPremium, onClose }) => {
 
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"
+          className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-all"
         >
           <i className="fas fa-times"></i>
         </button>
@@ -39,7 +39,7 @@ const AccessGate: React.FC<Props> = ({ onUnlock, onGoToPremium, onClose }) => {
         </div>
 
         <h2 className="text-3xl font-black uppercase tracking-tighter mb-4">Content Gated</h2>
-        <p className="text-white/40 text-sm font-medium mb-10 leading-relaxed">
+        <p className="text-white/80 text-sm font-medium mb-10 leading-relaxed">
           Premium content requires a subscription or an access key to proceed.
         </p>
 
@@ -50,7 +50,7 @@ const AccessGate: React.FC<Props> = ({ onUnlock, onGoToPremium, onClose }) => {
               placeholder="Enter Access Key"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={`w-full bg-white/5 border ${error ? 'border-red-500 animate-shake' : 'border-white/10'} rounded-2xl py-5 px-6 outline-none focus:border-[#E50914] transition-all text-center text-sm font-black uppercase tracking-[0.2em]`}
+              className={`w-full bg-white/5 border ${error ? 'border-red-500 animate-shake' : 'border-white/10'} rounded-2xl py-5 px-6 outline-none focus:border-[#E50914] transition-all text-center text-sm font-black uppercase tracking-[0.2em] placeholder:text-white/20`}
             />
             {error && <p className="text-red-500 text-[10px] font-bold mt-2 uppercase tracking-widest">Invalid Key</p>}
           </div>
@@ -63,9 +63,9 @@ const AccessGate: React.FC<Props> = ({ onUnlock, onGoToPremium, onClose }) => {
         </form>
 
         <div className="w-full flex items-center gap-4 mb-8">
-          <div className="h-[1px] flex-1 bg-white/5"></div>
-          <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">OR</span>
-          <div className="h-[1px] flex-1 bg-white/5"></div>
+          <div className="h-[1px] flex-1 bg-white/10"></div>
+          <span className="text-[10px] font-black text-white/60 uppercase tracking-widest">OR</span>
+          <div className="h-[1px] flex-1 bg-white/10"></div>
         </div>
 
         <button 
@@ -75,7 +75,7 @@ const AccessGate: React.FC<Props> = ({ onUnlock, onGoToPremium, onClose }) => {
           Go Premium <i className="fas fa-crown ml-2"></i>
         </button>
 
-        <p className="mt-8 text-[8px] font-black text-white/10 uppercase tracking-[0.3em]">MuviHub UG Pro Max Security</p>
+        <p className="mt-8 text-[8px] font-black text-white/40 uppercase tracking-[0.3em]">MuviHub UG Pro Max Security</p>
       </div>
     </div>
   );

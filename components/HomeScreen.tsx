@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 import { Media } from '../types';
 import MediaCard from './MediaCard';
@@ -34,7 +33,7 @@ const HomeScreen: React.FC<Props> = ({ allMedia, mediaByGenre, onMediaClick, isS
           <div className="flex justify-between items-center my-6">
             <h2 className="text-2xl font-extrabold flex items-center gap-3">
               Search Results
-              <span className="text-white/40 text-lg font-normal">({allMedia.length})</span>
+              <span className="text-white/60 text-lg font-normal">({allMedia.length})</span>
             </h2>
             <button onClick={clearFilters} className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-semibold hover:border-[#E50914]">
               <i className="fas fa-times mr-2"></i> Clear

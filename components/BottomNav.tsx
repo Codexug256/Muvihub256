@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface Props {
@@ -21,10 +20,10 @@ const BottomNav: React.FC<Props> = ({ active, onNavigate }) => {
         <button 
           key={item.id}
           onClick={() => onNavigate(item.id)}
-          className={`flex flex-col items-center gap-1.5 flex-1 p-2 rounded-xl transition-all ${active === item.id ? 'text-white bg-[#E50914]/10' : 'text-white/40 hover:text-white/70'}`}
+          className={`flex flex-col items-center gap-1.5 flex-1 p-2 rounded-xl transition-all ${active === item.id ? 'text-white bg-[#E50914]/10' : 'text-white/60 hover:text-white/80'}`}
         >
           <i className={`fas ${item.icon} text-lg ${active === item.id ? 'scale-110 text-[#E50914]' : ''}`}></i>
-          <span className={`text-[10px] font-bold uppercase tracking-widest ${active === item.id ? 'opacity-100' : 'opacity-60'}`}>
+          <span className={`text-[10px] font-bold uppercase tracking-widest ${active === item.id ? 'opacity-100' : 'opacity-80'}`}>
             {item.label}
           </span>
         </button>

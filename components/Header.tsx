@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Media } from '../types';
 
@@ -38,14 +37,14 @@ const Header: React.FC<Props> = ({ searchQuery, setSearchQuery, searchGenre, set
           {/* Genre Toggle Icon */}
           <button 
             onClick={() => setShowGenreMenu(true)}
-            className="w-10 h-10 flex flex-col items-center justify-center bg-white/5 backdrop-blur-md rounded-xl text-white/50 hover:text-white hover:bg-white/10 transition-all border border-white/5"
+            className="w-10 h-10 flex flex-col items-center justify-center bg-white/5 backdrop-blur-md rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all border border-white/5"
           >
             <i className="fas fa-layer-group text-sm"></i>
           </button>
 
           <button 
             onClick={onMyList} 
-            className="relative w-10 h-10 flex items-center justify-center bg-white/5 backdrop-blur-md rounded-xl text-white/50 hover:text-white hover:bg-white/10 transition-all border border-white/5"
+            className="relative w-10 h-10 flex items-center justify-center bg-white/5 backdrop-blur-md rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all border border-white/5"
           >
             <i className="fas fa-heart text-sm"></i>
             {myListCount > 0 && (
@@ -57,14 +56,14 @@ const Header: React.FC<Props> = ({ searchQuery, setSearchQuery, searchGenre, set
           
           <button 
             onClick={() => setShowSearch(!showSearch)} 
-            className="w-10 h-10 flex items-center justify-center bg-white/5 backdrop-blur-md rounded-xl text-white/50 hover:text-white hover:bg-white/10 transition-all border border-white/5"
+            className="w-10 h-10 flex items-center justify-center bg-white/5 backdrop-blur-md rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all border border-white/5"
           >
             <i className="fas fa-search text-sm"></i>
           </button>
 
           <button 
             onClick={onNotifications} 
-            className="relative w-10 h-10 flex items-center justify-center bg-white/5 backdrop-blur-md rounded-xl text-white/50 hover:text-white hover:bg-white/10 transition-all border border-white/5"
+            className="relative w-10 h-10 flex items-center justify-center bg-white/5 backdrop-blur-md rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all border border-white/5"
           >
             <i className="fas fa-bell text-sm"></i>
             {newCount > 0 && (
@@ -81,7 +80,7 @@ const Header: React.FC<Props> = ({ searchQuery, setSearchQuery, searchGenre, set
         <div className="fixed inset-0 z-[1000] bg-black/95 backdrop-blur-3xl animate-fade-in flex flex-col p-8 overflow-y-auto">
           <div className="flex justify-between items-center mb-10">
             <h2 className="text-3xl font-black uppercase tracking-tighter">Explore Genres</h2>
-            <button onClick={() => setShowGenreMenu(false)} className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white/60 hover:text-white transition-all">
+            <button onClick={() => setShowGenreMenu(false)} className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white/80 hover:text-white transition-all">
               <i className="fas fa-times"></i>
             </button>
           </div>
@@ -94,7 +93,7 @@ const Header: React.FC<Props> = ({ searchQuery, setSearchQuery, searchGenre, set
                 className={`p-6 rounded-3xl text-sm font-black uppercase tracking-widest transition-all text-center border ${
                   (searchGenre === g || (g === 'All' && !searchGenre))
                     ? 'bg-[#E50914] text-white border-[#E50914] shadow-[0_10px_30px_rgba(229,9,20,0.3)] scale-105'
-                    : 'bg-white/5 text-white/40 hover:text-white hover:bg-white/10 border-white/10'
+                    : 'bg-white/5 text-white/70 hover:text-white hover:bg-white/10 border-white/10'
                 }`}
               >
                 {g}
@@ -111,10 +110,10 @@ const Header: React.FC<Props> = ({ searchQuery, setSearchQuery, searchGenre, set
             placeholder="Search titles..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-white/5 border border-white/10 text-white px-5 py-3 rounded-xl focus:border-[#E50914] outline-none text-sm"
+            className="flex-1 bg-white/5 border border-white/10 text-white px-5 py-3 rounded-xl focus:border-[#E50914] outline-none text-sm placeholder:text-white/40"
             autoFocus
           />
-          <button onClick={() => setShowSearch(false)} className="w-11 h-11 flex items-center justify-center text-white/60 hover:text-[#E50914]">
+          <button onClick={() => setShowSearch(false)} className="w-11 h-11 flex items-center justify-center text-white/80 hover:text-[#E50914]">
             <i className="fas fa-times text-xl"></i>
           </button>
         </div>

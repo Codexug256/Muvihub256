@@ -42,7 +42,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false }) => {
 
       <div className="p-1.5 bg-gradient-to-t from-black/95 to-transparent">
         <h3 className="text-[10px] font-bold truncate leading-tight">{media.title}</h3>
-        <p className="text-[8px] text-[#98a8c7] flex items-center gap-1 truncate mt-0.5">
+        <p className="text-[8px] text-white/70 flex items-center gap-1 truncate mt-0.5">
           {media.genre}
         </p>
       </div>

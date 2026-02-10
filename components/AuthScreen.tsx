@@ -61,7 +61,7 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
           <h2 className="text-3xl font-black text-center uppercase tracking-tighter leading-none">
             {isLogin ? 'Sign In' : 'Join Us'}
           </h2>
-          <p className="text-white/20 text-[9px] font-black uppercase tracking-[0.5em] mt-3">MuviHub Cinema Experience</p>
+          <p className="text-white/50 text-[9px] font-black uppercase tracking-[0.5em] mt-3">MuviHub Cinema Experience</p>
         </div>
 
         {error && (
@@ -73,7 +73,7 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {!isLogin && (
             <div className="space-y-2">
-              <label className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] ml-1">Full Name</label>
+              <label className="text-[9px] font-black text-white/60 uppercase tracking-[0.2em] ml-1">Full Name</label>
               <input 
                 type="text" 
                 required 
@@ -86,7 +86,7 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
           )}
 
           <div className="space-y-2">
-            <label className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] ml-1">Email</label>
+            <label className="text-[9px] font-black text-white/60 uppercase tracking-[0.2em] ml-1">Email</label>
             <input 
               type="email" 
               required 
@@ -99,7 +99,10 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
 
           <div className="space-y-2 relative">
             <div className="flex justify-between items-center mb-1">
-              <label className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] ml-1">Password</label>
+              <div className="flex items-center gap-2">
+                <label className="text-[9px] font-black text-white/60 uppercase tracking-[0.2em] ml-1">Password</label>
+                <span className="text-[8px] font-black text-[#9f1239] uppercase tracking-widest">6+ Characters</span>
+              </div>
               {isLogin && (
                 <button 
                   type="button" 
@@ -123,7 +126,7 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
               <button 
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-5 top-1/2 -translate-y-1/2 text-white/20 hover:text-[#9f1239] transition-colors"
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-white/40 hover:text-[#9f1239] transition-colors"
               >
                 <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} text-xs`}></i>
               </button>
@@ -140,7 +143,7 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
         </form>
 
         <div className="mt-10 pt-8 border-t border-white/5 text-center">
-          <p className="text-[10px] text-white/20 font-bold uppercase tracking-widest">
+          <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest">
             {isLogin ? "New to MuviHub?" : "Already joined?"}
             <button 
               onClick={() => setIsLogin(!isLogin)} 
