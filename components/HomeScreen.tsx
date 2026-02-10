@@ -35,7 +35,7 @@ const HomeScreen: React.FC<Props> = ({ allMedia, continueWatching, mediaByGenre,
               Search Results
               <span className="text-white/60 text-lg font-normal">({allMedia.length})</span>
             </h2>
-            <button onClick={clearFilters} className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-semibold hover:border-[#E50914]">
+            <button onClick={clearFilters} className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-semibold hover:border-[#9f1239]">
               <i className="fas fa-times mr-2"></i> Clear
             </button>
           </div>
@@ -58,7 +58,7 @@ const HomeScreen: React.FC<Props> = ({ allMedia, continueWatching, mediaByGenre,
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
                     Continue Watching
-                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#E50914] to-transparent"></div>
+                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#9f1239] to-transparent"></div>
                   </h2>
                 </div>
                 <div className="flex gap-3 overflow-x-auto pb-6 no-scrollbar -mx-5 px-5">
@@ -75,11 +75,11 @@ const HomeScreen: React.FC<Props> = ({ allMedia, continueWatching, mediaByGenre,
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
                 New & Trending
-                <div className="h-[1px] flex-1 bg-gradient-to-r from-[#E50914] to-transparent"></div>
+                <div className="h-[1px] flex-1 bg-gradient-to-r from-[#9f1239] to-transparent"></div>
               </h2>
               <button 
                 onClick={onSeeAll} 
-                className="ml-4 flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black tracking-widest hover:border-[#E50914] transition-all whitespace-nowrap"
+                className="ml-4 flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black tracking-widest hover:border-[#9f1239] transition-all whitespace-nowrap"
               >
                 SEE ALL <i className="fas fa-chevron-right text-[7px]"></i>
               </button>
@@ -96,13 +96,13 @@ const HomeScreen: React.FC<Props> = ({ allMedia, continueWatching, mediaByGenre,
               <div key={group.title} className="mb-16">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
-                    <i className={`${group.icon} text-[#E50914] text-sm`}></i>
+                    <i className={`${group.icon} text-[#9f1239] text-sm`}></i>
                     {group.title}
-                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#E50914] to-transparent"></div>
+                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#9f1239] to-transparent"></div>
                   </h2>
                   <button 
                     onClick={() => onGenreSeeAll(group.tags[0])} 
-                    className="ml-4 flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black tracking-widest hover:border-[#E50914] transition-all whitespace-nowrap"
+                    className="ml-4 flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black tracking-widest hover:border-[#9f1239] transition-all whitespace-nowrap"
                   >
                     SEE ALL <i className="fas fa-chevron-right text-[7px]"></i>
                   </button>

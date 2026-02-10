@@ -36,7 +36,7 @@ const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
     <div className="fixed inset-0 z-[4000] bg-black/98 backdrop-blur-2xl flex items-center justify-center p-6 animate-fade-in">
       <div className="relative w-full max-w-lg bg-[#0a0a0a] border border-white/10 rounded-[3rem] overflow-hidden shadow-2xl">
         {/* Background Accent */}
-        <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-[#E50914]/20 to-transparent"></div>
+        <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-[#9f1239]/20 to-transparent"></div>
         
         <button 
           onClick={onClose}
@@ -46,12 +46,12 @@ const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
         </button>
 
         <div className="relative z-10 p-10 text-center flex flex-col items-center">
-          <div className="w-16 h-16 bg-[#E50914] rounded-3xl flex items-center justify-center text-2xl mb-6 shadow-xl shadow-[#E50914]/30">
+          <div className="w-16 h-16 bg-[#9f1239] rounded-3xl flex items-center justify-center text-2xl mb-6 shadow-xl shadow-[#9f1239]/30">
             <i className="fas fa-crown"></i>
           </div>
           
           <h2 className="text-3xl font-black uppercase tracking-tighter mb-2">
-            MuviHub <span className="text-[#E50914]">Premium</span>
+            MuviHub <span className="text-[#9f1239]">Premium</span>
           </h2>
           
           <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em] mb-10">
@@ -65,8 +65,8 @@ const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
                 onClick={() => window.location.href = plan.url}
                 className={`w-full group p-5 rounded-[2rem] flex items-center justify-between border-2 transition-all ${
                   plan.featured 
-                    ? 'bg-[#E50914] border-[#E50914] shadow-xl' 
-                    : 'bg-white/5 border-white/10 hover:border-[#E50914]/50'
+                    ? 'bg-[#9f1239] border-[#9f1239] shadow-xl' 
+                    : 'bg-white/5 border-white/10 hover:border-[#9f1239]/50'
                 }`}
               >
                 <div className="text-left">

@@ -54,7 +54,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick }) => {
           {/* Content */}
           <div className="absolute bottom-0 left-0 w-full p-8 pb-32 sm:p-16 flex flex-col justify-end items-start animate-fade-in-up">
             <div className="flex items-center gap-3 mb-6">
-              <span className="bg-[#E50914] text-white text-[10px] font-black px-3 py-1 rounded-md uppercase tracking-[0.2em] shadow-lg">VJ TRANSLATED</span>
+              <span className="bg-[#9f1239] text-white text-[10px] font-black px-3 py-1 rounded-md uppercase tracking-[0.2em] shadow-lg">VJ TRANSLATED</span>
               <div className="flex items-center gap-2 bg-black/40 backdrop-blur-xl px-3 py-1 rounded-md border border-white/10 text-yellow-500 text-sm font-bold shadow-lg">
                 <i className="fas fa-star"></i> {m.vote_average.toFixed(1)}
               </div>
@@ -71,7 +71,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick }) => {
             <div className="flex gap-4">
               <button 
                 onClick={() => onMovieClick({ id: m.id.toString(), title: m.title, type: 'tmdb_movie', backdrop_path: m.backdrop_path, overview: m.overview, tmdbData: m } as any)}
-                className="bg-[#E50914] text-white px-10 py-4 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-[#ff0a16] hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(229,9,20,0.4)] flex items-center gap-3"
+                className="bg-[#9f1239] text-white px-10 py-4 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-[#be123c] hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(159,18,57,0.4)] flex items-center gap-3"
               >
                 <i className="fas fa-play"></i> Watch Now
               </button>
@@ -89,7 +89,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick }) => {
           <button 
             key={i} 
             onClick={() => setCurrentIndex(i)} 
-            className={`h-1.5 rounded-full transition-all duration-500 ${i === currentIndex ? 'w-12 bg-[#E50914]' : 'w-2 bg-white/30 hover:bg-white/50'}`}
+            className={`h-1.5 rounded-full transition-all duration-500 ${i === currentIndex ? 'w-12 bg-[#9f1239]' : 'w-2 bg-white/30 hover:bg-white/50'}`}
           ></button>
         ))}
       </div>

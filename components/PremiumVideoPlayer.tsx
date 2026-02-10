@@ -161,15 +161,15 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
       {isBuffering && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[4px] z-[50] pointer-events-none transition-opacity duration-300">
           <div className="relative w-24 h-24">
-             <div className="absolute inset-[-10px] bg-[#E50914]/10 rounded-full blur-xl animate-pulse"></div>
+             <div className="absolute inset-[-10px] bg-[#9f1239]/10 rounded-full blur-xl animate-pulse"></div>
              <div className="absolute inset-0 border-[6px] border-white/5 rounded-full"></div>
-             <div className="absolute inset-0 border-[6px] border-transparent border-t-[#E50914] rounded-full animate-spin"></div>
+             <div className="absolute inset-0 border-[6px] border-transparent border-t-[#9f1239] rounded-full animate-spin"></div>
              <div className="absolute inset-0 flex items-center justify-center">
                <img src="https://iili.io/f6WKiPV.png" className="w-8 h-8 opacity-40" alt="Logo" />
              </div>
           </div>
           <div className="mt-8 flex flex-col items-center gap-2">
-            <p className="text-white font-black uppercase tracking-[0.5em] text-[12px] animate-pulse drop-shadow-[0_0_10px_rgba(229,9,20,0.8)]">Loading...</p>
+            <p className="text-white font-black uppercase tracking-[0.5em] text-[12px] animate-pulse drop-shadow-[0_0_10px_rgba(159,18,57,0.8)]">Loading...</p>
             <p className="text-white/40 text-[9px] font-bold uppercase tracking-widest">MuviHub Premium Quality</p>
           </div>
         </div>
@@ -179,7 +179,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
         
         <div className="absolute top-0 left-0 w-full p-8 flex justify-between items-start">
           <div className="flex items-center gap-5">
-            <button onClick={onClose} className="w-14 h-14 flex items-center justify-center bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl text-white hover:bg-[#E50914] transition-all group">
+            <button onClick={onClose} className="w-14 h-14 flex items-center justify-center bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl text-white hover:bg-[#9f1239] transition-all group">
               <i className="fas fa-chevron-left group-hover:-translate-x-1 transition-transform"></i>
             </button>
             <div className="max-w-md sm:max-w-xl">
@@ -199,7 +199,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
           <div className={`absolute bottom-32 right-8 transition-all duration-500 ${showControls ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
             <button 
               onClick={(e) => { e.stopPropagation(); handleSkipIntro(); }}
-              className="bg-white/10 backdrop-blur-2xl border border-white/20 text-white px-6 py-3 rounded-2xl flex items-center gap-3 font-black uppercase tracking-widest text-[10px] hover:bg-[#E50914] hover:border-[#E50914] transition-all shadow-2xl active:scale-95"
+              className="bg-white/10 backdrop-blur-2xl border border-white/20 text-white px-6 py-3 rounded-2xl flex items-center gap-3 font-black uppercase tracking-widest text-[10px] hover:bg-[#9f1239] hover:border-[#9f1239] transition-all shadow-2xl active:scale-95"
             >
               Skip Intro <i className="fas fa-forward"></i>
             </button>
@@ -214,7 +214,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
 
            <button 
              onClick={(e) => { e.stopPropagation(); togglePlay(); }}
-             className="w-24 h-24 sm:w-32 sm:h-32 bg-[#E50914] rounded-full flex items-center justify-center text-white text-3xl sm:text-5xl shadow-[0_0_80px_rgba(229,9,20,0.6)] hover:scale-110 active:scale-90 transition-all border-4 border-white/10"
+             className="w-24 h-24 sm:w-32 sm:h-32 bg-[#9f1239] rounded-full flex items-center justify-center text-white text-3xl sm:text-5xl shadow-[0_0_80px_rgba(159,18,57,0.6)] hover:scale-110 active:scale-90 transition-all border-4 border-white/10"
            >
              <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play ml-3'}`}></i>
            </button>
@@ -233,12 +233,12 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
               onClick={handleSeek}
             >
               <div 
-                className="absolute top-0 left-0 h-full bg-[#E50914] shadow-[0_0_20px_rgba(229,9,20,1)] rounded-full transition-all" 
+                className="absolute top-0 left-0 h-full bg-[#9f1239] shadow-[0_0_20px_rgba(159,18,57,1)] rounded-full transition-all" 
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
             <div 
-              className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)] border-2 border-[#E50914] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)] border-2 border-[#9f1239] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
               style={{ left: `calc(${progress}% - 8px)` }}
             ></div>
           </div>
@@ -268,7 +268,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
                       setIsMuted(false); 
                       if(videoRef.current) videoRef.current.volume = val; 
                     }}
-                    className="w-full h-1 appearance-none bg-white/20 rounded-full overflow-hidden [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-0 [&::-webkit-slider-thumb]:h-0 [&::-webkit-slider-thumb]:shadow-[-100px_0_0_100px_rgba(229,9,20,0.8)] cursor-pointer"
+                    className="w-full h-1 appearance-none bg-white/20 rounded-full overflow-hidden [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-0 [&::-webkit-slider-thumb]:h-0 [&::-webkit-slider-thumb]:shadow-[-100px_0_0_100px_rgba(159,18,57,0.8)] cursor-pointer"
                   />
                 </div>
               </div>
@@ -290,7 +290,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
                         <button
                           key={s}
                           onClick={(e) => { e.stopPropagation(); handleSpeedChange(s); }}
-                          className={`w-full px-5 py-3 text-[10px] font-black uppercase tracking-widest text-center transition-all ${playbackSpeed === s ? 'bg-[#E50914] text-white' : 'text-white/60 hover:bg-white/5'}`}
+                          className={`w-full px-5 py-3 text-[10px] font-black uppercase tracking-widest text-center transition-all ${playbackSpeed === s ? 'bg-[#9f1239] text-white' : 'text-white/60 hover:bg-white/5'}`}
                         >
                           {s}x
                         </button>

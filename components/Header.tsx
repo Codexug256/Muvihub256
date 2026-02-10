@@ -48,7 +48,7 @@ const Header: React.FC<Props> = ({ searchQuery, setSearchQuery, searchGenre, set
           >
             <i className="fas fa-heart text-sm"></i>
             {myListCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#E50914] text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-black font-black">
+              <span className="absolute -top-1 -right-1 bg-[#9f1239] text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-black font-black">
                 {myListCount}
               </span>
             )}
@@ -67,7 +67,7 @@ const Header: React.FC<Props> = ({ searchQuery, setSearchQuery, searchGenre, set
           >
             <i className="fas fa-bell text-sm"></i>
             {newCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#E50914] text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-black font-black">
+              <span className="absolute -top-1 -right-1 bg-[#9f1239] text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-black font-black">
                 {newCount > 9 ? '9+' : newCount}
               </span>
             )}
@@ -92,7 +92,7 @@ const Header: React.FC<Props> = ({ searchQuery, setSearchQuery, searchGenre, set
                 onClick={() => handleGenreSelect(g as string)}
                 className={`p-6 rounded-3xl text-sm font-black uppercase tracking-widest transition-all text-center border ${
                   (searchGenre === g || (g === 'All' && !searchGenre))
-                    ? 'bg-[#E50914] text-white border-[#E50914] shadow-[0_10px_30px_rgba(229,9,20,0.3)] scale-105'
+                    ? 'bg-[#9f1239] text-white border-[#9f1239] shadow-[0_10px_30px_rgba(159,18,57,0.3)] scale-105'
                     : 'bg-white/5 text-white/70 hover:text-white hover:bg-white/10 border-white/10'
                 }`}
               >
@@ -110,10 +110,10 @@ const Header: React.FC<Props> = ({ searchQuery, setSearchQuery, searchGenre, set
             placeholder="Search titles..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-white/5 border border-white/10 text-white px-5 py-3 rounded-xl focus:border-[#E50914] outline-none text-sm placeholder:text-white/40"
+            className="flex-1 bg-white/5 border border-white/10 text-white px-5 py-3 rounded-xl focus:border-[#9f1239] outline-none text-sm placeholder:text-white/40"
             autoFocus
           />
-          <button onClick={() => setShowSearch(false)} className="w-11 h-11 flex items-center justify-center text-white/80 hover:text-[#E50914]">
+          <button onClick={() => setShowSearch(false)} className="w-11 h-11 flex items-center justify-center text-white/80 hover:text-[#9f1239]">
             <i className="fas fa-times text-xl"></i>
           </button>
         </div>

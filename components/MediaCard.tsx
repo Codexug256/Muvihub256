@@ -27,12 +27,12 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
   return (
     <div 
       onClick={onClick}
-      className={`relative flex-none w-full rounded-lg overflow-hidden bg-[#141414] border border-[#2a2a2a] cursor-pointer group hover:scale-105 hover:border-[#E50914] transition-all duration-300 shadow-lg ${variant === 'landscape' ? 'rounded-xl' : 'rounded-lg'}`}
+      className={`relative flex-none w-full rounded-lg overflow-hidden bg-[#141414] border border-[#2a2a2a] cursor-pointer group hover:scale-105 hover:border-[#9f1239] transition-all duration-300 shadow-lg ${variant === 'landscape' ? 'rounded-xl' : 'rounded-lg'}`}
     >
       {tags.length > 0 && variant === 'poster' && (
         <div className="absolute top-1 left-1 z-10 flex flex-wrap gap-0.5 max-w-[calc(100%-8px)]">
           {tags.slice(0, 1).map((t, i) => (
-            <span key={i} className="bg-[#E50914] text-white text-[7px] font-bold px-1 py-0.5 rounded-full shadow-lg uppercase truncate">#{t}</span>
+            <span key={i} className="bg-[#9f1239] text-white text-[7px] font-bold px-1 py-0.5 rounded-full shadow-lg uppercase truncate">#{t}</span>
           ))}
         </div>
       )}
@@ -48,7 +48,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
         />
         
         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className={`${variant === 'landscape' ? 'w-8 h-8' : 'w-6 h-6'} bg-[#E50914] rounded-full flex items-center justify-center text-white text-[8px]`}>
+          <div className={`${variant === 'landscape' ? 'w-8 h-8' : 'w-6 h-6'} bg-[#9f1239] rounded-full flex items-center justify-center text-white text-[8px]`}>
             <i className="fas fa-play ml-0.5"></i>
           </div>
         </div>
@@ -64,7 +64,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
       {variant === 'landscape' && (
         <div className="px-1.5 pb-1.5">
           <div className="h-0.5 w-full bg-white/10 rounded-full overflow-hidden">
-             <div className="h-full bg-[#E50914] w-[30%]"></div>
+             <div className="h-full bg-[#9f1239] w-[30%]"></div>
           </div>
         </div>
       )}

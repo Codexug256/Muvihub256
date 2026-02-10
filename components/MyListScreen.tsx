@@ -18,9 +18,9 @@ const MyListScreen: React.FC<Props> = ({ isOpen, onClose, list, onMediaClick, on
       <div className="max-w-4xl mx-auto pt-10 pb-20">
         <div className="flex justify-between items-center mb-12">
           <h2 className="text-4xl font-black flex items-center gap-4">
-            <i className="fas fa-heart text-[#E50914]"></i> My List
+            <i className="fas fa-heart text-[#9f1239]"></i> My List
           </h2>
-          <button onClick={onClose} className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-2xl hover:bg-[#E50914] transition-all">
+          <button onClick={onClose} className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-2xl hover:bg-[#9f1239] transition-all">
             <i className="fas fa-times"></i>
           </button>
         </div>
@@ -41,7 +41,7 @@ const MyListScreen: React.FC<Props> = ({ isOpen, onClose, list, onMediaClick, on
                 <div key={item.id} className="relative group">
                   <div 
                     onClick={() => { onMediaClick(item); onClose(); }}
-                    className="rounded-[1.5rem] overflow-hidden border border-white/10 cursor-pointer hover:border-[#E50914] transition-all group-hover:-translate-y-2 shadow-2xl bg-[#141414]"
+                    className="rounded-[1.5rem] overflow-hidden border border-white/10 cursor-pointer hover:border-[#9f1239] transition-all group-hover:-translate-y-2 shadow-2xl bg-[#141414]"
                   >
                     <img 
                       src={imageUrl ?? 'https://iili.io/KOR5eHX.png'} 
@@ -51,7 +51,7 @@ const MyListScreen: React.FC<Props> = ({ isOpen, onClose, list, onMediaClick, on
                   </div>
                   <button 
                     onClick={(e) => { e.stopPropagation(); onRemove(item.id); }}
-                    className="absolute -top-2 -right-2 w-10 h-10 bg-red-600 text-white rounded-full flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+                    className="absolute -top-2 -right-2 w-10 h-10 bg-[#9f1239] text-white rounded-full flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
                   >
                     <i className="fas fa-trash-alt text-xs"></i>
                   </button>
