@@ -6,6 +6,7 @@ import { CATEGORY_GROUPS } from '../constants';
 
 interface Props {
   allMedia: Media[];
+  continueWatching: Media[];
   mediaByGenre: Record<string, Media[]>;
   onMediaClick: (m: Media) => void;
   isSearching: boolean;
@@ -14,9 +15,8 @@ interface Props {
   clearFilters: () => void;
 }
 
-const HomeScreen: React.FC<Props> = ({ allMedia, mediaByGenre, onMediaClick, isSearching, onSeeAll, onGenreSeeAll, clearFilters }) => {
+const HomeScreen: React.FC<Props> = ({ allMedia, continueWatching, mediaByGenre, onMediaClick, isSearching, onSeeAll, onGenreSeeAll, clearFilters }) => {
   
-  // Group media by Category Groups defined in constants.tsx to avoid duplication and honor "Fantasy" request
   const groupedContent = useMemo(() => {
     return CATEGORY_GROUPS.map(group => {
       const filtered = allMedia.filter(m => 
@@ -50,6 +50,26 @@ const HomeScreen: React.FC<Props> = ({ allMedia, mediaByGenre, onMediaClick, isS
           <TMDBFeaturedCarousel onMovieClick={onMediaClick} />
           
           <div className="px-5 mt-12">
+            
+            {/* Continue Watching Section */}
+            {continueWatching.length > 0 && (
+              <div className="mb-16">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
+                    Continue Watching
+                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#E50914] to-transparent"></div>
+                  </h2>
+                </div>
+                <div className="flex gap-3 overflow-x-auto pb-6 no-scrollbar -mx-5 px-5">
+                  {continueWatching.map(m => (
+                    <div key={m.id} className="flex-none w-[180px] sm:w-[220px]">
+                      <MediaCard media={m} onClick={() => onMediaClick(m)} variant="landscape" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* New & Trending Section */}
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
@@ -70,7 +90,7 @@ const HomeScreen: React.FC<Props> = ({ allMedia, mediaByGenre, onMediaClick, isS
               ))}
             </div>
 
-            {/* Rendered Category Groups (Handles Fantasy separately as requested) */}
+            {/* Rendered Category Groups */}
             {groupedContent.map((group) => (
               <div key={group.title} className="mb-16">
                 <div className="flex justify-between items-center mb-6">

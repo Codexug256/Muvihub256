@@ -29,6 +29,7 @@ const App: React.FC = () => {
   const [episodes, setEpisodes] = useState<Record<string, Media[]>>({});
   const [downloads, setDownloads] = useState<Download[]>([]);
   const [myList, setMyList] = useState<Media[]>([]);
+  const [continueWatching, setContinueWatching] = useState<Media[]>([]);
   
   const [activeScreen, setActiveScreen] = useState('home');
   const [isLoading, setIsLoading] = useState(true);
@@ -142,9 +143,12 @@ const App: React.FC = () => {
       }
     });
 
-    // Load Local List
-    const saved = localStorage.getItem('myList');
-    if (saved) setMyList(JSON.parse(saved));
+    // Load Local Lists
+    const savedList = localStorage.getItem('myList');
+    if (savedList) setMyList(JSON.parse(savedList));
+
+    const savedContinue = localStorage.getItem('continueWatching');
+    if (savedContinue) setContinueWatching(JSON.parse(savedContinue));
 
     return () => {
       moviesRef.off();
@@ -198,6 +202,10 @@ const App: React.FC = () => {
     localStorage.setItem('myList', JSON.stringify(myList));
   }, [myList]);
 
+  useEffect(() => {
+    localStorage.setItem('continueWatching', JSON.stringify(continueWatching));
+  }, [continueWatching]);
+
   // Derived Media
   const allMedia = useMemo(() => {
     return [...movies, ...series].map(m => ({
@@ -240,6 +248,13 @@ const App: React.FC = () => {
   const handlePlayRequest = (m: Media) => {
     if (isUnlocked) {
       setPlayerData({ url: m.video || '', title: m.title, poster: m.poster || m.image || '' });
+      
+      // Update Continue Watching
+      setContinueWatching(prev => {
+        const filtered = prev.filter(item => item.id !== m.id);
+        const newList = [m, ...filtered].slice(0, 10);
+        return newList;
+      });
     } else {
       setPendingMedia(m);
       setPendingAction('play');
@@ -253,7 +268,7 @@ const App: React.FC = () => {
     setShowAccessGate(false);
     if (pendingMedia) {
       if (pendingAction === 'play') {
-        setPlayerData({ url: pendingMedia.video || '', title: pendingMedia.title, poster: pendingMedia.poster || pendingMedia.image || '' });
+        handlePlayRequest(pendingMedia);
       } else if (pendingAction === 'download') {
         showToast(`Starting download for "${pendingMedia.title}"...`, "success");
       }
@@ -277,7 +292,6 @@ const App: React.FC = () => {
   const handleDownload = (m: Media) => {
     if (isUnlocked) {
       showToast(`Starting download for "${m.title}"...`, "success");
-      // Logic for actual download would go here if available
     } else {
       setPendingMedia(m);
       setPendingAction('download');
@@ -377,6 +391,7 @@ const App: React.FC = () => {
               {activeScreen === 'home' && (
                 <HomeScreen 
                   allMedia={filteredMedia}
+                  continueWatching={continueWatching}
                   mediaByGenre={mediaByGenre}
                   onMediaClick={handleMediaClick}
                   isSearching={!!(searchQuery || searchGenre || selectedGenreSeeAll || showAllMovies || showNewUploads)}
