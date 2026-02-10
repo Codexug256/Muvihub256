@@ -32,7 +32,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
       {tags.length > 0 && variant === 'poster' && (
         <div className="absolute top-1 left-1 z-10 flex flex-wrap gap-0.5 max-w-[calc(100%-8px)]">
           {tags.slice(0, 1).map((t, i) => (
-            <span key={i} className="bg-[#E50914] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full shadow-lg uppercase truncate">#{t}</span>
+            <span key={i} className="bg-[#E50914] text-white text-[7px] font-bold px-1 py-0.5 rounded-full shadow-lg uppercase truncate">#{t}</span>
           ))}
         </div>
       )}
@@ -47,18 +47,16 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
           onError={(e) => { (e.target as HTMLImageElement).src = 'https://iili.io/KOR5eHX.png'; setLoaded(true); }}
         />
         
-        {variant === 'landscape' && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="w-8 h-8 bg-[#E50914] rounded-full flex items-center justify-center text-white text-[10px]">
-              <i className="fas fa-play ml-0.5"></i>
-            </div>
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className={`${variant === 'landscape' ? 'w-8 h-8' : 'w-6 h-6'} bg-[#E50914] rounded-full flex items-center justify-center text-white text-[8px]`}>
+            <i className="fas fa-play ml-0.5"></i>
           </div>
-        )}
+        </div>
       </div>
 
-      <div className={`p-1.5 bg-gradient-to-t from-black/95 to-transparent ${variant === 'landscape' ? 'pt-2' : ''}`}>
-        <h3 className={`font-bold truncate leading-tight ${variant === 'landscape' ? 'text-[11px]' : 'text-[10px]'}`}>{media.title}</h3>
-        <p className="text-[8px] text-white/70 flex items-center gap-1 truncate mt-0.5">
+      <div className={`p-1 bg-gradient-to-t from-black/95 to-transparent ${variant === 'landscape' ? 'pt-2' : ''}`}>
+        <h3 className={`font-bold truncate leading-none ${variant === 'landscape' ? 'text-[10px]' : 'text-[9px]'}`}>{media.title}</h3>
+        <p className="text-[7px] text-white/50 flex items-center gap-1 truncate mt-0.5">
           {media.genre}
         </p>
       </div>

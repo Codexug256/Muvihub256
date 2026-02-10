@@ -39,7 +39,8 @@ const HomeScreen: React.FC<Props> = ({ allMedia, continueWatching, mediaByGenre,
               <i className="fas fa-times mr-2"></i> Clear
             </button>
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2">
+          {/* Increased search result columns for smaller cards */}
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-2">
             {allMedia.map(m => (
               <MediaCard key={m.id} media={m} onClick={() => onMediaClick(m)} />
             ))}
@@ -62,7 +63,7 @@ const HomeScreen: React.FC<Props> = ({ allMedia, continueWatching, mediaByGenre,
                 </div>
                 <div className="flex gap-3 overflow-x-auto pb-6 no-scrollbar -mx-5 px-5">
                   {continueWatching.map(m => (
-                    <div key={m.id} className="flex-none w-[180px] sm:w-[220px]">
+                    <div key={m.id} className="flex-none w-[160px] sm:w-[200px]">
                       <MediaCard media={m} onClick={() => onMediaClick(m)} variant="landscape" />
                     </div>
                   ))}
@@ -70,7 +71,7 @@ const HomeScreen: React.FC<Props> = ({ allMedia, continueWatching, mediaByGenre,
               </div>
             )}
 
-            {/* New & Trending Section */}
+            {/* New & Trending Section - Showing 24 items (3 rows on lg:grid-cols-8) */}
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
                 New & Trending
@@ -84,13 +85,13 @@ const HomeScreen: React.FC<Props> = ({ allMedia, continueWatching, mediaByGenre,
               </button>
             </div>
             
-            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 mb-16">
-              {allMedia.slice(0, 16).map(m => (
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 mb-16">
+              {allMedia.slice(0, 24).map(m => (
                 <MediaCard key={m.id} media={m} onClick={() => onMediaClick(m)} />
               ))}
             </div>
 
-            {/* Rendered Category Groups */}
+            {/* Rendered Category Groups - Each group shows 3 rows (24 items for 8 columns) */}
             {groupedContent.map((group) => (
               <div key={group.title} className="mb-16">
                 <div className="flex justify-between items-center mb-6">
@@ -107,8 +108,8 @@ const HomeScreen: React.FC<Props> = ({ allMedia, continueWatching, mediaByGenre,
                   </button>
                 </div>
                 
-                <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2">
-                  {group.list.slice(0, 16).map(m => (
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+                  {group.list.slice(0, 24).map(m => (
                     <MediaCard key={m.id} media={m} onClick={() => onMediaClick(m)} />
                   ))}
                 </div>

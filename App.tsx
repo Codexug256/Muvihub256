@@ -216,10 +216,13 @@ const App: React.FC = () => {
 
   const filteredMedia = useMemo(() => {
     let list = allMedia;
-    if (selectedGenreSeeAll) list = list.filter(m => m.genre === selectedGenreSeeAll);
+    const dayAgo = Date.now() - 86400000;
+
     if (showNewUploads) {
-      const dayAgo = Date.now() - 86400000;
       list = list.filter(m => (m.createdAt || 0) > dayAgo);
+    }
+    if (selectedGenreSeeAll) {
+      list = list.filter(m => m.genre === selectedGenreSeeAll);
     }
     if (searchQuery || searchGenre) {
       list = list.filter(m => 
@@ -314,6 +317,8 @@ const App: React.FC = () => {
     }
   };
 
+  const isSearching = !!(searchQuery || searchGenre || selectedGenreSeeAll || showAllMovies || showNewUploads);
+
   if (showSplash) {
     return (
       <div className="fixed inset-0 z-[10000] bg-[#0a0a0a] flex flex-col items-center justify-center">
@@ -378,7 +383,7 @@ const App: React.FC = () => {
               setSearchGenre={(g) => { setSearchGenre(g); setActiveScreen('home'); }}
               allMedia={allMedia}
               onNotifications={() => { setShowNewUploads(true); setActiveScreen('home'); }}
-              newCount={allMedia.filter(m => (m.createdAt || 0) > (Date.now() - 86400000)).length}
+              newCount={movies.filter(m => (m.createdAt || 0) > (Date.now() - 86400000)).length}
               onMyList={() => setShowMyList(true)}
               myListCount={myList.length}
             />
@@ -388,29 +393,44 @@ const App: React.FC = () => {
             <LoadingSkeleton />
           ) : (
             <>
-              {activeScreen === 'home' && (
+              {isSearching && activeScreen !== 'account' ? (
                 <HomeScreen 
                   allMedia={filteredMedia}
-                  continueWatching={continueWatching}
-                  mediaByGenre={mediaByGenre}
+                  continueWatching={[]}
+                  mediaByGenre={{}}
                   onMediaClick={handleMediaClick}
-                  isSearching={!!(searchQuery || searchGenre || selectedGenreSeeAll || showAllMovies || showNewUploads)}
-                  onSeeAll={() => setShowAllMovies(true)}
-                  onGenreSeeAll={setSelectedGenreSeeAll}
+                  isSearching={true}
+                  onSeeAll={() => {}}
+                  onGenreSeeAll={() => {}}
                   clearFilters={() => { setSearchQuery(''); setSearchGenre(''); setShowAllMovies(false); setShowNewUploads(false); setSelectedGenreSeeAll(''); }}
                 />
-              )}
-              {activeScreen === 'movies' && <MoviesScreen movies={movies} onMediaClick={handleMediaClick} />}
-              {activeScreen === 'series' && <SeriesScreen series={series} onMediaClick={handleMediaClick} />}
-              {activeScreen === 'downloads' && <DownloadsScreen downloads={downloads} onDelete={(id) => db.ref(`downloads/${user.uid}/${id}`).remove()} />}
-              {activeScreen === 'account' && (
-                <AccountScreen 
-                  profile={userProfile} 
-                  onUpload={handleProfileUpload} 
-                  onLogout={() => auth.signOut()} 
-                  onBack={() => setActiveScreen('home')}
-                  onManagePlan={() => { setSubscriptionMedia(null); setShowSubscription(true); }}
-                />
+              ) : (
+                <>
+                  {activeScreen === 'home' && (
+                    <HomeScreen 
+                      allMedia={filteredMedia}
+                      continueWatching={continueWatching}
+                      mediaByGenre={mediaByGenre}
+                      onMediaClick={handleMediaClick}
+                      isSearching={false}
+                      onSeeAll={() => setShowAllMovies(true)}
+                      onGenreSeeAll={setSelectedGenreSeeAll}
+                      clearFilters={() => { setSearchQuery(''); setSearchGenre(''); setShowAllMovies(false); setShowNewUploads(false); setSelectedGenreSeeAll(''); }}
+                    />
+                  )}
+                  {activeScreen === 'movies' && <MoviesScreen movies={movies} onMediaClick={handleMediaClick} />}
+                  {activeScreen === 'series' && <SeriesScreen series={series} onMediaClick={handleMediaClick} />}
+                  {activeScreen === 'downloads' && <DownloadsScreen downloads={downloads} onDelete={(id) => db.ref(`downloads/${user.uid}/${id}`).remove()} />}
+                  {activeScreen === 'account' && (
+                    <AccountScreen 
+                      profile={userProfile} 
+                      onUpload={handleProfileUpload} 
+                      onLogout={() => auth.signOut()} 
+                      onBack={() => setActiveScreen('home')}
+                      onManagePlan={() => { setSubscriptionMedia(null); setShowSubscription(true); }}
+                    />
+                  )}
+                </>
               )}
             </>
           )}
