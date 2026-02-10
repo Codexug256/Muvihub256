@@ -34,8 +34,8 @@ const AccessGate: React.FC<Props> = ({ onUnlock, onGoToPremium, onClose }) => {
           <i className="fas fa-times"></i>
         </button>
 
-        <div className="w-20 h-20 bg-[#E50914] rounded-3xl flex items-center justify-center text-3xl mb-8 shadow-xl shadow-[#E50914]/20 animate-bounce-slow">
-          <i className="fas fa-lock"></i>
+        <div className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center p-5 mb-8 shadow-xl shadow-white/5 animate-bounce-slow">
+          <img src="https://iili.io/f6WKiPV.png" alt="MuviHub Logo" className="w-full h-full object-contain" />
         </div>
 
         <h2 className="text-3xl font-black uppercase tracking-tighter mb-4">Content Gated</h2>
@@ -46,7 +46,7 @@ const AccessGate: React.FC<Props> = ({ onUnlock, onGoToPremium, onClose }) => {
         <form onSubmit={handleSubmit} className="w-full space-y-4 mb-8">
           <div className="relative">
             <input 
-              type="password"
+              type="password" 
               placeholder="Enter Access Key"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

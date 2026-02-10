@@ -268,8 +268,13 @@ const App: React.FC = () => {
   };
 
   const handleDownload = (m: Media) => {
-    setSubscriptionMedia(m);
-    setShowSubscription(true);
+    if (isUnlocked) {
+      showToast(`Starting download for "${m.title}"...`, "success");
+      // Logic for actual download would go here if available
+    } else {
+      setSubscriptionMedia(m);
+      setShowSubscription(true);
+    }
   };
 
   const handleProfileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
