@@ -29,7 +29,6 @@ const MyListScreen: React.FC<Props> = ({ isOpen, onClose, list, onMediaClick, on
           <div className="flex flex-col items-center justify-center py-40 text-white/20">
             <i className="fas fa-heart-crack text-8xl mb-6"></i>
             <p className="text-2xl font-black">Your list is empty</p>
-            <p className="mt-2 text-white/40 font-bold">Start adding movies to watch them later!</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
@@ -45,14 +44,10 @@ const MyListScreen: React.FC<Props> = ({ isOpen, onClose, list, onMediaClick, on
                     className="rounded-[1.5rem] overflow-hidden border border-white/10 cursor-pointer hover:border-[#E50914] transition-all group-hover:-translate-y-2 shadow-2xl bg-[#141414]"
                   >
                     <img 
-                      src={imageUrl ?? 'https://iili.io/KOR5eHX.png'} 
+                      src={imageUrl || 'https://iili.io/KOR5eHX.png'} 
                       className="w-full h-[240px] object-cover" 
                       alt={item.title} 
-                      onError={(e) => (e.currentTarget.src = 'https://iili.io/KOR5eHX.png')}
                     />
-                    <div className="p-4 bg-gradient-to-t from-black to-transparent">
-                      <h3 className="font-black text-sm truncate uppercase tracking-tighter">{item.title}</h3>
-                    </div>
                   </div>
                   <button 
                     onClick={(e) => { e.stopPropagation(); onRemove(item.id); }}

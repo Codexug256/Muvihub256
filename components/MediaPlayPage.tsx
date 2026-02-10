@@ -28,7 +28,6 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
 
   const handleMainPlay = () => {
     if (media.type === 'series' && episodes.length > 0) {
-      // Always play the first episode if it's a series
       onPlay(episodes[0]);
     } else {
       onPlay(media);
@@ -48,15 +47,13 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
         }
       `}</style>
 
-      {/* Cinematic Hero Section */}
       <div className="relative h-[65vh] sm:h-[80vh] w-full">
         <div className="absolute inset-0">
-          <img src={backdrop ?? 'https://iili.io/KOR5eHX.png'} className="w-full h-full object-cover" alt={media.title} />
+          <img src={backdrop || 'https://iili.io/KOR5eHX.png'} className="w-full h-full object-cover" alt={media.title} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/40 to-black/10"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent"></div>
         </div>
 
-        {/* Top Controls */}
         <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-10">
           <button onClick={onClose} className="w-10 h-10 sm:w-12 sm:h-12 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center text-white hover:bg-[#E50914] transition-all">
             <i className="fas fa-chevron-left"></i>
@@ -78,7 +75,6 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
           </div>
         </div>
 
-        {/* Center Emphasis Play Icon */}
         <button 
           onClick={handleMainPlay}
           className="absolute top-1/2 left-1/2 play-emphasis w-20 h-20 sm:w-28 sm:h-28 bg-[#E50914] text-white rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(229,9,20,0.6)] hover:scale-110 active:scale-95 transition-all z-20 group"
@@ -86,7 +82,6 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
           <i className="fas fa-play text-2xl sm:text-4xl ml-1 group-hover:scale-110 transition-transform"></i>
         </button>
 
-        {/* Title Overlay */}
         <div className="absolute bottom-10 left-0 w-full px-5 text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
             <span className="bg-[#E50914] text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest">
@@ -107,19 +102,16 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
         </div>
       </div>
 
-      {/* Content Section */}
       <div className="px-5 mt-10 max-w-6xl mx-auto space-y-12">
-        {/* Synopsis */}
         <section>
           <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-[#E50914] uppercase tracking-wider">
             <i className="fas fa-align-left text-sm"></i> Storyline
           </h3>
           <p className="text-white/60 text-base sm:text-lg leading-relaxed font-medium max-w-4xl">
-            {media.description || media.tmdbData?.overview || "This masterpiece translated into Luganda offers a unique cultural twist on a global classic. Exclusively brought to you by MuviHub UG for the best home entertainment experience."}
+            {media.description || media.tmdbData?.overview || "Exclusively brought to you by MuviHub UG."}
           </p>
         </section>
 
-        {/* Cast Section */}
         {cast.length > 0 && (
           <section>
             <h3 className="text-lg font-black mb-6 flex items-center gap-2 text-[#E50914] uppercase tracking-wider">
@@ -136,14 +128,12 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
                     />
                   </div>
                   <h4 className="text-[10px] font-black text-white/90 truncate uppercase">{actor.name}</h4>
-                  <p className="text-[8px] font-bold text-white/40 truncate uppercase mt-0.5">{actor.character}</p>
                 </div>
               ))}
             </div>
           </section>
         )}
 
-        {/* Episodes for Series - Compact Version */}
         {media.type === 'series' && episodes.length > 0 && (
           <section>
             <h3 className="text-lg font-black mb-6 flex items-center gap-2 text-[#E50914] uppercase tracking-wider">
@@ -157,27 +147,17 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
                   className="flex items-center gap-4 p-3 bg-white/5 border border-white/10 rounded-2xl hover:border-[#E50914] hover:bg-white/10 transition-all cursor-pointer group"
                 >
                   <div className="relative flex-none w-24 h-16 sm:w-32 sm:h-20 rounded-xl overflow-hidden bg-white/5 shadow-lg">
-                    {/* Using series poster as requested or episode image if highly specific */}
                     <img 
-                      src={ep.image || (seriesPoster ?? 'https://iili.io/KOR5eHX.png')} 
+                      src={ep.image || (seriesPoster || 'https://iili.io/KOR5eHX.png')} 
                       className="w-full h-full object-cover" 
                       alt={ep.title} 
                     />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <i className="fas fa-play text-white text-xs"></i>
-                    </div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                        <span className="text-[8px] font-black bg-[#E50914] text-white px-1.5 py-0.5 rounded uppercase">E{ep.episodeNumber}</span>
                        <h4 className="font-black text-sm sm:text-base truncate uppercase tracking-tight">{ep.title}</h4>
                     </div>
-                    <p className="text-[11px] text-white/40 line-clamp-1 leading-relaxed font-medium">
-                      {ep.description || "Translated episode available now in high quality."}
-                    </p>
-                  </div>
-                  <div className="flex-none pr-2">
-                     <i className="fas fa-play-circle text-white/20 group-hover:text-[#E50914] transition-colors"></i>
                   </div>
                 </div>
               ))}
@@ -185,7 +165,6 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
           </section>
         )}
 
-        {/* Recommended */}
         {recommended.length > 0 && (
           <section>
             <h3 className="text-lg font-black mb-8 flex items-center gap-4 uppercase tracking-wider">

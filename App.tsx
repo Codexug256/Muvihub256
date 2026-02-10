@@ -19,6 +19,7 @@ import ToastNotification from './components/ToastNotification';
 import PremiumVideoPlayer from './components/PremiumVideoPlayer';
 import LoadingSkeleton from './components/LoadingSkeleton';
 import SubscriptionPage from './components/SubscriptionPage';
+import AccessGate from './components/AccessGate';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<any>(null);
@@ -44,6 +45,11 @@ const App: React.FC = () => {
   const [showSubscription, setShowSubscription] = useState(false);
   const [subscriptionMedia, setSubscriptionMedia] = useState<Media | null>(null);
   const [toast, setToast] = useState<ToastState>({ show: false, message: '', type: 'success' });
+
+  // Gating Logic
+  const [isUnlocked, setIsUnlocked] = useState(() => sessionStorage.getItem('muvihub_unlocked') === 'true');
+  const [showAccessGate, setShowAccessGate] = useState(false);
+  const [pendingMedia, setPendingMedia] = useState<Media | null>(null);
 
   // Use refs to prevent infinite loop during enrichment
   const enrichedIds = useRef<Set<string>>(new Set());
@@ -230,6 +236,25 @@ const App: React.FC = () => {
     setPlayPageMedia(m);
   };
 
+  const handlePlayRequest = (m: Media) => {
+    if (isUnlocked) {
+      setPlayerData({ url: m.video || '', title: m.title, poster: m.poster || m.image || '' });
+    } else {
+      setPendingMedia(m);
+      setShowAccessGate(true);
+    }
+  };
+
+  const handleUnlock = () => {
+    setIsUnlocked(true);
+    sessionStorage.setItem('muvihub_unlocked', 'true');
+    setShowAccessGate(false);
+    if (pendingMedia) {
+      setPlayerData({ url: pendingMedia.video || '', title: pendingMedia.title, poster: pendingMedia.poster || pendingMedia.image || '' });
+      setPendingMedia(null);
+    }
+  };
+
   const toggleMyList = (m: Media, e: React.MouseEvent) => {
     e.stopPropagation();
     const exists = myList.some(i => i.id === m.id);
@@ -243,7 +268,6 @@ const App: React.FC = () => {
   };
 
   const handleDownload = (m: Media) => {
-    // Show premium subscription prompt for downloads as requested
     setSubscriptionMedia(m);
     setShowSubscription(true);
   };
@@ -297,11 +321,19 @@ const App: React.FC = () => {
         />
       )}
 
+      {showAccessGate && (
+        <AccessGate 
+          onUnlock={handleUnlock}
+          onGoToPremium={() => { setShowAccessGate(false); setShowSubscription(true); }}
+          onClose={() => setShowAccessGate(false)}
+        />
+      )}
+
       {playPageMedia ? (
         <MediaPlayPage 
           media={playPageMedia} 
           onClose={() => setPlayPageMedia(null)}
-          onPlay={(m) => setPlayerData({ url: m.video || '', title: m.title, poster: m.poster || m.image || '' })}
+          onPlay={handlePlayRequest}
           onDownload={handleDownload}
           episodes={episodes[playPageMedia.id] || []}
           recommended={allMedia.filter(m => m.genre === playPageMedia.genre && m.id !== playPageMedia.id).slice(0, 8)}
