@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { auth, db, storage } from './services/firebase';
 import { Media, UserProfile, Download, ToastState } from './types';
@@ -269,10 +268,6 @@ const App: React.FC = () => {
       <div className="fixed inset-0 z-[10000] bg-[#0a0a0a] flex flex-col items-center justify-center">
         <div className="w-48 h-48 mb-8 splash-logo">
           <img src="https://iili.io/f6WKiPV.png" alt="MuviHub UG Logo" className="w-full h-full object-contain" />
-        </div>
-        <div className="relative w-12 h-12">
-          <div className="absolute inset-0 border-4 border-[#E50914]/20 rounded-full"></div>
-          <div className="absolute inset-0 border-4 border-t-[#E50914] rounded-full animate-spin"></div>
         </div>
         <p className="mt-8 text-white/40 font-black uppercase tracking-[0.5em] text-[10px]">MuviHub UG</p>
       </div>

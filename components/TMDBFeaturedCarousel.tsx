@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { fetchTrendingMovies, getTMDBImageUrl } from '../services/tmdb';
 import { Media } from '../types';
@@ -30,9 +29,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick }) => {
   }, [movies]);
 
   if (loading) return (
-    <div className="h-screen flex items-center justify-center bg-[#0a0a0a]">
-      <i className="fas fa-spinner fa-spin text-4xl text-[#E50914]"></i>
-    </div>
+    <div className="h-screen w-full skeleton rounded-b-[3rem]"></div>
   );
 
   return (
