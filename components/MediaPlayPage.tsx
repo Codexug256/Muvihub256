@@ -89,7 +89,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
         <div className="absolute bottom-10 left-0 w-full px-5 text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
             <span className="bg-[#E50914] text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest">
-              {media.type === 'series' ? 'Series' : 'Movie'}
+              VJ TRANSLATED
             </span>
             <span className="text-white/80 font-bold text-xs bg-black/40 px-2 py-0.5 rounded-md backdrop-blur-md border border-white/10">
               {media.genre}
