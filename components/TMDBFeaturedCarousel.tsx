@@ -54,7 +54,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick }) => {
           {/* Content */}
           <div className="absolute bottom-0 left-0 w-full p-8 pb-32 sm:p-16 flex flex-col justify-end items-start animate-fade-in-up">
             <div className="flex items-center gap-3 mb-6">
-              <span className="bg-[#E50914] text-white text-[10px] font-black px-3 py-1 rounded-md uppercase tracking-[0.2em] shadow-lg">Trending Now</span>
+              <span className="bg-[#E50914] text-white text-[10px] font-black px-3 py-1 rounded-md uppercase tracking-[0.2em] shadow-lg">VJ TRANSLATED</span>
               <div className="flex items-center gap-2 bg-black/40 backdrop-blur-xl px-3 py-1 rounded-md border border-white/10 text-yellow-500 text-sm font-bold shadow-lg">
                 <i className="fas fa-star"></i> {m.vote_average.toFixed(1)}
               </div>
