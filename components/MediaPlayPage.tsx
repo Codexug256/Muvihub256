@@ -49,6 +49,16 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
         .play-emphasis {
           animation: pulse-glow 2s infinite;
         }
+        .episode-card:hover .episode-overlay {
+          opacity: 1;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
       `}</style>
 
       <div className="relative h-[65vh] sm:h-[80vh] w-full">
@@ -177,25 +187,38 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
             <h3 className="text-lg font-black mb-6 flex items-center gap-2 text-[#E50914] uppercase tracking-wider">
               <i className="fas fa-list text-sm"></i> Episodes
             </h3>
-            <div className="space-y-3">
+            <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar -mx-5 px-5">
               {episodes.map(ep => (
                 <div 
                   key={ep.id} 
                   onClick={() => onPlay(ep)}
-                  className="flex items-center gap-4 p-3 bg-white/5 border border-white/10 rounded-2xl hover:border-[#E50914] hover:bg-white/10 transition-all cursor-pointer group"
+                  className="episode-card flex-none w-[280px] sm:w-[320px] flex flex-col gap-3 p-3 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-[#E50914]/40 hover:bg-white/[0.05] transition-all cursor-pointer group"
                 >
-                  <div className="relative flex-none w-24 h-16 sm:w-32 sm:h-20 rounded-xl overflow-hidden bg-white/5 shadow-lg">
+                  <div className="relative aspect-video rounded-xl overflow-hidden bg-white/5 shadow-lg border border-white/5">
                     <img 
                       src={ep.image ?? (seriesPoster ?? 'https://iili.io/KOR5eHX.png')} 
-                      className="w-full h-full object-cover" 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                       alt={ep.title} 
                     />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                       <span className="text-[8px] font-black bg-[#E50914] text-white px-1.5 py-0.5 rounded uppercase">E{ep.episodeNumber}</span>
-                       <h4 className="font-black text-sm sm:text-base truncate uppercase tracking-tight">{ep.title}</h4>
+                    <div className="episode-overlay absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 transition-opacity duration-300">
+                      <div className="w-8 h-8 bg-[#E50914] rounded-full flex items-center justify-center text-white text-[10px] shadow-xl">
+                        <i className="fas fa-play ml-0.5"></i>
+                      </div>
                     </div>
+                    {ep.tmdbData?.runtime && (
+                      <div className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-black/70 backdrop-blur-md rounded text-[7px] font-black text-white/90">
+                        {ep.tmdbData.runtime}m
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2 mb-1">
+                       <span className="flex-none text-[8px] font-black bg-[#E50914] text-white px-1.5 py-0.5 rounded-md uppercase tracking-wider">E{ep.episodeNumber}</span>
+                       <h4 className="font-black text-sm truncate uppercase tracking-tight text-white/90 group-hover:text-white transition-colors">{ep.title}</h4>
+                    </div>
+                    <p className="text-white/40 text-[10px] line-clamp-2 leading-relaxed h-8">
+                      {ep.description || "The journey continues in this thrilling episode translated exclusively for MuviHub UG."}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -209,9 +232,11 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
               Related Titles
               <div className="h-[1px] flex-1 bg-gradient-to-r from-[#E50914] to-transparent"></div>
             </h3>
-            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2">
+            <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar -mx-5 px-5">
               {recommended.map(m => (
-                <MediaCard key={m.id} media={m} onClick={() => onMediaClick(m)} />
+                <div key={m.id} className="flex-none w-32 sm:w-40">
+                  <MediaCard media={m} onClick={() => onMediaClick(m)} />
+                </div>
               ))}
             </div>
           </section>

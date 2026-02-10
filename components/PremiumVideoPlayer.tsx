@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 
 interface Props {
@@ -28,8 +27,13 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const [showSpeedMenu, setShowSpeedMenu] = useState(false);
+  
   const controlsTimeout = useRef<any>(null);
   const playPromiseRef = useRef<Promise<void> | null>(null);
+
+  const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
   const togglePlay = async () => {
     if (!videoRef.current) return;
@@ -59,6 +63,22 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
     }
   };
 
+  const handleSkipIntro = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 90; // Typical intro duration
+      setShowControls(true);
+      resetControlsTimeout();
+    }
+  };
+
+  const handleSpeedChange = (speed: number) => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = speed;
+      setPlaybackSpeed(speed);
+      setShowSpeedMenu(false);
+    }
+  };
+
   const handleTimeUpdate = () => {
     if (videoRef.current) {
       const p = (videoRef.current.currentTime / videoRef.current.duration) * 100;
@@ -81,21 +101,20 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
     setShowControls(true);
     if (controlsTimeout.current) clearTimeout(controlsTimeout.current);
     controlsTimeout.current = setTimeout(() => {
-      if (isPlaying && !isBuffering) setShowControls(false);
+      if (isPlaying && !isBuffering && !showSpeedMenu) setShowControls(false);
     }, 4000);
   };
 
   useEffect(() => {
     resetControlsTimeout();
     return () => clearTimeout(controlsTimeout.current);
-  }, [isPlaying, isBuffering]);
+  }, [isPlaying, isBuffering, showSpeedMenu]);
 
   useEffect(() => {
     const initiatePlay = async () => {
       if (videoRef.current) {
         try {
           setIsBuffering(true);
-          // Set crossOrigin if needed for some CDNs
           videoRef.current.crossOrigin = "anonymous";
           playPromiseRef.current = videoRef.current.play();
           await playPromiseRef.current;
@@ -103,8 +122,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
         } catch (e) {
           console.debug("Auto-play blocked or failed, waiting for user interaction.");
           setIsPlaying(false);
-          // We don't set isBuffering to false here because we still want the spinner 
-          // if it's actually loading, but if it fails completely we might need a fallback.
         }
       }
     };
@@ -123,7 +140,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
     <div 
       className="fixed inset-0 z-[9999] bg-black flex items-center justify-center overflow-hidden cursor-none"
       onMouseMove={() => { setShowControls(true); resetControlsTimeout(); }}
-      onClick={() => { setShowControls(true); resetControlsTimeout(); }}
+      onClick={() => { setShowControls(true); resetControlsTimeout(); setShowSpeedMenu(false); }}
       style={{ cursor: showControls ? 'default' : 'none' }}
     >
       <video 
@@ -141,17 +158,12 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
         playsInline
       />
 
-      {/* Immediate Loading Overlay - The 'poster' attribute on video handles the background image */}
       {isBuffering && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[4px] z-[50] pointer-events-none transition-opacity duration-300">
           <div className="relative w-24 h-24">
-             {/* Outer Glow */}
              <div className="absolute inset-[-10px] bg-[#E50914]/10 rounded-full blur-xl animate-pulse"></div>
-             {/* Spinner Track */}
              <div className="absolute inset-0 border-[6px] border-white/5 rounded-full"></div>
-             {/* Active Spinner */}
              <div className="absolute inset-0 border-[6px] border-transparent border-t-[#E50914] rounded-full animate-spin"></div>
-             {/* Inner Branding */}
              <div className="absolute inset-0 flex items-center justify-center">
                <img src="https://iili.io/f6WKiPV.png" className="w-8 h-8 opacity-40" alt="Logo" />
              </div>
@@ -163,10 +175,8 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
         </div>
       )}
 
-      {/* Controls Overlay */}
       <div className={`absolute inset-0 bg-gradient-to-t from-black/95 via-transparent to-black/80 transition-opacity duration-500 ease-out ${showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         
-        {/* Top Header */}
         <div className="absolute top-0 left-0 w-full p-8 flex justify-between items-start">
           <div className="flex items-center gap-5">
             <button onClick={onClose} className="w-14 h-14 flex items-center justify-center bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl text-white hover:bg-[#E50914] transition-all group">
@@ -184,7 +194,18 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
           </div>
         </div>
 
-        {/* Center Controls */}
+        {/* Skip Intro Button */}
+        {currentTime < 90 && (
+          <div className={`absolute bottom-32 right-8 transition-all duration-500 ${showControls ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+            <button 
+              onClick={(e) => { e.stopPropagation(); handleSkipIntro(); }}
+              className="bg-white/10 backdrop-blur-2xl border border-white/20 text-white px-6 py-3 rounded-2xl flex items-center gap-3 font-black uppercase tracking-widest text-[10px] hover:bg-[#E50914] hover:border-[#E50914] transition-all shadow-2xl active:scale-95"
+            >
+              Skip Intro <i className="fas fa-forward"></i>
+            </button>
+          </div>
+        )}
+
         <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-12 sm:gap-24 transition-all duration-300 ${isBuffering ? 'opacity-0 scale-90' : 'opacity-100 scale-100'}`}>
            <button onClick={(e) => { e.stopPropagation(); skip(-10); }} className="text-white/60 hover:text-white transition-all text-2xl sm:text-4xl hover:scale-110 active:scale-90">
              <i className="fas fa-undo-alt"></i>
@@ -204,10 +225,8 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
            </button>
         </div>
 
-        {/* Bottom Bar */}
         <div className="absolute bottom-0 left-0 w-full p-8 pt-0">
           
-          {/* Progress Bar Container */}
           <div className="relative mb-6 group">
             <div 
               className="h-1.5 w-full bg-white/20 rounded-full cursor-pointer transition-all group-hover:h-3 overflow-hidden relative"
@@ -218,7 +237,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
-            {/* Scrubber Knob */}
             <div 
               className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)] border-2 border-[#E50914] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
               style={{ left: `calc(${progress}% - 8px)` }}
@@ -234,7 +252,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
               </div>
               
               <div className="flex items-center gap-4 group/vol">
-                <button onClick={() => setIsMuted(!isMuted)} className="text-white/60 hover:text-white text-lg transition-all">
+                <button onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }} className="text-white/60 hover:text-white text-lg transition-all">
                    <i className={`fas ${isMuted || volume === 0 ? 'fa-volume-mute' : volume < 0.5 ? 'fa-volume-down' : 'fa-volume-up'}`}></i>
                 </button>
                 <div className="w-0 group-hover/vol:w-24 transition-all duration-300 overflow-hidden flex items-center">
@@ -256,11 +274,36 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
               </div>
             </div>
 
-            <div className="flex items-center gap-6">
-               <button className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-white/10 transition-all">
+            <div className="flex items-center gap-6 relative">
+               <div className="relative">
+                 <button 
+                  onClick={(e) => { e.stopPropagation(); setShowSpeedMenu(!showSpeedMenu); }}
+                  className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-white/10 transition-all text-white/80"
+                 >
+                    {playbackSpeed}x
+                 </button>
+                 
+                 {showSpeedMenu && (
+                   <div className="absolute bottom-full right-0 mb-4 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl min-w-[100px] animate-slide-up">
+                      <div className="p-3 border-b border-white/5 text-[8px] font-black text-white/30 uppercase tracking-[0.2em] text-center">Speed</div>
+                      {speeds.map(s => (
+                        <button
+                          key={s}
+                          onClick={(e) => { e.stopPropagation(); handleSpeedChange(s); }}
+                          className={`w-full px-5 py-3 text-[10px] font-black uppercase tracking-widest text-center transition-all ${playbackSpeed === s ? 'bg-[#E50914] text-white' : 'text-white/60 hover:bg-white/5'}`}
+                        >
+                          {s}x
+                        </button>
+                      ))}
+                   </div>
+                 )}
+               </div>
+
+               <button className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-white/10 transition-all text-white/80">
                   <i className="fas fa-cog text-white/40"></i> 1080P
                </button>
-               <button onClick={() => videoRef.current?.requestFullscreen()} className="text-white/60 hover:text-white transition-all text-xl">
+               
+               <button onClick={(e) => { e.stopPropagation(); videoRef.current?.requestFullscreen(); }} className="text-white/60 hover:text-white transition-all text-xl">
                  <i className="fas fa-expand"></i>
                </button>
             </div>

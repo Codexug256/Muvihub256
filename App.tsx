@@ -179,7 +179,7 @@ const App: React.FC = () => {
                   return {
                     ...ep,
                     tmdbData: tmdbEp,
-                    image: tmdbEp.still_path ? `https://image.tmdb.org/t/p/w500${tmdbEp.still_path}` : ep.image,
+                    image: tmdbEp.still_path ? `https://image.tmdb.org/t/p/w300${tmdbEp.still_path}` : ep.image,
                     description: tmdbEp.overview || ep.description
                   };
                 }
