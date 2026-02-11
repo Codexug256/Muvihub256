@@ -31,7 +31,7 @@ const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
       price: '7,500', 
       period: '14 Days', 
       icon: 'fa-calendar-alt',
-      url: 'https://pay.flexiicash.com/checkout/pay/c8ff5fe36a636ea5', // Reusing weekly for now as placeholder or specific link if provided
+      url: 'https://pay.flexiicash.com/checkout/pay/04b75dd52c1583ea',
       featured: false
     },
     { 
