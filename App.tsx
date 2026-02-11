@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { auth, db, storage } from './services/firebase';
 import { Media, UserProfile, Download, ToastState } from './types';
@@ -423,6 +424,8 @@ const App: React.FC = () => {
                       isSearching={false}
                       onSeeAll={() => setShowAllMovies(true)}
                       onGenreSeeAll={setSelectedGenreSeeAll}
+                      onMoviesSeeAll={() => setActiveScreen('movies')}
+                      onSeriesSeeAll={() => setActiveScreen('series')}
                       clearFilters={() => { setSearchQuery(''); setSearchGenre(''); setShowAllMovies(false); setShowNewUploads(false); setSelectedGenreSeeAll(''); }}
                     />
                   )}

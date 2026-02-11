@@ -11,9 +11,21 @@ export const fetchTrendingMovies = async () => {
     const response = await fetch(`${TMDB_CONFIG.BASE_URL}/trending/movie/week?api_key=${TMDB_CONFIG.API_KEY}&language=en-US`);
     if (!response.ok) throw new Error('Trending fetch failed');
     const data = await response.json();
-    return data.results.slice(0, 10);
+    return data.results.slice(0, 15);
   } catch (error) {
     console.error('Error fetching trending movies:', error);
+    return [];
+  }
+};
+
+export const fetchNowPlaying = async () => {
+  try {
+    const response = await fetch(`${TMDB_CONFIG.BASE_URL}/movie/now_playing?api_key=${TMDB_CONFIG.API_KEY}&language=en-US&page=1`);
+    if (!response.ok) throw new Error('Now playing fetch failed');
+    const data = await response.json();
+    return data.results.slice(0, 15);
+  } catch (error) {
+    console.error('Error fetching now playing movies:', error);
     return [];
   }
 };

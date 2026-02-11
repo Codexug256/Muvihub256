@@ -36,7 +36,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
 
   const apkShareLink = "https://www.mediafire.com/file/ta9wosmui025uoj/MuviHubUg.1.0.4.apk/file";
   const whatsappJoinLink = "https://chat.whatsapp.com/Kofjdwlr2SWFhDpGOQIjiK?mode=gi_t";
-  const telegramChannelLink = "https://t.me/mandoflix";
+  const telegramChannelLink = "https://t.me/muvihub256";
 
   return (
     <div className="fixed inset-0 z-[100] bg-[#0a0a0a] overflow-y-auto pb-20 animate-fade-in">
