@@ -12,10 +12,10 @@ const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
   const plans = [
     { 
       title: 'Daily Pass', 
-      price: '1,500', 
+      price: '2,000', 
       period: '24 Hours', 
       icon: 'fa-clock',
-      url: 'https://pay.flexiicash.com/checkout/pay/1b884c40ee9f103b',
+      url: 'https://pay.flexiicash.com/checkout/pay/ef26d3347ee78805',
       featured: false
     },
     { 
