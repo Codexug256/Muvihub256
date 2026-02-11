@@ -59,12 +59,15 @@ const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
         </button>
 
         <div className="relative z-10 p-8 pt-16 flex flex-col items-center">
-          {/* Logo with White Background */}
-          <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center p-4 mb-8 shadow-[0_10px_30px_rgba(255,255,255,0.1)] rotate-3">
-            <img src="https://iili.io/f6WKiPV.png" alt="MuviHub Logo" className="w-full h-full object-contain" />
+          {/* Logo with White Background and Premium Glow */}
+          <div className="relative w-24 h-24 mb-8">
+            <div className="absolute inset-0 bg-white/10 rounded-[2.2rem] blur-2xl"></div>
+            <div className="w-full h-full bg-white rounded-[2.2rem] flex items-center justify-center p-4 shadow-[0_15px_35px_rgba(255,255,255,0.1)] ring-8 ring-white/5 rotate-3 transform transition-all duration-700 hover:rotate-0">
+              <img src="https://iili.io/f6WKiPV.png" alt="MuviHub Logo" className="w-full h-full object-contain" />
+            </div>
           </div>
           
-          <div className="text-center mb-8">
+          <div className="text-center mb-10">
             <h2 className="text-4xl font-black uppercase tracking-tighter mb-2 leading-none">
               MuviHub <span className="text-[#9f1239]">Premium</span>
             </h2>
@@ -97,7 +100,7 @@ const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
                     <i className={`fas ${plan.icon}`}></i>
                   </div>
                   <div className="text-left">
-                    <h3 className="font-black uppercase tracking-tight text-sm leading-none mb-1 text-white group-hover:scale-105 transition-transform origin-left">{plan.title}</h3>
+                    <h3 className="font-black uppercase tracking-tight text-sm leading-none mb-1 text-white group-hover:translate-x-1 transition-transform origin-left">{plan.title}</h3>
                     <p className={`text-[8px] font-bold uppercase tracking-widest ${plan.featured ? 'text-white/60' : 'text-white/30'}`}>
                       {plan.period} Unlimited
                     </p>
@@ -114,16 +117,19 @@ const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
             ))}
           </div>
 
-          <div className="mt-10 flex flex-col items-center gap-4">
-            <div className="flex items-center gap-6 transition-all">
-              <i className="fab fa-cc-mastercard text-2xl text-[#EB001B]"></i>
-              <i className="fab fa-cc-visa text-2xl text-[#1A1F71]"></i>
-              <div className="h-4 w-[1px] bg-white/20"></div>
-              <span className="text-[8px] font-black uppercase tracking-widest text-white/60">Mobile Money Secure</span>
+          {/* Optimized Footer with Specific White-Background Payment Icons */}
+          <div className="mt-12 flex flex-col items-center gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-10 rounded-xl overflow-hidden bg-white flex items-center justify-center p-2 shadow-xl transition-transform hover:scale-110 active:scale-95">
+                <img src="https://iili.io/q9xI9UJ.png" alt="Mastercard" className="w-full h-full object-contain" />
+              </div>
+              <div className="w-14 h-10 rounded-xl overflow-hidden bg-white flex items-center justify-center p-2 shadow-xl transition-transform hover:scale-110 active:scale-95">
+                <img src="https://iili.io/q9xzyla.jpg" alt="Visa" className="w-full h-full object-contain" />
+              </div>
             </div>
-            <p className="text-white/20 text-[7px] font-black uppercase tracking-[0.5em] text-center max-w-[220px] leading-relaxed">
-              Professional Luganda Dubs • Offline Mode • 4K Quality • Ad-Free Experience
-            </p>
+            <div className="text-white/40 text-[10px] font-black uppercase tracking-[0.4em]">
+              Mobile Money Secure
+            </div>
           </div>
         </div>
       </div>
