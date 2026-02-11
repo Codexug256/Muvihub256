@@ -59,19 +59,20 @@ const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
         </button>
 
         <div className="relative z-10 p-8 pt-16 flex flex-col items-center">
-          {/* Logo with White Background and Premium Glow */}
-          <div className="relative w-24 h-24 mb-8">
-            <div className="absolute inset-0 bg-white/10 rounded-[2.2rem] blur-2xl"></div>
-            <div className="w-full h-full bg-white rounded-[2.2rem] flex items-center justify-center p-4 shadow-[0_15px_35px_rgba(255,255,255,0.1)] ring-8 ring-white/5 rotate-3 transform transition-all duration-700 hover:rotate-0">
-              <img src="https://iili.io/f6WKiPV.png" alt="MuviHub Logo" className="w-full h-full object-contain" />
+          {/* Replaced Logo with Crown Icon */}
+          <div className="relative w-20 h-20 mb-6">
+            <div className="absolute inset-0 bg-[#9f1239]/20 rounded-[1.8rem] blur-2xl"></div>
+            <div className="w-full h-full bg-white rounded-[1.8rem] flex items-center justify-center shadow-[0_15px_35px_rgba(0,0,0,0.3)] ring-4 ring-white/5 transition-transform duration-700 hover:rotate-3">
+              <i className="fas fa-crown text-3xl text-[#9f1239]"></i>
             </div>
           </div>
           
-          <div className="text-center mb-10">
-            <h2 className="text-4xl font-black uppercase tracking-tighter mb-2 leading-none">
+          <div className="text-center mb-8">
+            {/* Reduced Text Size to Small (text-xl) */}
+            <h2 className="text-xl font-black uppercase tracking-tighter mb-2 leading-none">
               MuviHub <span className="text-[#9f1239]">Premium</span>
             </h2>
-            <p className="text-white/30 text-[9px] font-black uppercase tracking-[0.5em]">
+            <p className="text-white/30 text-[8px] font-black uppercase tracking-[0.5em]">
               Elevate Your Cinema Experience
             </p>
           </div>
