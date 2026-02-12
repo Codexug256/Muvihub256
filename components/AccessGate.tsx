@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 interface Props {
@@ -12,7 +13,7 @@ const AccessGate: React.FC<Props> = ({ onUnlock, onGoToPremium, onClose }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.toLowerCase() === 'dydx') {
+    if (password.toLowerCase() === 'mrmuvihub') {
       onUnlock();
     } else {
       setError(true);
