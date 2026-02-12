@@ -253,7 +253,7 @@ const App: React.FC = () => {
 
   const handlePlayRequest = (m: Media) => {
     if (isUnlocked) {
-      setPlayerData({ url: m.video || '', title: m.title, poster: m.poster || m.image || '' });
+      setPlayerData({ url: m.video || '', title: m.title, poster: m.image || m.poster || '' });
       
       // Update Continue Watching
       setContinueWatching(prev => {

@@ -1,3 +1,4 @@
+
 import React, { useRef, useState, useEffect } from 'react';
 
 interface Props {
@@ -143,9 +144,9 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
       onClick={() => { setShowControls(true); resetControlsTimeout(); setShowSpeedMenu(false); }}
       style={{ cursor: showControls ? 'default' : 'none' }}
     >
-      {/* Background Poster (remains while loading) */}
-      <div className={`absolute inset-0 transition-opacity duration-1000 ${isBuffering || currentTime < 1 ? 'opacity-40' : 'opacity-0'}`}>
-        <img src={poster} className="w-full h-full object-cover blur-sm" alt="Background" />
+      {/* Background Landscape Image (Visible during buffering or at start) */}
+      <div className={`absolute inset-0 transition-opacity duration-700 z-0 ${isBuffering || currentTime < 1 ? 'opacity-100' : 'opacity-0'}`}>
+        <img src={poster} className="w-full h-full object-cover" alt="Background" />
         <div className="absolute inset-0 bg-black/60"></div>
       </div>
 
@@ -188,8 +189,9 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
               <i className="fas fa-chevron-left group-hover:-translate-x-1 transition-transform"></i>
             </button>
             <div className="max-w-md sm:max-w-xl">
-              <h2 className="text-xl font-black truncate drop-shadow-lg leading-tight uppercase tracking-tighter">{title}</h2>
-              <p className="text-[#9f1239] text-[8px] font-black tracking-[0.3em] uppercase mt-1">MuviHub Pro Max Stream</p>
+              {/* Reduced title size to smallest (text-[11px]) as requested */}
+              <h2 className="text-[11px] font-black truncate drop-shadow-lg leading-tight uppercase tracking-[0.2em]">{title}</h2>
+              <p className="text-[#9f1239] text-[7px] font-black tracking-[0.3em] uppercase mt-0.5">MuviHub Pro Max Stream</p>
             </div>
           </div>
           <div className="flex gap-4">
@@ -211,7 +213,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
           </div>
         )}
 
-        {/* MODERN TRANSPARENT CENTER CONTROLS */}
+        {/* Center Controls */}
         <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-10 sm:gap-20 transition-all duration-300 ${isBuffering ? 'opacity-0 scale-90' : 'opacity-100 scale-100'}`}>
            <button onClick={(e) => { e.stopPropagation(); skip(-10); }} className="text-white/40 hover:text-[#9f1239] transition-all text-xl sm:text-3xl group">
              <i className="fas fa-undo-alt group-active:rotate-[-45deg] transition-transform"></i>
