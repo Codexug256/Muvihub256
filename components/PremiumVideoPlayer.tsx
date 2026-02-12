@@ -176,7 +176,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
              </div>
           </div>
           <div className="mt-8 flex flex-col items-center gap-2">
-            <p className="text-white font-black uppercase tracking-[0.5em] text-[10px] animate-pulse drop-shadow-[0_0_10px_rgba(159,18,57,0.8)]">VJ Buffer...</p>
+            <p className="text-white font-black uppercase tracking-[0.5em] text-[10px] animate-pulse drop-shadow-[0_0_10px_rgba(159,18,57,0.8)]">Loading...</p>
           </div>
         </div>
       )}
@@ -189,8 +189,8 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
               <i className="fas fa-chevron-left group-hover:-translate-x-1 transition-transform"></i>
             </button>
             <div className="max-w-md sm:max-w-xl">
-              {/* Reduced title size to smallest (text-[11px]) as requested */}
-              <h2 className="text-[11px] font-black truncate drop-shadow-lg leading-tight uppercase tracking-[0.2em]">{title}</h2>
+              {/* Reduced title size to smallest (text-[8px]) as requested */}
+              <h2 className="text-[8px] font-black truncate drop-shadow-lg leading-tight uppercase tracking-[0.2em]">{title}</h2>
               <p className="text-[#9f1239] text-[7px] font-black tracking-[0.3em] uppercase mt-0.5">MuviHub Pro Max Stream</p>
             </div>
           </div>
@@ -308,10 +308,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
                  )}
                </div>
 
-               <button className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase hover:bg-white/10 transition-all text-white/60">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.5)]"></span> HD
-               </button>
-               
                <button onClick={(e) => { e.stopPropagation(); videoRef.current?.requestFullscreen(); }} className="text-white/40 hover:text-white transition-all text-lg">
                  <i className="fas fa-expand"></i>
                </button>
