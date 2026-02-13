@@ -18,14 +18,14 @@ interface Props {
 
 const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, episodes, recommended, onMediaClick, isInList, onToggleList }) => {
   // Image priority: TMDB Backdrop -> Firebase Image -> Firebase Poster -> Default
-  const backdrop = media.tmdbData?.backdrop_path 
+  const backdrop: string | undefined = (media.tmdbData?.backdrop_path 
     ? getTMDBImageUrl(media.tmdbData.backdrop_path, 'original') 
-    : (media.image || media.poster || 'https://iili.io/KOR5eHX.png');
+    : (media.image || media.poster || 'https://iili.io/KOR5eHX.png')) || undefined;
 
   // Poster priority for series/episodes
-  const seriesPoster = media.tmdbData?.poster_path 
+  const seriesPoster: string | undefined = (media.tmdbData?.poster_path 
     ? getTMDBImageUrl(media.tmdbData.poster_path, 'w300') 
-    : (media.poster || 'https://iili.io/KOR5eHX.png');
+    : (media.poster || 'https://iili.io/KOR5eHX.png')) || undefined;
 
   // Synopsis priority: Firebase Description -> TMDB Overview -> Default
   const synopsis = media.description || media.tmdbData?.overview || "This cinematic masterpiece is brought to you exclusively with Luganda commentary by the experts at MuviHub UG.";

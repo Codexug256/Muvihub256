@@ -1,8 +1,8 @@
 
 import { TMDB_CONFIG } from '../constants';
 
-export const getTMDBImageUrl = (path: string | null, size: string = 'w500') => {
-  if (!path) return null;
+export const getTMDBImageUrl = (path: string | null | undefined, size: string = 'w500') => {
+  if (!path) return undefined;
   return `https://image.tmdb.org/t/p/${size}${path}`;
 };
 

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Media } from '../types';
 import { getTMDBImageUrl } from '../services/tmdb';
@@ -14,13 +15,13 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
   const [loaded, setLoaded] = useState(false);
   const tags = media.extractedTags || extractTagsFromDescription(media.description);
   
-  const posterUrl = media.tmdbData?.poster_path 
+  const posterUrl: string | undefined = (media.tmdbData?.poster_path 
     ? getTMDBImageUrl(media.tmdbData.poster_path, 'w300') 
-    : (media.poster || media.image || 'https://iili.io/KOR5eHX.png');
+    : (media.poster || media.image || 'https://iili.io/KOR5eHX.png')) || undefined;
 
-  const landscapeUrl = media.tmdbData?.backdrop_path
+  const landscapeUrl: string | undefined = (media.tmdbData?.backdrop_path
     ? getTMDBImageUrl(media.tmdbData.backdrop_path, 'w300')
-    : (media.image || media.poster || 'https://iili.io/KOR5eHX.png');
+    : (media.image || media.poster || 'https://iili.io/KOR5eHX.png')) || undefined;
 
   const imageUrl = variant === 'landscape' ? landscapeUrl : posterUrl;
 
