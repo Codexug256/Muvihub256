@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { auth, db } from '../services/firebase';
 
@@ -50,20 +51,15 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
 
   const handleForgotPassword = async () => {
     if (!form.email) {
-      setError('Please enter your email address to receive a reset link.');
+      setError('Please enter your email address.');
       return;
     }
-    
     setLoading(true);
-    setError('');
-    setSuccess('');
-    
     try {
-      // Apply requested language configuration (English is preferred for UG context)
       auth.languageCode = 'en'; 
-      
       await auth.sendPasswordResetEmail(form.email);
-      setSuccess(`A password reset link has been dispatched to ${form.email}. Please verify your inbox.`);
+      setSuccess(`Reset link sent to ${form.email}`);
+      setTimeout(() => setMode('login'), 3000);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -72,140 +68,144 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
   };
 
   const getTitle = () => {
-    if (mode === 'login') return 'Sign In';
-    if (mode === 'signup') return 'Join Us';
-    return 'Reset Password';
+    if (mode === 'login') return 'Welcome Back';
+    if (mode === 'signup') return 'Create Account';
+    return 'Reset Access';
   };
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#050505]">
-      {/* Cinematic Background Decoration */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-15%] left-[-10%] w-[60%] h-[60%] bg-[#9f1239]/5 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#9f1239]/5 rounded-full blur-[120px]"></div>
+      {/* Dynamic Background Glows */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-[#9f1239]/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-[#9f1239]/5 rounded-full blur-[100px]"></div>
       </div>
 
-      <div className="w-full max-w-md bg-white/[0.01] backdrop-blur-3xl border border-white/5 rounded-[3.5rem] p-10 sm:p-14 relative overflow-hidden shadow-2xl animate-fade-in">
+      <div className="w-full max-w-[420px] bg-white/[0.02] backdrop-blur-3xl border border-white/10 rounded-[3.5rem] p-8 sm:p-12 relative overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] animate-fade-in">
+        
+        {/* Header Section */}
         <div className="flex flex-col items-center mb-10">
-          <div className="w-16 h-16 mb-6 drop-shadow-[0_0_15px_rgba(159,18,57,0.3)]">
-            <img src="https://iili.io/f6WKiPV.png" alt="Logo" className="w-full h-full object-contain" />
+          <div className="relative mb-6">
+            <div className="absolute inset-0 bg-[#9f1239] rounded-full blur-2xl opacity-20 animate-pulse"></div>
+            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center p-3 relative z-10 shadow-2xl ring-4 ring-white/5">
+              <img src="https://iili.io/f6WKiPV.png" alt="Logo" className="w-full h-full object-contain" />
+            </div>
           </div>
-          <h2 className="text-3xl font-black text-center uppercase tracking-tighter leading-none">
+          <h2 className="text-2xl font-black text-center uppercase tracking-tighter text-white leading-none mb-2">
             {getTitle()}
           </h2>
-          <p className="text-white/50 text-[9px] font-black uppercase tracking-[0.5em] mt-3">MuviHub Cinema Experience</p>
+          <p className="text-[#9f1239] text-[8px] font-black uppercase tracking-[0.5em] text-center">
+            MuviHub Pro Max UG
+          </p>
         </div>
 
+        {/* Alerts */}
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-2xl text-[9px] font-bold flex items-center gap-3 mb-8 uppercase tracking-widest animate-shake">
-            <i className="fas fa-exclamation-triangle"></i> {error}
+          <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-2xl text-[9px] font-black flex items-center gap-3 mb-6 uppercase tracking-widest animate-shake">
+            <i className="fas fa-circle-exclamation text-xs"></i> {error}
           </div>
         )}
-
         {success && (
-          <div className="bg-green-500/10 border border-green-500/20 text-green-500 p-4 rounded-2xl text-[9px] font-bold flex items-center gap-3 mb-8 uppercase tracking-widest">
-            <i className="fas fa-check-circle"></i> {success}
+          <div className="bg-green-500/10 border border-green-500/20 text-green-500 p-4 rounded-2xl text-[9px] font-black flex items-center gap-3 mb-6 uppercase tracking-widest">
+            <i className="fas fa-check-circle text-xs"></i> {success}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Form Section */}
+        <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'signup' && (
-            <div className="space-y-2">
-              <label className="text-[9px] font-black text-white/60 uppercase tracking-[0.2em] ml-1">Full Name</label>
+            <div className="relative group">
+              <i className="fas fa-user absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#9f1239] transition-colors"></i>
               <input 
                 type="text" 
                 required 
                 value={form.name}
                 onChange={e => setForm({...form, name: e.target.value})}
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:border-[#9f1239] outline-none transition-all text-sm font-medium" 
-                placeholder="Enter your name" 
+                className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-14 pr-6 focus:border-[#9f1239] focus:bg-white/[0.08] outline-none transition-all text-sm font-medium placeholder:text-white/20" 
+                placeholder="Your Full Name" 
               />
             </div>
           )}
 
-          <div className="space-y-2">
-            <label className="text-[9px] font-black text-white/60 uppercase tracking-[0.2em] ml-1">Email Address</label>
+          <div className="relative group">
+            <i className="fas fa-envelope absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#9f1239] transition-colors"></i>
             <input 
               type="email" 
               required 
               value={form.email}
               onChange={e => setForm({...form, email: e.target.value})}
-              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:border-[#9f1239] outline-none transition-all text-sm font-medium" 
-              placeholder="name@example.com" 
+              className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-14 pr-6 focus:border-[#9f1239] focus:bg-white/[0.08] outline-none transition-all text-sm font-medium placeholder:text-white/20" 
+              placeholder="Email Address" 
             />
           </div>
 
           {mode !== 'reset' && (
-            <div className="space-y-2 relative">
-              <div className="flex justify-between items-center mb-1">
-                <div className="flex items-center gap-2">
-                  <label className="text-[9px] font-black text-white/60 uppercase tracking-[0.2em] ml-1">Password</label>
-                  <span className="text-[8px] font-black text-[#9f1239] uppercase tracking-widest">6+ Characters</span>
-                </div>
-                {mode === 'login' && (
-                  <button 
-                    type="button" 
-                    onClick={() => setMode('reset')}
-                    className="text-[9px] font-black text-[#9f1239] uppercase tracking-widest hover:underline disabled:opacity-50"
-                  >
-                    Forgot?
-                  </button>
-                )}
-              </div>
-              <div className="relative group">
-                <input 
-                  type={showPassword ? 'text' : 'password'} 
-                  required 
-                  value={form.password}
-                  onChange={e => setForm({...form, password: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:border-[#9f1239] outline-none transition-all text-sm font-medium pr-14" 
-                  placeholder="••••••••" 
-                  minLength={6}
-                />
-                <button 
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-white/40 hover:text-[#9f1239] transition-colors"
-                >
-                  <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} text-xs`}></i>
-                </button>
-              </div>
+            <div className="relative group">
+              <i className="fas fa-lock absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#9f1239] transition-colors"></i>
+              <input 
+                type={showPassword ? 'text' : 'password'} 
+                required 
+                value={form.password}
+                onChange={e => setForm({...form, password: e.target.value})}
+                className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-14 pr-14 focus:border-[#9f1239] focus:bg-white/[0.08] outline-none transition-all text-sm font-medium placeholder:text-white/20" 
+                placeholder="Password" 
+                minLength={6}
+              />
+              <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
+              >
+                <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} text-xs`}></i>
+              </button>
+            </div>
+          )}
+
+          {mode === 'login' && (
+            <div className="flex justify-end px-1">
+              <button 
+                type="button" 
+                onClick={() => setMode('reset')}
+                className="text-[9px] font-black text-white/40 uppercase tracking-widest hover:text-[#9f1239] transition-colors"
+              >
+                Forgot Password?
+              </button>
             </div>
           )}
 
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full py-5 bg-[#9f1239] text-white font-black rounded-2xl text-[10px] uppercase tracking-[0.4em] shadow-xl hover:bg-[#be123c] hover:scale-[1.01] active:scale-[0.98] transition-all disabled:opacity-50 mt-4 flex items-center justify-center gap-3"
+            className="w-full py-5 bg-[#9f1239] text-white font-black rounded-2xl text-[10px] uppercase tracking-[0.4em] shadow-[0_15px_30px_rgba(159,18,57,0.3)] hover:bg-[#be123c] hover:translate-y-[-2px] active:scale-95 transition-all disabled:opacity-50 mt-4 flex items-center justify-center gap-3 overflow-hidden relative"
           >
             {loading ? (
               <i className="fas fa-circle-notch fa-spin"></i>
             ) : (
-              mode === 'login' ? 'Enter Cinema' : (mode === 'signup' ? 'Get Access' : 'Send Reset Link')
+              <span className="relative z-10">
+                {mode === 'login' ? 'Sign In Now' : (mode === 'signup' ? 'Join the Hub' : 'Reset My Access')}
+              </span>
             )}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000"></div>
           </button>
         </form>
 
+        {/* Footer Actions */}
         <div className="mt-10 pt-8 border-t border-white/5 text-center">
-          {mode === 'reset' ? (
+          <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
+            {mode === 'login' ? "New around here?" : mode === 'signup' ? "Already a member?" : "Back to basics?"}
             <button 
-              onClick={() => setMode('login')} 
-              className="text-[10px] text-white/50 font-bold uppercase tracking-widest hover:text-[#9f1239] transition-colors"
+              onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} 
+              className="text-[#9f1239] font-black ml-3 hover:underline tracking-widest"
             >
-              <i className="fas fa-arrow-left mr-2"></i> Back to Login
+              {mode === 'login' ? 'Create Account' : 'Sign In'}
             </button>
-          ) : (
-            <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest">
-              {mode === 'login' ? "New to MuviHub?" : "Already joined?"}
-              <button 
-                onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} 
-                className="text-[#9f1239] font-black ml-3 hover:underline tracking-widest"
-              >
-                {mode === 'login' ? 'Register' : 'Login'}
-              </button>
-            </p>
-          )}
+          </p>
         </div>
+      </div>
+
+      {/* Branding Footer */}
+      <div className="fixed bottom-8 text-center opacity-30">
+        <p className="text-[8px] font-black text-white uppercase tracking-[0.8em]">Muvihub Entertainment Uganda</p>
       </div>
     </div>
   );
