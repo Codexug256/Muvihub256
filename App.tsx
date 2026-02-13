@@ -328,7 +328,7 @@ const App: React.FC = () => {
         <div className="w-48 h-48 mb-8 splash-logo">
           <img src="https://iili.io/f6WKiPV.png" alt="MuviHub UG Logo" className="w-full h-full object-contain" />
         </div>
-        <p className="mt-8 text-white/80 font-black uppercase tracking-[0.5em] text-[10px]">Muvihub Ug Company</p>
+        <p className="mt-8 text-white/80 font-black uppercase tracking-[0.5em] text-[10px]">Muvihub Ug Cinema</p>
       </div>
     );
   }

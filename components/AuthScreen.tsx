@@ -95,7 +95,7 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
             {getTitle()}
           </h2>
           <p className="text-[#9f1239] text-[8px] font-black uppercase tracking-[0.5em] text-center">
-            MuviHub Pro Max UG
+            Muvihub Ug Cinema
           </p>
         </div>
 

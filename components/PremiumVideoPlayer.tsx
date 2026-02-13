@@ -188,7 +188,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
             <div>
               {/* Title set to smallest possible readable size */}
               <h2 className="text-[8px] font-black truncate drop-shadow-lg leading-tight uppercase tracking-widest">{title}</h2>
-              <p className="text-[#9f1239] text-[6px] font-black tracking-[0.4em] uppercase mt-0.5">MuviHub Pro Max Stream</p>
+              <p className="text-[#9f1239] text-[6px] font-black tracking-[0.4em] uppercase mt-0.5">Muvihub Ug Cinema Stream</p>
             </div>
           </div>
           <button onClick={onDownload} className="w-10 h-10 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl text-white/70 hover:text-white transition-all">

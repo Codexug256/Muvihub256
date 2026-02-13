@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { UserProfile } from '../types';
 
@@ -117,7 +118,7 @@ const AccountScreen: React.FC<Props> = ({ profile, onUpload, onLogout, onBack, o
 
       <div className="mt-12 text-center">
         <img src="https://iili.io/f6WKiPV.png" className="w-8 h-8 mx-auto opacity-40 mb-2 grayscale" alt="Logo" />
-        <p className="text-white/30 text-[7px] font-black uppercase tracking-[0.6em]">MuviHub Uganda • Pro Max Edition</p>
+        <p className="text-white/30 text-[7px] font-black uppercase tracking-[0.6em]">Muvihub Ug Cinema</p>
       </div>
     </div>
   );

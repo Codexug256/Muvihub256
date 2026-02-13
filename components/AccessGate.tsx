@@ -76,7 +76,7 @@ const AccessGate: React.FC<Props> = ({ onUnlock, onGoToPremium, onClose }) => {
           Go Premium <i className="fas fa-crown ml-2"></i>
         </button>
 
-        <p className="mt-8 text-[8px] font-black text-white/40 uppercase tracking-[0.3em]">MuviHub UG Pro Max Security</p>
+        <p className="mt-8 text-[8px] font-black text-white/40 uppercase tracking-[0.3em]">Muvihub Ug Cinema</p>
       </div>
     </div>
   );
