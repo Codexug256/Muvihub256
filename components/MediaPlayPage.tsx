@@ -123,6 +123,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
               <a 
                 href={`https://wa.me/?text=Watch%20${encodeURIComponent(media.title)}%20on%20MuviHub%20UG:%20${apkShareLink}`} 
                 target="_blank" 
+                rel="noopener noreferrer"
                 className="w-8 h-8 flex items-center justify-center bg-white/5 rounded-lg border border-white/10 hover:bg-[#9f1239] transition-all"
                 title="Share via WhatsApp"
               >
@@ -131,6 +132,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
               <a 
                 href={whatsappJoinLink} 
                 target="_blank" 
+                rel="noopener noreferrer"
                 className="w-8 h-8 flex items-center justify-center bg-green-500/10 text-green-500 rounded-lg border border-green-500/20 hover:bg-green-500 hover:text-white transition-all"
                 title="Join WhatsApp Channel"
               >
@@ -139,6 +141,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
               <a 
                 href={telegramChannelLink} 
                 target="_blank" 
+                rel="noopener noreferrer"
                 className="w-8 h-8 flex items-center justify-center bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-all"
                 title="Join Telegram Channel"
               >
@@ -151,7 +154,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
           </p>
         </section>
 
-        {/* Cast Section - Refined with small circular icons */}
+        {/* Cast Section */}
         {cast.length > 0 && (
           <section className="px-2">
             <h3 className="text-[10px] font-black mb-6 flex items-center gap-3 text-[#9f1239] uppercase tracking-[0.4em]">
