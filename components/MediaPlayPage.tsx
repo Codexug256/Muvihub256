@@ -44,7 +44,8 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
 
   const isDownloading = downloadProgress !== undefined;
 
-  const apkShareLink = "https://www.mediafire.com/file/ta9wosmui025uoj/MuviHubUg.1.0.4.apk/file";
+  // New download link as requested
+  const appDownloadLink = "https://upload.app/download/MuviHub%20UG/com.digitalnest.ug/f758fd9ac3eb8c0933d34bf9bb05b91499fd8cbf8674831f5d26996f9a130652/downloading.";
   const whatsappJoinLink = "https://chat.whatsapp.com/Kofjdwlr2SWFhDpGOQIjiK?mode=gi_t";
   const telegramChannelLink = "https://t.me/muvihub256";
 
@@ -131,7 +132,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
             </h3>
             <div className="flex gap-2">
               <a 
-                href={`https://wa.me/?text=Watch%20${encodeURIComponent(media.title)}%20on%20MuviHub%20UG:%20${apkShareLink}`} 
+                href={`https://wa.me/?text=Watch%20${encodeURIComponent(media.title)}%20on%20MuviHub%20UG.%20Download%20the%20app:%20${encodeURIComponent(appDownloadLink)}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-8 h-8 flex items-center justify-center bg-white/5 rounded-lg border border-white/10 hover:bg-[#9f1239] transition-all"

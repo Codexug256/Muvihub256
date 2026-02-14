@@ -15,7 +15,7 @@ const AccountScreen: React.FC<Props> = ({ profile, onUpload, onLogout, onBack, o
   const avatarUrl = profile.photoURL || `https://iili.io/fLBIYdl.jpg`;
 
   const handleHelpCenter = () => {
-    window.location.href = "https://wa.me/256754310866?text=Hello%20MuviHub%20Support,%20I%20need%20assistance%20with%20my%20account.";
+    window.location.href = "https://wa.me/256791586847?text=Hello%20MuviHub%20Support,%20I%20need%20assistance%20with%20my%20account.";
   };
 
   return (
@@ -44,7 +44,7 @@ const AccountScreen: React.FC<Props> = ({ profile, onUpload, onLogout, onBack, o
           </label>
         </div>
         <h1 className="text-2xl font-black tracking-tighter uppercase mb-1">{profile.displayName || 'Cinema Lover'}</h1>
-        <p className="text-white/60 text-[9px] font-black tracking-[0.4em] uppercase">{profile.email}</p>
+        <p className="text-white/60 text-[9px] font-black uppercase tracking-[0.4em] uppercase">{profile.email}</p>
       </div>
 
       {/* Membership Card */}
