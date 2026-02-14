@@ -69,7 +69,7 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
 
   const getTitle = () => {
     if (mode === 'login') return 'Welcome Back';
-    if (mode === 'signup') return 'Create Account';
+    if (mode === 'signup') return 'Join Muvihub Ug Cinema';
     return 'Reset Access';
   };
 
@@ -91,7 +91,7 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
               <img src="https://iili.io/f6WKiPV.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
           </div>
-          <h2 className={`font-black text-center uppercase tracking-tighter text-white leading-none mb-2 ${mode === 'signup' ? 'text-5xl' : 'text-2xl'}`}>
+          <h2 className={`font-black text-center uppercase tracking-tighter text-white leading-tight mb-2 ${mode === 'signup' ? 'text-2xl' : 'text-2xl'}`}>
             {getTitle()}
           </h2>
           <p className="text-[#9f1239] text-[8px] font-black uppercase tracking-[0.5em] text-center">
@@ -176,13 +176,13 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
           <button 
             type="submit" 
             disabled={loading}
-            className={`w-full py-5 bg-[#9f1239] text-white font-black rounded-2xl uppercase tracking-[0.4em] shadow-[0_15px_30px_rgba(159,18,57,0.3)] hover:bg-[#be123c] hover:translate-y-[-2px] active:scale-95 transition-all disabled:opacity-50 mt-4 flex items-center justify-center gap-3 overflow-hidden relative ${mode === 'signup' ? 'text-[18px]' : 'text-[10px]'}`}
+            className={`w-full py-5 bg-[#9f1239] text-white font-black rounded-2xl uppercase tracking-[0.4em] shadow-[0_15px_30px_rgba(159,18,57,0.3)] hover:bg-[#be123c] hover:translate-y-[-2px] active:scale-95 transition-all disabled:opacity-50 mt-4 flex items-center justify-center gap-3 overflow-hidden relative ${mode === 'signup' ? 'text-[14px]' : 'text-[10px]'}`}
           >
             {loading ? (
               <i className="fas fa-circle-notch fa-spin"></i>
             ) : (
               <span className="relative z-10">
-                {mode === 'login' ? 'Login' : (mode === 'signup' ? 'Create Account' : 'Reset My Access')}
+                {mode === 'login' ? 'Login' : (mode === 'signup' ? 'Sign Up' : 'Reset My Access')}
               </span>
             )}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000"></div>
@@ -195,7 +195,7 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
             {mode === 'login' ? "New around here?" : mode === 'signup' ? "Already a member?" : "Back to basics?"}
             <button 
               onClick={() => setMode(mode === 'login' ? 'signup' : 'login')} 
-              className={`text-[#9f1239] font-black ml-3 hover:underline tracking-widest ${mode === 'login' ? 'text-[14px]' : ''}`}
+              className={`text-[#9f1239] font-black ml-3 hover:underline tracking-widest ${mode === 'login' ? 'text-[12px]' : ''}`}
             >
               {mode === 'login' ? 'Create Account' : 'Sign In'}
             </button>

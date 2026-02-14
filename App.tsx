@@ -318,9 +318,11 @@ const App: React.FC = () => {
       const reader = response.body?.getReader();
       if (!reader) throw new Error('ReadableStream not supported');
 
+      const chunks = [];
       while(true) {
         const {done, value} = await reader.read();
         if (done) break;
+        chunks.push(value);
         loaded += value.length;
         if (total > 0) {
           const pct = Math.round((loaded / total) * 100);
@@ -328,8 +330,19 @@ const App: React.FC = () => {
         }
       }
 
-      // Simulation/Placeholder: In a real app we'd save the blob to IndexedDB
-      // For this implementation, we record the success/failure in Firebase
+      // Create blob and trigger real browser download to storage
+      const blob = new Blob(chunks, { type: 'video/mp4' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `${m.title.replace(/\s+/g, '_')}.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      // Record success in Firebase
       const newDownload: any = {
         mediaId: m.id,
         title: m.title,
