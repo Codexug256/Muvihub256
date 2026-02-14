@@ -22,61 +22,56 @@ const AccessGate: React.FC<Props> = ({ onUnlock, onGoToPremium, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[3000] bg-black/95 backdrop-blur-3xl flex items-center justify-center p-6 animate-fade-in">
-      <div className="relative w-full max-w-sm bg-[#0a0a0a] border border-white/10 rounded-[2.5rem] p-8 flex flex-col items-center text-center shadow-2xl overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute -top-12 -left-12 w-24 h-24 bg-[#9f1239]/10 rounded-full blur-[40px]"></div>
-        <div className="absolute -bottom-12 -right-12 w-24 h-24 bg-[#9f1239]/10 rounded-full blur-[40px]"></div>
-
+    <div className="fixed inset-0 z-[3000] bg-black/90 backdrop-blur-2xl flex items-center justify-center p-4 animate-fade-in">
+      <div className="relative w-full max-w-[320px] bg-[#0a0a0a] border border-white/10 rounded-[2rem] p-6 flex flex-col items-center text-center shadow-2xl">
+        
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"
+          className="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"
         >
-          <i className="fas fa-times text-xs"></i>
+          <i className="fas fa-times text-[10px]"></i>
         </button>
 
-        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center p-3 mb-4 shadow-xl shadow-white/5">
+        <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-2.5 mb-3 shadow-lg">
           <img src="https://iili.io/f6WKiPV.png" alt="MuviHub Logo" className="w-full h-full object-contain" />
         </div>
 
-        <h2 className="text-xl font-black uppercase tracking-tight mb-1">Premium Content</h2>
-        <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.2em] mb-6">
+        <h2 className="text-lg font-black uppercase tracking-tight mb-0.5">Premium Content</h2>
+        <p className="text-white/60 text-[9px] font-black uppercase tracking-[0.2em] mb-5">
           Please input premium key
         </p>
 
-        <form onSubmit={handleSubmit} className="w-full space-y-3 mb-6">
+        <form onSubmit={handleSubmit} className="w-full space-y-2.5 mb-5">
           <div className="relative">
             <input 
               type="password" 
-              placeholder="ACCESS KEY"
+              placeholder="ENTER KEY"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={`w-full bg-white/5 border ${error ? 'border-red-500 animate-shake' : 'border-white/10'} rounded-2xl py-4 px-6 outline-none focus:border-[#9f1239] transition-all text-center text-[10px] font-black uppercase tracking-[0.3em] placeholder:text-white/20`}
+              className={`w-full bg-white/5 border ${error ? 'border-red-500 animate-shake' : 'border-white/10'} rounded-xl py-3 px-4 outline-none focus:border-[#9f1239] transition-all text-center text-[10px] font-black uppercase tracking-[0.3em] placeholder:text-white/20`}
             />
-            {error && <p className="text-red-500 text-[8px] font-bold mt-2 uppercase tracking-widest">Invalid Premium Key</p>}
+            {error && <p className="text-red-500 text-[7px] font-bold mt-1.5 uppercase tracking-widest">Invalid Key</p>}
           </div>
           <button 
             type="submit"
-            className="w-full py-4 bg-white/10 text-white text-[9px] font-black rounded-2xl uppercase tracking-[0.4em] hover:bg-white/20 transition-all border border-white/10"
+            className="w-full py-3.5 bg-white/10 text-white text-[9px] font-black rounded-xl uppercase tracking-[0.4em] hover:bg-white/20 transition-all border border-white/10"
           >
             Unlock Now
           </button>
         </form>
 
-        <div className="w-full flex items-center gap-3 mb-6">
+        <div className="w-full flex items-center gap-2 mb-5">
           <div className="h-[1px] flex-1 bg-white/5"></div>
-          <span className="text-[8px] font-black text-white/30 uppercase tracking-widest">OR</span>
+          <span className="text-[7px] font-black text-white/20 uppercase tracking-widest">OR</span>
           <div className="h-[1px] flex-1 bg-white/5"></div>
         </div>
 
         <button 
           onClick={onGoToPremium}
-          className="w-full py-4 bg-[#9f1239] text-white text-[9px] font-black rounded-2xl uppercase tracking-[0.4em] shadow-lg hover:bg-[#be123c] hover:scale-[1.02] active:scale-[0.98] transition-all"
+          className="w-full py-3.5 bg-[#9f1239] text-white text-[9px] font-black rounded-xl uppercase tracking-[0.4em] shadow-lg hover:bg-[#be123c] transition-all"
         >
-          Get Premium Key <i className="fas fa-crown ml-2 text-[8px]"></i>
+          Get Premium Key
         </button>
-
-        <p className="mt-6 text-[7px] font-black text-white/20 uppercase tracking-[0.4em]">Muvihub Ug Cinema</p>
       </div>
     </div>
   );
