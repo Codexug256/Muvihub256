@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface Props {
@@ -15,7 +16,7 @@ const BottomNav: React.FC<Props> = ({ active, onNavigate }) => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full z-[100] bg-[#141414] border-t border-white/10 flex justify-around p-2 shadow-2xl">
+    <nav className="fixed bottom-0 left-0 w-full z-[100] bg-black border-t border-white/10 flex justify-around p-2 shadow-2xl">
       {items.map(item => (
         <button 
           key={item.id}
