@@ -182,7 +182,7 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
               <i className="fas fa-circle-notch fa-spin"></i>
             ) : (
               <span className="relative z-10">
-                {mode === 'login' ? 'Sign In Now' : (mode === 'signup' ? 'Join the Hub' : 'Reset My Access')}
+                {mode === 'login' ? 'Login' : (mode === 'signup' ? 'Join the Hub' : 'Reset My Access')}
               </span>
             )}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000"></div>
