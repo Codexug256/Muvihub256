@@ -50,6 +50,9 @@ const App: React.FC = () => {
   const [subscriptionMedia, setSubscriptionMedia] = useState<Media | null>(null);
   const [toast, setToast] = useState<ToastState>({ show: false, message: '', type: 'success' });
 
+  // Download logic state
+  const [downloadProgress, setDownloadProgress] = useState<Record<string, number>>({});
+
   // Gating Logic
   const [isUnlocked, setIsUnlocked] = useState(() => sessionStorage.getItem('muvihub_unlocked') === 'true');
   const [showAccessGate, setShowAccessGate] = useState(false);
@@ -276,7 +279,7 @@ const App: React.FC = () => {
       if (pendingAction === 'play') {
         handlePlayRequest(pendingMedia);
       } else if (pendingAction === 'download') {
-        showToast(`Starting download for "${pendingMedia.title}"...`, "success");
+        startDownload(pendingMedia);
       }
       setPendingMedia(null);
       setPendingAction(null);
@@ -295,9 +298,74 @@ const App: React.FC = () => {
     }
   };
 
+  const startDownload = async (m: Media) => {
+    if (downloadProgress[m.id] !== undefined) return;
+    if (!m.video) {
+        showToast("No video URL found for download", "error");
+        return;
+    }
+
+    setDownloadProgress(prev => ({ ...prev, [m.id]: 0 }));
+    
+    try {
+      const response = await fetch(m.video);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const contentLength = response.headers.get('content-length');
+      const total = parseInt(contentLength || '0', 10);
+      let loaded = 0;
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('ReadableStream not supported');
+
+      while(true) {
+        const {done, value} = await reader.read();
+        if (done) break;
+        loaded += value.length;
+        if (total > 0) {
+          const pct = Math.round((loaded / total) * 100);
+          setDownloadProgress(prev => ({ ...prev, [m.id]: pct }));
+        }
+      }
+
+      // Simulation/Placeholder: In a real app we'd save the blob to IndexedDB
+      // For this implementation, we record the success/failure in Firebase
+      const newDownload: any = {
+        mediaId: m.id,
+        title: m.title,
+        type: m.type,
+        genre: m.genre || 'General',
+        poster: m.poster || m.image || '',
+        downloadedAt: Date.now(),
+        success: true
+      };
+      await db.ref(`downloads/${user.uid}`).push(newDownload);
+      showToast(`Finished downloading "${m.title}"`, "success");
+    } catch (err: any) {
+      const failRecord: any = {
+        mediaId: m.id,
+        title: m.title,
+        type: m.type,
+        genre: m.genre || 'General',
+        poster: m.poster || m.image || '',
+        downloadedAt: Date.now(),
+        success: false,
+        error: err.message
+      };
+      await db.ref(`downloads/${user.uid}`).push(failRecord);
+      showToast(`Failed to download "${m.title}": ${err.message}`, "error");
+    } finally {
+      setDownloadProgress(prev => {
+        const next = { ...prev };
+        delete next[m.id];
+        return next;
+      });
+    }
+  };
+
   const handleDownload = (m: Media) => {
     if (isUnlocked) {
-      showToast(`Starting download for "${m.title}"...`, "success");
+      startDownload(m);
     } else {
       setPendingMedia(m);
       setPendingAction('download');
@@ -377,6 +445,7 @@ const App: React.FC = () => {
           onClose={() => setPlayPageMedia(null)}
           onPlay={handlePlayRequest}
           onDownload={handleDownload}
+          downloadProgress={downloadProgress[playPageMedia.id]}
           episodes={episodes[playPageMedia.id] || []}
           recommended={allMedia.filter(m => m.genre === playPageMedia.genre && m.id !== playPageMedia.id).slice(0, 8)}
           onMediaClick={handleMediaClick}
@@ -458,6 +527,7 @@ const App: React.FC = () => {
           poster={playerData.poster} 
           onClose={() => setPlayerData(null)}
           onDownload={() => playPageMedia && handleDownload(playPageMedia)}
+          downloadProgress={playPageMedia ? downloadProgress[playPageMedia.id] : undefined}
         />
       )}
 

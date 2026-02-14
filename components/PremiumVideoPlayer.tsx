@@ -7,6 +7,7 @@ interface Props {
   poster: string;
   onClose: () => void;
   onDownload: () => void;
+  downloadProgress?: number;
 }
 
 const formatTime = (seconds: number) => {
@@ -18,7 +19,7 @@ const formatTime = (seconds: number) => {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 };
 
-const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDownload }) => {
+const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDownload, downloadProgress }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(true);
@@ -61,14 +62,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
   const skip = (seconds: number) => {
     if (videoRef.current) {
       videoRef.current.currentTime += seconds;
-    }
-  };
-
-  const handleSkipIntro = () => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = 90; // Typical intro duration
-      setShowControls(true);
-      resetControlsTimeout();
     }
   };
 
@@ -137,6 +130,8 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
     };
   }, []);
 
+  const isDownloading = downloadProgress !== undefined;
+
   return (
     <div 
       className="fixed inset-0 z-[9999] bg-black flex items-center justify-center overflow-hidden cursor-none"
@@ -186,13 +181,27 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
               <i className="fas fa-chevron-left text-sm"></i>
             </button>
             <div>
-              {/* Title set to smallest possible readable size */}
               <h2 className="text-[8px] font-black truncate drop-shadow-lg leading-tight uppercase tracking-widest">{title}</h2>
               <p className="text-[#9f1239] text-[6px] font-black tracking-[0.4em] uppercase mt-0.5">Muvihub Ug Cinema Stream</p>
             </div>
           </div>
-          <button onClick={onDownload} className="w-10 h-10 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl text-white/70 hover:text-white transition-all">
-            <i className="fas fa-download text-xs"></i>
+          
+          <button 
+            onClick={(e) => { e.stopPropagation(); !isDownloading && onDownload(); }} 
+            className={`relative w-10 h-10 flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-xl transition-all ${isDownloading ? 'cursor-default' : 'hover:bg-white/10 text-white/70 hover:text-white'}`}
+          >
+            {isDownloading ? (
+              <>
+                <div className="absolute inset-1 border-[2px] border-[#9f1239]/20 rounded-lg"></div>
+                <div 
+                  className="absolute bottom-1 left-1 right-1 h-[2px] bg-[#9f1239] transition-all duration-300 rounded-full"
+                  style={{ width: `${downloadProgress}%` }}
+                ></div>
+                <span className="text-[7px] font-black text-[#9f1239]">{downloadProgress}%</span>
+              </>
+            ) : (
+              <i className="fas fa-download text-xs"></i>
+            )}
           </button>
         </div>
 

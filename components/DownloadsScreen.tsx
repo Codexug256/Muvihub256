@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Download } from '../types';
 import { formatDate } from '../utils';
@@ -23,19 +24,28 @@ const DownloadsScreen: React.FC<Props> = ({ downloads, onDelete }) => {
       ) : (
         <div className="space-y-4">
           {downloads.map(item => (
-            <div key={item.id} className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl group hover:border-[#9f1239] transition-all">
-              <div className="w-16 h-24 rounded-lg overflow-hidden flex-none">
-                <img src={item.poster || 'https://iili.io/KOR5eHX.png'} className="w-full h-full object-cover" alt={item.title} />
+            <div key={item.id} className={`flex items-center gap-4 p-4 bg-white/5 border rounded-2xl group transition-all ${item.success ? 'border-white/10 hover:border-[#9f1239]' : 'border-red-500/20'}`}>
+              <div className="w-16 h-24 rounded-lg overflow-hidden flex-none relative">
+                <img src={item.poster || 'https://iili.io/KOR5eHX.png'} className={`w-full h-full object-cover ${!item.success ? 'opacity-40 grayscale' : ''}`} alt={item.title} />
+                {!item.success && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <i className="fas fa-exclamation-triangle text-red-500 text-sm"></i>
+                  </div>
+                )}
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-lg truncate">{item.title}</h3>
+                <h3 className={`font-bold text-lg truncate ${!item.success ? 'text-white/40' : ''}`}>{item.title}</h3>
                 <p className="text-sm text-[#98a8c7]">{item.genre}</p>
-                <p className="text-xs text-white/30 mt-1">Downloaded {formatDate(item.downloadedAt)}</p>
+                <p className="text-xs text-white/30 mt-1">
+                  {item.success ? `Downloaded ${formatDate(item.downloadedAt)}` : `Failed: ${item.error || 'Unknown error'}`}
+                </p>
               </div>
               <div className="flex items-center gap-2">
-                <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#9f1239] text-white shadow-lg">
-                  <i className="fas fa-play text-xs"></i>
-                </button>
+                {item.success && (
+                  <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#9f1239] text-white shadow-lg hover:scale-105 transition-transform">
+                    <i className="fas fa-play text-xs"></i>
+                  </button>
+                )}
                 <button 
                   onClick={() => onDelete(item.id)}
                   className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-red-500 hover:border-red-500/30 transition-all"

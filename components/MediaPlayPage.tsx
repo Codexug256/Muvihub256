@@ -9,6 +9,7 @@ interface Props {
   onClose: () => void;
   onPlay: (m: Media) => void;
   onDownload: (m: Media) => void;
+  downloadProgress?: number;
   episodes: Media[];
   recommended: Media[];
   onMediaClick: (m: Media) => void;
@@ -16,7 +17,7 @@ interface Props {
   onToggleList: (e: React.MouseEvent) => void;
 }
 
-const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, episodes, recommended, onMediaClick, isInList, onToggleList }) => {
+const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, downloadProgress, episodes, recommended, onMediaClick, isInList, onToggleList }) => {
   // Image priority: TMDB Backdrop -> Firebase Image -> Firebase Poster -> Default
   const backdrop: string | undefined = (media.tmdbData?.backdrop_path 
     ? getTMDBImageUrl(media.tmdbData.backdrop_path, 'original') 
@@ -40,6 +41,8 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
       onPlay(media);
     }
   };
+
+  const isDownloading = downloadProgress !== undefined;
 
   const apkShareLink = "https://www.mediafire.com/file/ta9wosmui025uoj/MuviHubUg.1.0.4.apk/file";
   const whatsappJoinLink = "https://chat.whatsapp.com/Kofjdwlr2SWFhDpGOQIjiK?mode=gi_t";
@@ -81,10 +84,17 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, ep
               <i className={`fas ${isInList ? 'fa-check' : 'fa-plus'}`}></i>
             </button>
             <button 
-              onClick={() => onDownload(media)}
-              className="w-10 h-10 flex items-center justify-center bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl text-white hover:bg-white/20 transition-all"
+              onClick={() => !isDownloading && onDownload(media)}
+              className={`relative w-10 h-10 flex flex-col items-center justify-center bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl transition-all ${isDownloading ? 'cursor-default' : 'text-white hover:bg-white/20'}`}
             >
-              <i className="fas fa-download"></i>
+              {isDownloading ? (
+                <>
+                  <div className="absolute bottom-1 left-1 right-1 h-[2px] bg-[#9f1239] rounded-full" style={{ width: `${downloadProgress}%` }}></div>
+                  <span className="text-[7px] font-black text-[#9f1239]">{downloadProgress}%</span>
+                </>
+              ) : (
+                <i className="fas fa-download"></i>
+              )}
             </button>
           </div>
         </div>
