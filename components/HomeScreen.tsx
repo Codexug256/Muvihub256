@@ -92,7 +92,7 @@ const HomeScreen: React.FC<Props> = ({
               </div>
             )}
 
-            {/* Movies Horizontal Section (Showing at least 3 movies from left to right) */}
+            {/* Movies Horizontal Section */}
             {movies.length > 0 && (
               <div className="mb-16">
                 <div className="flex justify-between items-center mb-6">
@@ -142,27 +142,31 @@ const HomeScreen: React.FC<Props> = ({
               </div>
             )}
 
-            {/* Discover Pick Section (Exactly 3 Columns on Mobile as requested) */}
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
-                Discover Pick
-                <div className="h-[1px] flex-1 bg-gradient-to-r from-[#9f1239] to-transparent"></div>
-              </h2>
-              <button 
-                onClick={onSeeAll} 
-                className="ml-4 flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black tracking-widest hover:border-[#9f1239] transition-all whitespace-nowrap"
-              >
-                SEE ALL <i className="fas fa-chevron-right text-[7px]"></i>
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 mb-16">
-              {shuffledAll.slice(0, 24).map(m => (
-                <MediaCard key={m.id} media={m} onClick={() => onMediaClick(m)} />
-              ))}
+            {/* Discover Pick Section (Horizontal shelf) */}
+            <div className="mb-16">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
+                  Discover Pick
+                  <div className="h-[1px] flex-1 bg-gradient-to-r from-[#9f1239] to-transparent"></div>
+                </h2>
+                <button 
+                  onClick={onSeeAll} 
+                  className="ml-4 flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black tracking-widest hover:border-[#9f1239] transition-all whitespace-nowrap"
+                >
+                  SEE ALL <i className="fas fa-chevron-right text-[7px]"></i>
+                </button>
+              </div>
+              
+              <div className="flex gap-2 overflow-x-auto pb-6 no-scrollbar -mx-5 px-5">
+                {shuffledAll.slice(0, 24).map(m => (
+                  <div key={m.id} className="flex-none w-[31%] sm:w-[160px] md:w-[180px]">
+                    <MediaCard media={m} onClick={() => onMediaClick(m)} />
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Rendered Category Groups (Exactly 3 Columns for each genre section) */}
+            {/* Rendered Category Groups (Horizontal shelf for each genre) */}
             {groupedContent.map((group) => (
               <div key={group.title} className="mb-16">
                 <div className="flex justify-between items-center mb-6">
@@ -179,9 +183,11 @@ const HomeScreen: React.FC<Props> = ({
                   </button>
                 </div>
                 
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+                <div className="flex gap-2 overflow-x-auto pb-6 no-scrollbar -mx-5 px-5">
                   {group.list.slice(0, 15).map(m => (
-                    <MediaCard key={m.id} media={m} onClick={() => onMediaClick(m)} />
+                    <div key={m.id} className="flex-none w-[31%] sm:w-[160px] md:w-[180px]">
+                      <MediaCard media={m} onClick={() => onMediaClick(m)} />
+                    </div>
                   ))}
                 </div>
               </div>

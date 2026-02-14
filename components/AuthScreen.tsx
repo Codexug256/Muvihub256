@@ -202,11 +202,6 @@ const AuthScreen: React.FC<Props> = ({ showAuth, setShowAuth }) => {
           </p>
         </div>
       </div>
-
-      {/* Branding Footer */}
-      <div className="fixed bottom-8 text-center opacity-30">
-        <p className="text-[8px] font-black text-white uppercase tracking-[0.8em]">Muvihub Entertainment Uganda</p>
-      </div>
     </div>
   );
 };
