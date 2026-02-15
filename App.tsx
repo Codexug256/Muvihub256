@@ -99,8 +99,8 @@ const App: React.FC = () => {
         
         setMovies(list);
 
-        // Enrichment
-        const itemsToEnrich = list.filter(m => !m.tmdbData && !m.poster && !enrichedIds.current.has(m.id));
+        // Enrichment - Now always enrich even if poster exists to get best fallback strategy
+        const itemsToEnrich = list.filter(m => !m.tmdbData && !enrichedIds.current.has(m.id));
         if (itemsToEnrich.length > 0) {
           itemsToEnrich.forEach(async (m) => {
             enrichedIds.current.add(m.id);
@@ -125,7 +125,7 @@ const App: React.FC = () => {
         list.forEach(s => fetchEpisodes(s.id));
 
         // Enrichment
-        const itemsToEnrich = list.filter(s => !s.tmdbData && !s.poster && !enrichedIds.current.has(s.id));
+        const itemsToEnrich = list.filter(s => !s.tmdbData && !enrichedIds.current.has(s.id));
         if (itemsToEnrich.length > 0) {
           itemsToEnrich.forEach(async (s) => {
             enrichedIds.current.add(s.id);
@@ -318,25 +318,27 @@ const App: React.FC = () => {
       const reader = response.body?.getReader();
       if (!reader) throw new Error('ReadableStream not supported');
 
-      const chunks = [];
+      const chunks: Uint8Array[] = [];
       while(true) {
         const {done, value} = await reader.read();
         if (done) break;
-        chunks.push(value);
-        loaded += value.length;
-        if (total > 0) {
-          const pct = Math.round((loaded / total) * 100);
-          setDownloadProgress(prev => ({ ...prev, [m.id]: pct }));
+        if (value) {
+            chunks.push(value);
+            loaded += value.length;
+            if (total > 0) {
+              const pct = Math.round((loaded / total) * 100);
+              setDownloadProgress(prev => ({ ...prev, [m.id]: pct }));
+            }
         }
       }
 
-      // Create blob and trigger real browser download to storage
+      // Create blob and trigger real browser download to phone storage
       const blob = new Blob(chunks, { type: 'video/mp4' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = url;
-      a.download = `${m.title.replace(/\s+/g, '_')}.mp4`;
+      a.download = `${m.title.replace(/\s+/g, '_')}_Muvihub.mp4`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Media } from '../types';
 import { getTMDBImageUrl } from '../services/tmdb';
 import MediaCard from './MediaCard';
@@ -18,20 +18,18 @@ interface Props {
 }
 
 const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, downloadProgress, episodes, recommended, onMediaClick, isInList, onToggleList }) => {
-  // Image priority: TMDB Backdrop -> Firebase Image -> Firebase Poster -> Default
+  const [heroLoaded, setHeroLoaded] = useState(false);
+  const logoUrl = "https://iili.io/f6WKiPV.png";
+
   const backdrop: string | undefined = (media.tmdbData?.backdrop_path 
     ? getTMDBImageUrl(media.tmdbData.backdrop_path, 'original') 
-    : (media.image || media.poster || 'https://iili.io/KOR5eHX.png')) || undefined;
+    : (media.image || media.poster || logoUrl)) || undefined;
 
-  // Poster priority for series/episodes
   const seriesPoster: string | undefined = (media.tmdbData?.poster_path 
     ? getTMDBImageUrl(media.tmdbData.poster_path, 'w300') 
-    : (media.poster || 'https://iili.io/KOR5eHX.png')) || undefined;
+    : (media.poster || logoUrl)) || undefined;
 
-  // Synopsis priority: Firebase Description -> TMDB Overview -> Default
   const synopsis = media.description || media.tmdbData?.overview || "This cinematic masterpiece is brought to you exclusively with Luganda commentary by the experts at MuviHub UG.";
-
-  // Cast icons from TMDB credits
   const cast = media.tmdbData?.credits?.cast?.slice(0, 15) || [];
 
   const handleMainPlay = () => {
@@ -43,8 +41,6 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
   };
 
   const isDownloading = downloadProgress !== undefined;
-
-  // New download link as requested
   const appDownloadLink = "https://upload.app/download/MuviHub%20UG/com.digitalnest.ug/f758fd9ac3eb8c0933d34bf9bb05b91499fd8cbf8674831f5d26996f9a130652/downloading.";
   const whatsappJoinLink = "https://chat.whatsapp.com/Kofjdwlr2SWFhDpGOQIjiK?mode=gi_t";
   const telegramChannelLink = "https://t.me/muvihub256";
@@ -65,9 +61,17 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
       `}</style>
 
       {/* Hero Header */}
-      <div className="relative h-[65vh] w-full">
+      <div className="relative h-[65vh] w-full bg-[#050505]">
+        <div className="absolute inset-0 flex items-center justify-center p-20 opacity-10">
+          <img src={logoUrl} alt="Logo Placeholder" className="w-full h-full object-contain grayscale" />
+        </div>
         <div className="absolute inset-0">
-          <img src={backdrop} className="w-full h-full object-cover" alt={media.title} />
+          <img 
+            src={backdrop} 
+            className={`w-full h-full object-cover transition-opacity duration-700 ${heroLoaded ? 'opacity-100' : 'opacity-0'}`} 
+            alt={media.title} 
+            onLoad={() => setHeroLoaded(true)}
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent"></div>
           <div className="absolute inset-0 bg-black/30"></div>
         </div>
@@ -203,16 +207,20 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
                   onClick={() => onPlay(ep)}
                   className="flex-none w-[260px] flex flex-col gap-3 p-3 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-[#9f1239]/40 hover:bg-white/[0.04] transition-all cursor-pointer group"
                 >
-                  <div className="relative aspect-video rounded-xl overflow-hidden bg-white/5">
+                  <div className="relative aspect-video rounded-xl overflow-hidden bg-white/5 flex items-center justify-center">
+                    <div className="absolute inset-0 flex items-center justify-center p-8 opacity-10">
+                       <img src={logoUrl} alt="Placeholder" className="w-full h-full object-contain grayscale" />
+                    </div>
                     <img 
                       src={ep.image ?? seriesPoster} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 relative z-10" 
                       alt={ep.title} 
+                      loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
                       <div className="w-10 h-10 bg-[#9f1239] rounded-full flex items-center justify-center text-white"><i className="fas fa-play text-xs"></i></div>
                     </div>
-                    <div className="absolute top-2 left-2 px-2 py-0.5 bg-[#9f1239] rounded text-[7px] font-black text-white uppercase">
+                    <div className="absolute top-2 left-2 px-2 py-0.5 bg-[#9f1239] rounded text-[7px] font-black text-white uppercase z-20">
                       EPISODE {ep.episodeNumber}
                     </div>
                   </div>

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Media } from '../types';
 import { getTMDBImageUrl } from '../services/tmdb';
 import { extractTagsFromDescription } from '../utils';
@@ -14,16 +14,17 @@ interface Props {
 const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant = 'poster' }) => {
   const [loaded, setLoaded] = useState(false);
   const tags = media.extractedTags || extractTagsFromDescription(media.description);
+  const logoUrl = "https://iili.io/f6WKiPV.png";
   
-  const posterUrl: string | undefined = (media.tmdbData?.poster_path 
-    ? getTMDBImageUrl(media.tmdbData.poster_path, 'w300') 
-    : (media.poster || media.image || 'https://iili.io/KOR5eHX.png')) || undefined;
+  // High Priority (TMDB)
+  const tmdbPoster = getTMDBImageUrl(media.tmdbData?.poster_path, 'w300');
+  const tmdbBackdrop = getTMDBImageUrl(media.tmdbData?.backdrop_path, 'w300');
 
-  const landscapeUrl: string | undefined = (media.tmdbData?.backdrop_path
-    ? getTMDBImageUrl(media.tmdbData.backdrop_path, 'w300')
-    : (media.image || media.poster || 'https://iili.io/KOR5eHX.png')) || undefined;
+  // Low Priority / Immediate Fallback (Firebase)
+  const fbPoster = media.poster || media.image || logoUrl;
+  const fbBackdrop = media.image || media.poster || logoUrl;
 
-  const imageUrl = variant === 'landscape' ? landscapeUrl : posterUrl;
+  const primaryUrl = variant === 'landscape' ? (tmdbBackdrop || fbBackdrop) : (tmdbPoster || fbPoster);
 
   return (
     <div 
@@ -31,14 +32,31 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
       className="relative flex-none w-full cursor-pointer group transition-all duration-300"
     >
       {/* Image Container */}
-      <div className={`relative w-full overflow-hidden rounded-xl border border-white/5 bg-[#111111] group-hover:border-[#9f1239]/50 transition-all duration-300 shadow-xl ${variant === 'landscape' ? 'aspect-video' : 'aspect-[2/3]'}`}>
-        {!loaded && <div className="absolute inset-0 skeleton"></div>}
+      <div 
+        className={`relative w-full overflow-hidden rounded-xl border border-white/5 bg-[#0a0a0a] group-hover:border-[#9f1239]/50 transition-all duration-300 shadow-xl flex items-center justify-center ${variant === 'landscape' ? 'aspect-video' : 'aspect-[2/3]'}`}
+      >
+        {/* Persistent Logo Placeholder */}
+        {!loaded && (
+          <div className="absolute inset-0 flex items-center justify-center p-6 opacity-20">
+            <img src={logoUrl} alt="Placeholder" className="w-full h-full object-contain grayscale" />
+          </div>
+        )}
+
+        {/* The actual movie image */}
         <img 
-          src={imageUrl ?? 'https://iili.io/KOR5eHX.png'} 
+          src={primaryUrl} 
           alt={media.title}
-          className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`w-full h-full object-cover transition-opacity duration-500 group-hover:scale-110 ${loaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setLoaded(true)}
-          onError={(e) => { (e.target as HTMLImageElement).src = 'https://iili.io/KOR5eHX.png'; setLoaded(true); }}
+          loading="lazy"
+          onError={(e) => { 
+            const img = e.target as HTMLImageElement;
+            if (img.src !== fbPoster && img.src !== fbBackdrop) {
+              img.src = variant === 'landscape' ? fbBackdrop : fbPoster;
+            } else {
+              setLoaded(true); // Stop trying if even fallback fails
+            }
+          }}
         />
         
         {/* Play Overlay */}
@@ -48,7 +66,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
           </div>
         </div>
 
-        {/* Media Tags overlaying image only */}
+        {/* Media Tags */}
         {tags.length > 0 && variant === 'poster' && (
           <div className="absolute top-2 left-2 z-10">
             <span className="bg-[#9f1239] text-white text-[6px] font-black px-1.5 py-0.5 rounded-md shadow-lg uppercase tracking-widest opacity-90">#{tags[0]}</span>
@@ -56,7 +74,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
         )}
       </div>
 
-      {/* Content Section - Independent block below the image */}
+      {/* Content Section */}
       <div className="pt-2 px-0.5 flex flex-col gap-0.5">
         <h3 className={`font-black truncate uppercase tracking-tighter text-white/90 group-hover:text-white transition-colors ${variant === 'landscape' ? 'text-[10px]' : 'text-[9px]'}`}>
           {media.title}
@@ -66,7 +84,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
         </p>
       </div>
       
-      {/* Progress Bar for Landscape (Continue Watching) */}
+      {/* Progress Bar for Landscape */}
       {variant === 'landscape' && (
         <div className="mt-1.5 px-0.5">
           <div className="h-0.5 w-full bg-white/5 rounded-full overflow-hidden">
