@@ -333,7 +333,8 @@ const App: React.FC = () => {
       }
 
       // Create blob and trigger real browser download to phone storage
-      const blob = new Blob(chunks, { type: 'video/mp4' });
+      // Use "any" cast to circumvent environment-specific TypeScript errors with Uint8Array buffers
+      const blob = new Blob(chunks as any, { type: 'video/mp4' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.style.display = 'none';
