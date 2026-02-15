@@ -11,35 +11,35 @@ interface Props {
 const SubscriptionPage: React.FC<Props> = ({ onClose, onContinue, media }) => {
   const plans = [
     { 
-      title: 'Daily Pass', 
-      price: '2,000', 
+      title: 'Daily Plan', 
+      price: '1,500', 
       period: '24 Hours', 
       icon: 'fa-clock',
-      url: 'https://pay.flexiicash.com/checkout/pay/ef26d3347ee78805',
+      url: 'https://pay.flexiicash.com/checkout/pay/1b884c40ee9f103b',
       featured: false
     },
     { 
-      title: 'Weekly Pass', 
-      price: '5,000', 
+      title: 'Week Plan', 
+      price: '4,300', 
       period: '7 Days', 
       icon: 'fa-calendar-week',
-      url: 'https://pay.flexiicash.com/checkout/pay/c8ff5fe36a636ea5',
+      url: 'https://pay.flexiicash.com/checkout/pay/f0373dd610cd617f',
       featured: false
     },
     { 
-      title: '2 Weeks Pass', 
-      price: '7,500', 
+      title: '2 Weeks Plan', 
+      price: '6,500', 
       period: '14 Days', 
       icon: 'fa-calendar-alt',
       url: 'https://pay.flexiicash.com/checkout/pay/04b75dd52c1583ea',
       featured: false
     },
     { 
-      title: 'Monthly Pass', 
-      price: '15,000', 
+      title: 'Monthly Plan', 
+      price: '9,500', 
       period: '30 Days', 
       icon: 'fa-crown',
-      url: 'https://pay.flexiicash.com/checkout/pay/d1377f839858bb7d',
+      url: 'https://pay.flexiicash.com/checkout/pay/f06359ff3765b679',
       featured: true
     },
   ];
