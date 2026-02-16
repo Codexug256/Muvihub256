@@ -52,7 +52,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
   const resetControlsTimeout = useCallback(() => {
     setShowControls(true);
     if (controlsTimeout.current) clearTimeout(controlsTimeout.current);
-    // Controls disappear immediately after 3 seconds of inactivity as requested
+    // Controls disappear after 3 seconds of inactivity
     controlsTimeout.current = setTimeout(hideControls, 3000);
   }, [hideControls]);
 
@@ -64,14 +64,16 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
       try {
         await videoRef.current.play();
         setIsPlaying(true);
+        // Immediately hide controls when playing starts
+        setShowControls(false);
       } catch (err) {
         console.error("Playback failed:", err);
       }
     } else {
       videoRef.current.pause();
       setIsPlaying(false);
+      resetControlsTimeout();
     }
-    resetControlsTimeout();
   };
 
   const skip = (seconds: number, e?: React.MouseEvent | React.TouchEvent) => {
@@ -134,11 +136,33 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
     resetControlsTimeout();
   };
 
-  const skipIntro = (e: React.MouseEvent) => {
+  const toggleFullscreen = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (videoRef.current) {
-      videoRef.current.currentTime += 85; // Skip 85 seconds
-      resetControlsTimeout();
+    if (!containerRef.current) return;
+
+    const doc = document as any;
+    const element = containerRef.current as any;
+
+    if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen((Element as any).ALLOW_KEYBOARD_INPUT);
+      }
+    } else {
+      if (doc.exitFullscreen) {
+        doc.exitFullscreen();
+      } else if (doc.msExitFullscreen) {
+        doc.msExitFullscreen();
+      } else if (doc.mozCancelFullScreen) {
+        doc.mozCancelFullScreen();
+      } else if (doc.webkitExitFullscreen) {
+        doc.webkitExitFullscreen();
+      }
     }
   };
 
@@ -157,14 +181,18 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
   }, []);
 
   const isDownloading = downloadProgress !== undefined;
-  const isIntroPeriod = currentTime > 10 && currentTime < 90;
 
   return (
     <div 
       ref={containerRef}
       className="fixed inset-0 z-[9999] bg-black flex items-center justify-center overflow-hidden touch-none select-none"
       onMouseMove={resetControlsTimeout}
-      onClick={resetControlsTimeout}
+      onClick={() => {
+        // If controls are hidden, show them.
+        if (!showControls) {
+          resetControlsTimeout();
+        }
+      }}
       onContextMenu={(e) => e.preventDefault()}
     >
       <style>{`
@@ -187,10 +215,14 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
         }
       `}</style>
 
-      {/* Poster Background / Underlay */}
-      <div className={`absolute inset-0 transition-opacity duration-1000 pointer-events-none ${currentTime < 1 ? 'opacity-100' : 'opacity-0'}`}>
+      {/* Poster Background / Underlay: Visible when buffering or at start to avoid default player look */}
+      <div className={`absolute inset-0 transition-opacity duration-1000 pointer-events-none ${(currentTime < 0.5 || isBuffering) ? 'opacity-100' : 'opacity-0'}`}>
         <img src={poster} className="w-full h-full object-cover blur-3xl opacity-20 scale-110" alt="" />
         <div className="absolute inset-0 bg-black/60"></div>
+        {/* Actual landscape poster in background */}
+        <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+            <img src={poster} className="w-full h-full object-cover opacity-30" alt="" />
+        </div>
       </div>
 
       <video 
@@ -226,7 +258,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
         }}
       ></div>
 
-      {/* Loading State */}
+      {/* Loading State Indicator */}
       {isBuffering && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-50 pointer-events-none bg-black/20 backdrop-blur-[2px]">
           <div className="w-14 h-14 border-4 border-white/5 border-t-[#9f1239] rounded-full animate-spin"></div>
@@ -304,16 +336,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
             <i className="fas fa-rotate-right text-3xl"></i>
           </button>
         </div>
-
-        {/* Skip Intro Button */}
-        {isIntroPeriod && (
-          <button 
-            onClick={skipIntro}
-            className="absolute right-8 bottom-36 px-6 py-3 bg-white/10 skip-btn-blur border border-white/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-white hover:bg-[#9f1239] hover:border-[#9f1239] transition-all animate-bounce-in shadow-2xl"
-          >
-            Skip Intro
-          </button>
-        )}
 
         {/* Bottom Bar Area */}
         <div className="absolute bottom-0 left-0 w-full p-6 pb-12 video-player-gradient-bottom">
@@ -409,7 +431,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
 
               <button 
                 className="w-12 h-12 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl text-white/70 hover:text-white transition-all"
-                onClick={(e) => { e.stopPropagation(); containerRef.current?.requestFullscreen(); }}
+                onClick={toggleFullscreen}
               >
                 <i className="fas fa-expand-alt text-sm"></i>
               </button>
