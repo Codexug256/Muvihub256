@@ -4,6 +4,7 @@ import { auth, db, storage } from './services/firebase';
 import { Media, UserProfile, Download, ToastState } from './types';
 import { extractTagsFromDescription, extractYearFromTitle } from './utils';
 import { fetchMovieDetails, fetchTVDetails, fetchSeasonDetails } from './services/tmdb';
+import { CATEGORY_GROUPS } from './constants';
 
 // Component imports
 import AuthScreen from './components/AuthScreen';
@@ -99,7 +100,7 @@ const App: React.FC = () => {
         
         setMovies(list);
 
-        // Enrichment - Now always enrich even if poster exists to get best fallback strategy
+        // Enrichment
         const itemsToEnrich = list.filter(m => !m.tmdbData && !enrichedIds.current.has(m.id));
         if (itemsToEnrich.length > 0) {
           itemsToEnrich.forEach(async (m) => {
@@ -227,14 +228,26 @@ const App: React.FC = () => {
     if (showNewUploads) {
       list = list.filter(m => (m.createdAt || 0) > dayAgo);
     }
+    
+    // Simplified Filtering Logic for Category Groups
     if (selectedGenreSeeAll) {
-      list = list.filter(m => m.genre === selectedGenreSeeAll);
+      const group = CATEGORY_GROUPS.find(g => g.title === selectedGenreSeeAll);
+      if (group) {
+        list = list.filter(m => m.genre && group.tags.some(t => m.genre?.toLowerCase().includes(t.toLowerCase())));
+      } else {
+        list = list.filter(m => m.genre === selectedGenreSeeAll);
+      }
     }
+
     if (searchQuery || searchGenre) {
-      list = list.filter(m => 
-        (m.title.toLowerCase().includes(searchQuery.toLowerCase())) &&
-        (!searchGenre || m.genre === searchGenre)
-      );
+      const group = CATEGORY_GROUPS.find(g => g.title === searchGenre);
+      list = list.filter(m => {
+        const matchesQuery = m.title.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesGenre = !searchGenre || 
+                            m.genre === searchGenre || 
+                            (group && m.genre && group.tags.some(t => m.genre?.toLowerCase().includes(t.toLowerCase())));
+        return matchesQuery && matchesGenre;
+      });
     }
     return list;
   }, [allMedia, searchQuery, searchGenre, showNewUploads, selectedGenreSeeAll]);
@@ -332,8 +345,6 @@ const App: React.FC = () => {
         }
       }
 
-      // Create blob and trigger real browser download to phone storage
-      // Use "any" cast to circumvent environment-specific TypeScript errors with Uint8Array buffers
       const blob = new Blob(chunks as any, { type: 'video/mp4' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -345,7 +356,6 @@ const App: React.FC = () => {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
 
-      // Record success in Firebase
       const newDownload: any = {
         mediaId: m.id,
         title: m.title,
