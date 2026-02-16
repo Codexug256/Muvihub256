@@ -52,7 +52,8 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
   const resetControlsTimeout = useCallback(() => {
     setShowControls(true);
     if (controlsTimeout.current) clearTimeout(controlsTimeout.current);
-    controlsTimeout.current = setTimeout(hideControls, 4000);
+    // Controls disappear immediately after 3 seconds of inactivity as requested
+    controlsTimeout.current = setTimeout(hideControls, 3000);
   }, [hideControls]);
 
   const togglePlay = async (e?: React.MouseEvent | React.TouchEvent) => {
@@ -168,14 +169,10 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
     >
       <style>{`
         .video-player-gradient-top {
-          background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+          background: linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 70%, transparent 100%);
         }
         .video-player-gradient-bottom {
-          background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
-        }
-        .seek-thumb-active {
-          transform: scale(1.5);
-          box-shadow: 0 0 15px rgba(159, 18, 57, 0.8);
+          background: linear-gradient(to top, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
         }
         @keyframes fadeInOut {
           0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
@@ -192,8 +189,8 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
 
       {/* Poster Background / Underlay */}
       <div className={`absolute inset-0 transition-opacity duration-1000 pointer-events-none ${currentTime < 1 ? 'opacity-100' : 'opacity-0'}`}>
-        <img src={poster} className="w-full h-full object-cover blur-xl opacity-30 scale-110" alt="" />
-        <div className="absolute inset-0 bg-black/40"></div>
+        <img src={poster} className="w-full h-full object-cover blur-3xl opacity-20 scale-110" alt="" />
+        <div className="absolute inset-0 bg-black/60"></div>
       </div>
 
       <video 
@@ -213,7 +210,14 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
       {/* Main Touch Overlay */}
       <div 
         className="absolute inset-0 z-10" 
-        onClick={togglePlay}
+        onClick={(e) => {
+          // If controls are hidden, show them. If they are visible, toggle playback.
+          if (!showControls) {
+            resetControlsTimeout();
+          } else {
+            togglePlay(e);
+          }
+        }}
         onDoubleClick={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
           const x = e.clientX - rect.left;
@@ -283,21 +287,21 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
           </div>
         </div>
 
-        {/* Central Controls (Touch Friendly) */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-12 sm:gap-20">
-          <button onClick={(e) => skip(-10, e)} className="w-14 h-14 rounded-full flex items-center justify-center text-white/50 hover:text-white transition-all active:scale-90">
-            <i className="fas fa-undo text-3xl"></i>
+        {/* Central Controls - Transparent play/pause as requested */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-14 sm:gap-24">
+          <button onClick={(e) => skip(-10, e)} className="w-16 h-16 flex items-center justify-center text-white/40 hover:text-white transition-all active:scale-90">
+            <i className="fas fa-rotate-left text-3xl"></i>
           </button>
           
           <button 
             onClick={togglePlay}
-            className="w-24 h-24 bg-[#9f1239] text-white rounded-full flex items-center justify-center shadow-[0_0_80px_rgba(159,18,57,0.5)] border-4 border-white/10 hover:scale-105 active:scale-95 transition-all"
+            className="w-24 h-24 text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-all"
           >
-            <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play ml-2'} text-3xl`}></i>
+            <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play ml-2'} text-7xl drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]`}></i>
           </button>
 
-          <button onClick={(e) => skip(10, e)} className="w-14 h-14 rounded-full flex items-center justify-center text-white/50 hover:text-white transition-all active:scale-90">
-            <i className="fas fa-redo text-3xl"></i>
+          <button onClick={(e) => skip(10, e)} className="w-16 h-16 flex items-center justify-center text-white/40 hover:text-white transition-all active:scale-90">
+            <i className="fas fa-rotate-right text-3xl"></i>
           </button>
         </div>
 
@@ -321,12 +325,12 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
               onClick={handleSeek}
               onTouchMove={handleSeek}
             >
-              {/* Buffer Level (Simulated or Real if available) */}
-              <div className="absolute top-0 left-0 h-full bg-white/5 rounded-full" style={{ width: '90%' }}></div>
+              {/* Buffer Level */}
+              <div className="absolute top-0 left-0 h-full bg-white/5 rounded-full" style={{ width: '95%' }}></div>
               
               {/* Progress Line */}
               <div 
-                className="absolute top-0 left-0 h-full bg-[#9f1239] rounded-full shadow-[0_0_15px_rgba(159,18,57,0.6)]" 
+                className="absolute top-0 left-0 h-full bg-[#9f1239] rounded-full shadow-[0_0_15px_rgba(159,18,57,0.8)]" 
                 style={{ width: `${progress}%` }}
               ></div>
 
@@ -337,9 +341,9 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
               ></div>
             </div>
             
-            {/* Hover Time (Placeholder) */}
-            <div className="absolute -top-10 left-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ left: `${progress}%` }}>
-               <span className="bg-black/80 backdrop-blur-md px-2 py-1 rounded text-[10px] font-mono border border-white/10">
+            {/* Hover Time Indicator */}
+            <div className="absolute -top-10 left-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ left: `${progress}%`, transform: 'translateX(-50%)' }}>
+               <span className="bg-black/80 backdrop-blur-md px-2 py-1 rounded text-[10px] font-mono border border-white/10 text-white">
                  {formatTime(currentTime)}
                </span>
             </div>
@@ -353,9 +357,9 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
                  <span className="text-[13px] font-black text-white/40 font-mono tracking-tighter">{formatTime(duration)}</span>
               </div>
 
-              {/* Volume Slider (Compact) */}
+              {/* Volume Slider */}
               <div className="hidden sm:flex items-center gap-3 group/vol">
-                <button onClick={() => setIsMuted(!isMuted)} className="text-white/40 hover:text-white">
+                <button onClick={() => setIsMuted(!isMuted)} className="text-white/40 hover:text-white transition-colors">
                   <i className={`fas ${isMuted || volume === 0 ? 'fa-volume-mute text-[#9f1239]' : 'fa-volume-up'} text-sm`}></i>
                 </button>
                 <div className="w-0 group-hover/vol:w-20 transition-all duration-300 overflow-hidden">
@@ -368,14 +372,14 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
                       setVolume(v);
                       if (videoRef.current) videoRef.current.volume = v;
                     }}
-                    className="accent-[#9f1239] w-full"
+                    className="accent-[#9f1239] w-full cursor-pointer"
                   />
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-5">
-              {/* Settings / Speed */}
+              {/* Playback Speed Menu */}
               <div className="relative">
                 <button 
                   onClick={(e) => { e.stopPropagation(); setShowSpeedMenu(!showSpeedMenu); }}
@@ -386,7 +390,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
                 </button>
                 
                 {showSpeedMenu && (
-                  <div className="absolute bottom-full right-0 mb-4 bg-black/90 backdrop-blur-3xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-slide-up w-28">
+                  <div className="absolute bottom-full right-0 mb-4 bg-black/90 backdrop-blur-3xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-slide-up w-28 z-[100]">
                     <div className="p-3 border-b border-white/5 text-center">
                       <p className="text-[7px] font-black uppercase tracking-widest text-white/30">Playback Speed</p>
                     </div>
