@@ -31,17 +31,19 @@ const DownloadsScreen: React.FC<Props> = ({ downloads, onDelete }) => {
         <div className="space-y-4">
           {downloads.map(item => (
             <div key={item.id} className={`flex items-center gap-4 p-4 bg-white/5 border rounded-2xl group transition-all ${item.success ? 'border-white/10 hover:border-[#9f1239]' : 'border-red-500/20'}`}>
-              <div className="w-16 h-24 rounded-lg overflow-hidden flex-none relative bg-white/5">
+              <div className="w-16 h-24 rounded-lg overflow-hidden flex-none relative bg-[#121212]">
                 {!loadedImages[item.id] && (
                   <div className="absolute inset-0 skeleton"></div>
                 )}
-                <img 
-                  src={item.poster || 'https://iili.io/KOR5eHX.png'} 
-                  className={`w-full h-full object-cover transition-opacity duration-500 ${loadedImages[item.id] ? (item.success ? 'opacity-100' : 'opacity-40 grayscale') : 'opacity-0'}`} 
-                  alt={item.title} 
-                  loading="lazy"
-                  onLoad={() => handleImageLoad(item.id)}
-                />
+                {item.poster && (
+                  <img 
+                    src={item.poster} 
+                    className={`w-full h-full object-cover transition-opacity duration-500 ${loadedImages[item.id] ? (item.success ? 'opacity-100' : 'opacity-40 grayscale') : 'opacity-0'}`} 
+                    alt={item.title} 
+                    loading="lazy"
+                    onLoad={() => handleImageLoad(item.id)}
+                  />
+                )}
                 {!item.success && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <i className="fas fa-exclamation-triangle text-red-500 text-sm"></i>

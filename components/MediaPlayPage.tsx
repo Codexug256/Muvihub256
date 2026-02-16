@@ -20,15 +20,14 @@ interface Props {
 const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, downloadProgress, episodes, recommended, onMediaClick, isInList, onToggleList }) => {
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [loadedCast, setLoadedCast] = useState<Record<string, boolean>>({});
-  const logoUrl = "https://iili.io/f6WKiPV.png";
 
   const backdrop: string | undefined = (media.tmdbData?.backdrop_path 
     ? getTMDBImageUrl(media.tmdbData.backdrop_path, 'original') 
-    : (media.image || media.poster || logoUrl)) || undefined;
+    : (media.image || media.poster)) || undefined;
 
   const seriesPoster: string | undefined = (media.tmdbData?.poster_path 
     ? getTMDBImageUrl(media.tmdbData.poster_path, 'w300') 
-    : (media.poster || logoUrl)) || undefined;
+    : (media.poster)) || undefined;
 
   const synopsis = media.description || media.tmdbData?.overview || "This cinematic masterpiece is brought to you exclusively with Luganda commentary by the experts at MuviHub UG.";
   const cast = media.tmdbData?.credits?.cast?.slice(0, 15) || [];
@@ -67,17 +66,19 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
 
       {/* Hero Header */}
       <div className="relative h-[65vh] w-full bg-[#050505]">
-        {/* Hero Skeleton (Logo removed) */}
+        {/* Hero Skeleton */}
         {!heroLoaded && (
           <div className="absolute inset-0 skeleton"></div>
         )}
         <div className="absolute inset-0">
-          <img 
-            src={backdrop} 
-            className={`w-full h-full object-cover transition-opacity duration-700 ${heroLoaded ? 'opacity-100' : 'opacity-0'}`} 
-            alt={media.title} 
-            onLoad={() => setHeroLoaded(true)}
-          />
+          {backdrop && (
+            <img 
+              src={backdrop} 
+              className={`w-full h-full object-cover transition-opacity duration-700 ${heroLoaded ? 'opacity-100' : 'opacity-0'}`} 
+              alt={media.title} 
+              onLoad={() => setHeroLoaded(true)}
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent"></div>
           <div className="absolute inset-0 bg-black/30"></div>
         </div>
@@ -134,7 +135,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
 
       <div className="px-5 -mt-6 relative z-10 max-w-6xl mx-auto space-y-12">
         
-        {/* Open Storyline (Synopsis) Section */}
+        {/* Integrated Storyline (Synopsis) Section */}
         <section className="px-2">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-[10px] font-black flex items-center gap-3 text-[#9f1239] uppercase tracking-[0.4em]">
@@ -170,12 +171,9 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
               </a>
             </div>
           </div>
-          <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#9f1239] to-transparent opacity-50"></div>
-            <p className="text-white/80 text-sm sm:text-lg leading-relaxed font-medium pl-6">
-              {synopsis}
-            </p>
-          </div>
+          <p className="text-white/80 text-sm sm:text-lg leading-relaxed font-medium">
+            {synopsis}
+          </p>
         </section>
 
         {/* Cast Section */}
@@ -187,7 +185,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
             <div className="flex gap-5 overflow-x-auto pb-4 no-scrollbar">
               {cast.map((actor: any) => (
                 <div key={actor.id} className="flex-none w-14 sm:w-16 flex flex-col items-center group">
-                  <div className="w-full aspect-square rounded-full overflow-hidden mb-3 border-2 border-white/5 group-hover:border-[#9f1239] transition-all duration-500 bg-white/5 relative">
+                  <div className="w-full aspect-square rounded-full overflow-hidden mb-3 border-2 border-white/5 group-hover:border-[#9f1239] transition-all duration-500 bg-[#121212] relative">
                     {!loadedCast[actor.id] && (
                       <div className="absolute inset-0 skeleton" />
                     )}
@@ -221,14 +219,16 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
                   onClick={() => onPlay(ep)}
                   className="flex-none w-[260px] flex flex-col gap-3 p-3 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-[#9f1239]/40 hover:bg-white/[0.04] transition-all cursor-pointer group"
                 >
-                  <div className="relative aspect-video rounded-xl overflow-hidden bg-white/5 flex items-center justify-center">
+                  <div className="relative aspect-video rounded-xl overflow-hidden bg-[#121212] flex items-center justify-center">
                     <div className="absolute inset-0 skeleton"></div>
-                    <img 
-                      src={ep.image ?? seriesPoster} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 relative z-10" 
-                      alt={ep.title} 
-                      loading="lazy"
-                    />
+                    {(ep.image || seriesPoster) && (
+                      <img 
+                        src={ep.image ?? seriesPoster} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 relative z-10" 
+                        alt={ep.title} 
+                        loading="lazy"
+                      />
+                    )}
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
                       <div className="w-10 h-10 bg-[#9f1239] rounded-full flex items-center justify-center text-white"><i className="fas fa-play text-xs"></i></div>
                     </div>

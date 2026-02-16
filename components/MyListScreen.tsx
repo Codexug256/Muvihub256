@@ -42,7 +42,7 @@ const MyListScreen: React.FC<Props> = ({ isOpen, onClose, list, onMediaClick, on
             {list.map(item => {
               const imageUrl = item.tmdbData?.poster_path 
                 ? getTMDBImageUrl(item.tmdbData.poster_path, 'w300') 
-                : (item.poster || item.image || 'https://iili.io/KOR5eHX.png');
+                : (item.poster || item.image);
                 
               return (
                 <div key={item.id} className="relative group">
@@ -53,13 +53,15 @@ const MyListScreen: React.FC<Props> = ({ isOpen, onClose, list, onMediaClick, on
                     {!loadedImages[item.id] && (
                       <div className="absolute inset-0 skeleton"></div>
                     )}
-                    <img 
-                      src={imageUrl ?? 'https://iili.io/KOR5eHX.png'} 
-                      className={`w-full h-[240px] object-cover transition-opacity duration-500 ${loadedImages[item.id] ? 'opacity-100' : 'opacity-0'}`} 
-                      alt={item.title} 
-                      loading="lazy"
-                      onLoad={() => handleImageLoad(item.id)}
-                    />
+                    {imageUrl && (
+                      <img 
+                        src={imageUrl} 
+                        className={`w-full h-[240px] object-cover transition-opacity duration-500 ${loadedImages[item.id] ? 'opacity-100' : 'opacity-0'}`} 
+                        alt={item.title} 
+                        loading="lazy"
+                        onLoad={() => handleImageLoad(item.id)}
+                      />
+                    )}
                   </div>
                   <button 
                     onClick={(e) => { e.stopPropagation(); onRemove(item.id); }}

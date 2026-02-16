@@ -14,15 +14,14 @@ interface Props {
 const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant = 'poster' }) => {
   const [loaded, setLoaded] = useState(false);
   const tags = media.extractedTags || extractTagsFromDescription(media.description);
-  const logoUrl = "https://iili.io/f6WKiPV.png";
   
   // High Priority (TMDB)
   const tmdbPoster = getTMDBImageUrl(media.tmdbData?.poster_path, 'w300');
   const tmdbBackdrop = getTMDBImageUrl(media.tmdbData?.backdrop_path, 'w300');
 
   // Low Priority / Immediate Fallback (Firebase)
-  const fbPoster = media.poster || media.image || logoUrl;
-  const fbBackdrop = media.image || media.poster || logoUrl;
+  const fbPoster = media.poster || media.image;
+  const fbBackdrop = media.image || media.poster;
 
   const primaryUrl = variant === 'landscape' ? (tmdbBackdrop || fbBackdrop) : (tmdbPoster || fbPoster);
 
@@ -33,29 +32,31 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
     >
       {/* Image Container */}
       <div 
-        className={`relative w-full overflow-hidden rounded-xl border border-white/5 bg-[#0a0a0a] group-hover:border-[#9f1239]/50 transition-all duration-300 shadow-xl flex items-center justify-center ${variant === 'landscape' ? 'aspect-video' : 'aspect-[2/3]'}`}
+        className={`relative w-full overflow-hidden rounded-xl border border-white/5 bg-[#121212] group-hover:border-[#9f1239]/50 transition-all duration-300 shadow-xl flex items-center justify-center ${variant === 'landscape' ? 'aspect-video' : 'aspect-[2/3]'}`}
       >
-        {/* Skeleton Placeholder (Logo removed) */}
+        {/* Skeleton Placeholder */}
         {!loaded && (
           <div className="absolute inset-0 skeleton"></div>
         )}
 
         {/* The actual movie image */}
-        <img 
-          src={primaryUrl} 
-          alt={media.title}
-          className={`w-full h-full object-cover transition-opacity duration-500 group-hover:scale-110 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-          onLoad={() => setLoaded(true)}
-          loading="lazy"
-          onError={(e) => { 
-            const img = e.target as HTMLImageElement;
-            if (img.src !== fbPoster && img.src !== fbBackdrop) {
-              img.src = variant === 'landscape' ? fbBackdrop : fbPoster;
-            } else {
-              setLoaded(true); // Stop trying if even fallback fails
-            }
-          }}
-        />
+        {primaryUrl && (
+          <img 
+            src={primaryUrl} 
+            alt={media.title}
+            className={`w-full h-full object-cover transition-opacity duration-500 group-hover:scale-110 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+            onLoad={() => setLoaded(true)}
+            loading="lazy"
+            onError={(e) => { 
+              const img = e.target as HTMLImageElement;
+              if (img.src !== fbPoster && img.src !== fbBackdrop && (fbPoster || fbBackdrop)) {
+                img.src = (variant === 'landscape' ? fbBackdrop : fbPoster) || '';
+              } else {
+                setLoaded(true); 
+              }
+            }}
+          />
+        )}
         
         {/* Play Overlay */}
         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
