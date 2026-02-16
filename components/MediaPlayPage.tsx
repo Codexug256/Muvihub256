@@ -136,11 +136,11 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
 
       <div className="px-5 -mt-6 relative z-10 max-w-6xl mx-auto space-y-12">
         
-        {/* Storyline (Synopsis) Section */}
-        <section className="bg-white/[0.03] border border-white/5 rounded-[2.5rem] p-6 sm:p-10 backdrop-blur-sm shadow-2xl">
+        {/* Open Storyline (Synopsis) Section */}
+        <section className="px-2">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xs font-black flex items-center gap-3 text-[#9f1239] uppercase tracking-[0.4em]">
-              <i className="fas fa-quote-left text-[10px]"></i> Storyline
+            <h3 className="text-[10px] font-black flex items-center gap-3 text-[#9f1239] uppercase tracking-[0.4em]">
+              <i className="fas fa-align-left text-[10px]"></i> Storyline
             </h3>
             <div className="flex gap-2">
               <a 
@@ -172,9 +172,12 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
               </a>
             </div>
           </div>
-          <p className="text-white/80 text-sm sm:text-base leading-relaxed font-medium">
-            {synopsis}
-          </p>
+          <div className="relative">
+            <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#9f1239] to-transparent opacity-50"></div>
+            <p className="text-white/80 text-sm sm:text-lg leading-relaxed font-medium pl-6">
+              {synopsis}
+            </p>
+          </div>
         </section>
 
         {/* Cast Section */}
