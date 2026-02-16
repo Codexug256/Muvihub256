@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 interface Props {
@@ -13,7 +12,8 @@ const AccessGate: React.FC<Props> = ({ onUnlock, onGoToPremium, onClose }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.toLowerCase() === 'mrmuvihub') {
+    // Updated password from 'mrmuvihub' to 'mvh'
+    if (password.toLowerCase() === 'mvh') {
       onUnlock();
     } else {
       setError(true);
@@ -53,7 +53,7 @@ const AccessGate: React.FC<Props> = ({ onUnlock, onGoToPremium, onClose }) => {
             {error && <p className="text-red-500 text-[7px] font-bold mt-1.5 uppercase tracking-widest">Invalid Key</p>}
           </div>
           <button 
-            type="submit"
+            type="submit" 
             className="w-full py-3.5 bg-white/10 text-white text-[9px] font-black rounded-xl uppercase tracking-[0.4em] hover:bg-white/20 transition-all border border-white/10"
           >
             Unlock Now

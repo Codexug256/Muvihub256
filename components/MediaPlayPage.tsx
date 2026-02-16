@@ -19,6 +19,7 @@ interface Props {
 
 const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, downloadProgress, episodes, recommended, onMediaClick, isInList, onToggleList }) => {
   const [heroLoaded, setHeroLoaded] = useState(false);
+  const [loadedCast, setLoadedCast] = useState<Record<string, boolean>>({});
   const logoUrl = "https://iili.io/f6WKiPV.png";
 
   const backdrop: string | undefined = (media.tmdbData?.backdrop_path 
@@ -44,6 +45,10 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
   const appDownloadLink = "https://upload.app/download/MuviHub%20UG/com.digitalnest.ug/f758fd9ac3eb8c0933d34bf9bb05b91499fd8cbf8674831f5d26996f9a130652/downloading.";
   const whatsappJoinLink = "https://chat.whatsapp.com/Kofjdwlr2SWFhDpGOQIjiK?mode=gi_t";
   const telegramChannelLink = "https://t.me/muvihub256";
+
+  const handleCastLoad = (id: string) => {
+    setLoadedCast(prev => ({ ...prev, [id]: true }));
+  };
 
   return (
     <div className="fixed inset-0 z-[100] bg-[#0a0a0a] overflow-y-auto pb-32 animate-fade-in no-scrollbar">
@@ -181,11 +186,16 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
             <div className="flex gap-5 overflow-x-auto pb-4 no-scrollbar">
               {cast.map((actor: any) => (
                 <div key={actor.id} className="flex-none w-14 sm:w-16 flex flex-col items-center group">
-                  <div className="w-full aspect-square rounded-full overflow-hidden mb-3 border-2 border-white/5 group-hover:border-[#9f1239] transition-all duration-500 bg-white/5">
+                  <div className="w-full aspect-square rounded-full overflow-hidden mb-3 border-2 border-white/5 group-hover:border-[#9f1239] transition-all duration-500 bg-white/5 relative">
+                    {!loadedCast[actor.id] && (
+                      <div className="absolute inset-0 skeleton" />
+                    )}
                     <img 
                       src={getTMDBImageUrl(actor.profile_path, 'w185') || `https://ui-avatars.com/api/?name=${encodeURIComponent(actor.name)}&background=141414&color=fff`} 
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
+                      className={`w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ${loadedCast[actor.id] ? 'opacity-100' : 'opacity-0'}`}
                       alt={actor.name}
+                      loading="lazy"
+                      onLoad={() => handleCastLoad(actor.id)}
                     />
                   </div>
                   <h4 className="text-[7px] font-black text-white/50 group-hover:text-white transition-colors truncate w-full text-center uppercase tracking-widest leading-none">

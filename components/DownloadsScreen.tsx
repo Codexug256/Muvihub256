@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Download } from '../types';
 import { formatDate } from '../utils';
 
@@ -9,6 +9,12 @@ interface Props {
 }
 
 const DownloadsScreen: React.FC<Props> = ({ downloads, onDelete }) => {
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+
+  const handleImageLoad = (id: string) => {
+    setLoadedImages(prev => ({ ...prev, [id]: true }));
+  };
+
   return (
     <div className="px-5 pt-20 pb-10">
       <h2 className="text-3xl font-black mb-8">My Library</h2>
@@ -25,8 +31,19 @@ const DownloadsScreen: React.FC<Props> = ({ downloads, onDelete }) => {
         <div className="space-y-4">
           {downloads.map(item => (
             <div key={item.id} className={`flex items-center gap-4 p-4 bg-white/5 border rounded-2xl group transition-all ${item.success ? 'border-white/10 hover:border-[#9f1239]' : 'border-red-500/20'}`}>
-              <div className="w-16 h-24 rounded-lg overflow-hidden flex-none relative">
-                <img src={item.poster || 'https://iili.io/KOR5eHX.png'} className={`w-full h-full object-cover ${!item.success ? 'opacity-40 grayscale' : ''}`} alt={item.title} />
+              <div className="w-16 h-24 rounded-lg overflow-hidden flex-none relative bg-white/5">
+                {!loadedImages[item.id] && (
+                  <div className="absolute inset-0 skeleton flex items-center justify-center">
+                    <img src="https://iili.io/f6WKiPV.png" alt="" className="w-4 h-4 opacity-20 object-contain" />
+                  </div>
+                )}
+                <img 
+                  src={item.poster || 'https://iili.io/KOR5eHX.png'} 
+                  className={`w-full h-full object-cover transition-opacity duration-500 ${loadedImages[item.id] ? (item.success ? 'opacity-100' : 'opacity-40 grayscale') : 'opacity-0'}`} 
+                  alt={item.title} 
+                  loading="lazy"
+                  onLoad={() => handleImageLoad(item.id)}
+                />
                 {!item.success && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <i className="fas fa-exclamation-triangle text-red-500 text-sm"></i>

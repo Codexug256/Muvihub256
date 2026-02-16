@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Media } from '../types';
 import { getTMDBImageUrl } from '../services/tmdb';
 
@@ -11,7 +12,13 @@ interface Props {
 }
 
 const MyListScreen: React.FC<Props> = ({ isOpen, onClose, list, onMediaClick, onRemove }) => {
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+
   if (!isOpen) return null;
+
+  const handleImageLoad = (id: string) => {
+    setLoadedImages(prev => ({ ...prev, [id]: true }));
+  };
 
   return (
     <div className="fixed inset-0 z-[1000] bg-[#0a0a0a] overflow-y-auto p-5 animate-slide-left">
@@ -41,12 +48,19 @@ const MyListScreen: React.FC<Props> = ({ isOpen, onClose, list, onMediaClick, on
                 <div key={item.id} className="relative group">
                   <div 
                     onClick={() => { onMediaClick(item); onClose(); }}
-                    className="rounded-[1.5rem] overflow-hidden border border-white/10 cursor-pointer hover:border-[#9f1239] transition-all group-hover:-translate-y-2 shadow-2xl bg-[#141414]"
+                    className="rounded-[1.5rem] overflow-hidden border border-white/10 cursor-pointer hover:border-[#9f1239] transition-all group-hover:-translate-y-2 shadow-2xl bg-[#141414] relative"
                   >
+                    {!loadedImages[item.id] && (
+                      <div className="absolute inset-0 skeleton flex items-center justify-center">
+                        <img src="https://iili.io/f6WKiPV.png" alt="" className="w-8 h-8 opacity-20 object-contain" />
+                      </div>
+                    )}
                     <img 
                       src={imageUrl ?? 'https://iili.io/KOR5eHX.png'} 
-                      className="w-full h-[240px] object-cover" 
+                      className={`w-full h-[240px] object-cover transition-opacity duration-500 ${loadedImages[item.id] ? 'opacity-100' : 'opacity-0'}`} 
                       alt={item.title} 
+                      loading="lazy"
+                      onLoad={() => handleImageLoad(item.id)}
                     />
                   </div>
                   <button 

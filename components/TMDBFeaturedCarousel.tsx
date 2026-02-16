@@ -79,6 +79,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick }) => {
               src={bgImage} 
               alt={m.title}
               className="w-full h-full object-cover"
+              loading={i === 0 ? "eager" : "lazy"} // Eager load only the first slide
             />
             
             {/* Overlay Gradients */}
