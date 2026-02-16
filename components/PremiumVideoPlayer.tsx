@@ -287,7 +287,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
           </div>
         </div>
 
-        {/* Central Controls - Transparent play/pause as requested */}
+        {/* Central Controls */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-14 sm:gap-24">
           <button onClick={(e) => skip(-10, e)} className="w-16 h-16 flex items-center justify-center text-white/40 hover:text-white transition-all active:scale-90">
             <i className="fas fa-rotate-left text-3xl"></i>
@@ -295,7 +295,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
           
           <button 
             onClick={togglePlay}
-            className="w-24 h-24 text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-all"
+            className="w-24 h-24 text-white/60 flex items-center justify-center hover:scale-110 hover:text-white active:scale-90 transition-all"
           >
             <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play ml-2'} text-7xl drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]`}></i>
           </button>
