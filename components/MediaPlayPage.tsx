@@ -67,11 +67,9 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
 
       {/* Hero Header */}
       <div className="relative h-[65vh] w-full bg-[#050505]">
-        {/* Hero Skeleton + Logo Placeholder */}
+        {/* Hero Skeleton (Logo removed) */}
         {!heroLoaded && (
-          <div className="absolute inset-0 skeleton flex items-center justify-center">
-            <img src={logoUrl} alt="Logo Placeholder" className="w-16 h-16 object-contain opacity-40" />
-          </div>
+          <div className="absolute inset-0 skeleton"></div>
         )}
         <div className="absolute inset-0">
           <img 
@@ -224,9 +222,7 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
                   className="flex-none w-[260px] flex flex-col gap-3 p-3 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-[#9f1239]/40 hover:bg-white/[0.04] transition-all cursor-pointer group"
                 >
                   <div className="relative aspect-video rounded-xl overflow-hidden bg-white/5 flex items-center justify-center">
-                    <div className="absolute inset-0 skeleton flex items-center justify-center">
-                       <img src={logoUrl} alt="Placeholder" className="w-8 h-8 object-contain opacity-40" />
-                    </div>
+                    <div className="absolute inset-0 skeleton"></div>
                     <img 
                       src={ep.image ?? seriesPoster} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 relative z-10" 

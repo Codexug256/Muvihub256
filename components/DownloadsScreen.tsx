@@ -33,9 +33,7 @@ const DownloadsScreen: React.FC<Props> = ({ downloads, onDelete }) => {
             <div key={item.id} className={`flex items-center gap-4 p-4 bg-white/5 border rounded-2xl group transition-all ${item.success ? 'border-white/10 hover:border-[#9f1239]' : 'border-red-500/20'}`}>
               <div className="w-16 h-24 rounded-lg overflow-hidden flex-none relative bg-white/5">
                 {!loadedImages[item.id] && (
-                  <div className="absolute inset-0 skeleton flex items-center justify-center">
-                    <img src="https://iili.io/f6WKiPV.png" alt="" className="w-4 h-4 opacity-20 object-contain" />
-                  </div>
+                  <div className="absolute inset-0 skeleton"></div>
                 )}
                 <img 
                   src={item.poster || 'https://iili.io/KOR5eHX.png'} 

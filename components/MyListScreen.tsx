@@ -51,9 +51,7 @@ const MyListScreen: React.FC<Props> = ({ isOpen, onClose, list, onMediaClick, on
                     className="rounded-[1.5rem] overflow-hidden border border-white/10 cursor-pointer hover:border-[#9f1239] transition-all group-hover:-translate-y-2 shadow-2xl bg-[#141414] relative"
                   >
                     {!loadedImages[item.id] && (
-                      <div className="absolute inset-0 skeleton flex items-center justify-center">
-                        <img src="https://iili.io/f6WKiPV.png" alt="" className="w-8 h-8 opacity-20 object-contain" />
-                      </div>
+                      <div className="absolute inset-0 skeleton"></div>
                     )}
                     <img 
                       src={imageUrl ?? 'https://iili.io/KOR5eHX.png'} 

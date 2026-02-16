@@ -35,15 +35,9 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
       <div 
         className={`relative w-full overflow-hidden rounded-xl border border-white/5 bg-[#0a0a0a] group-hover:border-[#9f1239]/50 transition-all duration-300 shadow-xl flex items-center justify-center ${variant === 'landscape' ? 'aspect-video' : 'aspect-[2/3]'}`}
       >
-        {/* Skeleton + Logo Placeholder */}
+        {/* Skeleton Placeholder (Logo removed) */}
         {!loaded && (
-          <div className="absolute inset-0 skeleton flex items-center justify-center">
-            <img 
-              src={logoUrl} 
-              alt="Placeholder" 
-              className={`${variant === 'landscape' ? 'w-8 h-8' : 'w-6 h-6'} object-contain opacity-40`} 
-            />
-          </div>
+          <div className="absolute inset-0 skeleton"></div>
         )}
 
         {/* The actual movie image */}
