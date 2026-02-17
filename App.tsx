@@ -477,6 +477,7 @@ const App: React.FC = () => {
           onMediaClick={handleMediaClick}
           isInList={myList.some(i => i.id === playPageMedia.id)}
           onToggleList={(e) => toggleMyList(playPageMedia, e)}
+          globalDownloadProgress={downloadProgress}
         />
       ) : (
         <>
@@ -507,6 +508,7 @@ const App: React.FC = () => {
                   onSeeAll={() => {}}
                   onGenreSeeAll={() => {}}
                   clearFilters={() => { setSearchQuery(''); setSearchGenre(''); setShowAllMovies(false); setShowNewUploads(false); setSelectedGenreSeeAll(''); }}
+                  downloadProgress={downloadProgress}
                 />
               ) : (
                 <>
@@ -522,10 +524,11 @@ const App: React.FC = () => {
                       onMoviesSeeAll={() => setActiveScreen('movies')}
                       onSeriesSeeAll={() => setActiveScreen('series')}
                       clearFilters={() => { setSearchQuery(''); setSearchGenre(''); setShowAllMovies(false); setShowNewUploads(false); setSelectedGenreSeeAll(''); }}
+                      downloadProgress={downloadProgress}
                     />
                   )}
-                  {activeScreen === 'movies' && <MoviesScreen movies={movies} onMediaClick={handleMediaClick} />}
-                  {activeScreen === 'series' && <SeriesScreen series={series} onMediaClick={handleMediaClick} />}
+                  {activeScreen === 'movies' && <MoviesScreen movies={movies} onMediaClick={handleMediaClick} downloadProgress={downloadProgress} />}
+                  {activeScreen === 'series' && <SeriesScreen series={series} onMediaClick={handleMediaClick} downloadProgress={downloadProgress} />}
                   {activeScreen === 'downloads' && <DownloadsScreen downloads={downloads} onDelete={(id) => db.ref(`downloads/${user.uid}/${id}`).remove()} />}
                   {activeScreen === 'account' && (
                     <AccountScreen 

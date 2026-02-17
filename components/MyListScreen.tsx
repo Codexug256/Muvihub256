@@ -40,9 +40,10 @@ const MyListScreen: React.FC<Props> = ({ isOpen, onClose, list, onMediaClick, on
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
             {list.map(item => {
-              const imageUrl = item.tmdbData?.poster_path 
+              // Priority: Firebase/Local -> TMDB
+              const imageUrl = (item.poster || item.image || (item.tmdbData?.poster_path 
                 ? getTMDBImageUrl(item.tmdbData.poster_path, 'w300') 
-                : (item.poster || item.image);
+                : undefined));
                 
               return (
                 <div key={item.id} className="relative group">

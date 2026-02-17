@@ -15,19 +15,33 @@ interface Props {
   onMediaClick: (m: Media) => void;
   isInList: boolean;
   onToggleList: (e: React.MouseEvent) => void;
+  globalDownloadProgress?: Record<string, number>;
 }
 
-const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, downloadProgress, episodes, recommended, onMediaClick, isInList, onToggleList }) => {
+const MediaPlayPage: React.FC<Props> = ({ 
+  media, 
+  onClose, 
+  onPlay, 
+  onDownload, 
+  downloadProgress, 
+  episodes, 
+  recommended, 
+  onMediaClick, 
+  isInList, 
+  onToggleList,
+  globalDownloadProgress = {}
+}) => {
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [loadedCast, setLoadedCast] = useState<Record<string, boolean>>({});
 
-  const backdrop: string | undefined = (media.tmdbData?.backdrop_path 
+  // Prioritize Firebase images over TMDB for the play page header and poster
+  const backdrop: string | undefined = (media.image || media.poster || (media.tmdbData?.backdrop_path 
     ? getTMDBImageUrl(media.tmdbData.backdrop_path, 'original') 
-    : (media.image || media.poster)) || undefined;
+    : undefined)) || undefined;
 
-  const seriesPoster: string | undefined = (media.tmdbData?.poster_path 
+  const seriesPoster: string | undefined = (media.poster || (media.tmdbData?.poster_path 
     ? getTMDBImageUrl(media.tmdbData.poster_path, 'w300') 
-    : (media.poster)) || undefined;
+    : undefined)) || undefined;
 
   const synopsis = media.description || media.tmdbData?.overview || "This cinematic masterpiece is brought to you exclusively with Luganda commentary by the experts at MuviHub UG.";
   const cast = media.tmdbData?.credits?.cast?.slice(0, 15) || [];
@@ -253,7 +267,11 @@ const MediaPlayPage: React.FC<Props> = ({ media, onClose, onPlay, onDownload, do
             <div className="flex gap-3 overflow-x-auto pb-6 no-scrollbar -mx-5 px-5">
               {recommended.map(m => (
                 <div key={m.id} className="flex-none w-28 sm:w-36">
-                  <MediaCard media={m} onClick={() => onMediaClick(m)} />
+                  <MediaCard 
+                    media={m} 
+                    onClick={() => onMediaClick(m)} 
+                    downloadProgress={globalDownloadProgress[m.id]}
+                  />
                 </div>
               ))}
             </div>

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Media } from '../types';
 import { getTMDBImageUrl } from '../services/tmdb';
 import { extractTagsFromDescription } from '../utils';
@@ -9,21 +9,26 @@ interface Props {
   onClick: () => void;
   showInfo?: boolean;
   variant?: 'poster' | 'landscape';
+  downloadProgress?: number;
 }
 
-const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant = 'poster' }) => {
+const MediaCard: React.FC<Props> = ({ media, onClick, variant = 'poster', downloadProgress }) => {
   const [loaded, setLoaded] = useState(false);
   const tags = media.extractedTags || extractTagsFromDescription(media.description);
   
-  // High Priority (TMDB)
-  const tmdbPoster = getTMDBImageUrl(media.tmdbData?.poster_path, 'w300');
-  const tmdbBackdrop = getTMDBImageUrl(media.tmdbData?.backdrop_path, 'w300');
-
-  // Low Priority / Immediate Fallback (Firebase)
+  // High Priority: Firebase/Local Assets
   const fbPoster = media.poster || media.image;
   const fbBackdrop = media.image || media.poster;
 
-  const primaryUrl = variant === 'landscape' ? (tmdbBackdrop || fbBackdrop) : (tmdbPoster || fbPoster);
+  // Fallback: TMDB Assets
+  const tmdbPoster = getTMDBImageUrl(media.tmdbData?.poster_path, 'w300');
+  const tmdbBackdrop = getTMDBImageUrl(media.tmdbData?.backdrop_path, 'w300');
+
+  const primaryUrl = variant === 'landscape' 
+    ? (fbBackdrop || tmdbBackdrop) 
+    : (fbPoster || tmdbPoster);
+
+  const isDownloading = downloadProgress !== undefined;
 
   return (
     <div 
@@ -39,7 +44,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
           <div className="absolute inset-0 skeleton"></div>
         )}
 
-        {/* The actual movie image */}
+        {/* Media Image */}
         {primaryUrl && (
           <img 
             src={primaryUrl} 
@@ -49,8 +54,11 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
             loading="lazy"
             onError={(e) => { 
               const img = e.target as HTMLImageElement;
-              if (img.src !== fbPoster && img.src !== fbBackdrop && (fbPoster || fbBackdrop)) {
-                img.src = (variant === 'landscape' ? fbBackdrop : fbPoster) || '';
+              // If current source is Firebase, try TMDB fallback
+              if (img.src === fbPoster || img.src === fbBackdrop) {
+                const fallback = variant === 'landscape' ? tmdbBackdrop : tmdbPoster;
+                if (fallback) img.src = fallback;
+                else setLoaded(true);
               } else {
                 setLoaded(true); 
               }
@@ -58,12 +66,28 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
           />
         )}
         
-        {/* Play Overlay */}
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className={`${variant === 'landscape' ? 'w-10 h-10' : 'w-8 h-8'} bg-[#9f1239] rounded-full flex items-center justify-center text-white text-[10px] shadow-xl`}>
-            <i className="fas fa-play ml-0.5"></i>
+        {/* Download Progress Overlay */}
+        {isDownloading && (
+          <div className="absolute inset-0 z-30 bg-black/70 flex flex-col items-center justify-center p-3">
+             <div className="w-10 h-10 border-2 border-white/10 border-t-[#9f1239] rounded-full animate-spin mb-2"></div>
+             <span className="text-[10px] font-black text-[#9f1239] tracking-tighter">{downloadProgress}%</span>
+             <div className="absolute bottom-0 left-0 w-full h-1 bg-white/10">
+                <div 
+                  className="h-full bg-[#9f1239] transition-all duration-300" 
+                  style={{ width: `${downloadProgress}%` }}
+                ></div>
+             </div>
           </div>
-        </div>
+        )}
+
+        {/* Play Overlay (Only if not downloading) */}
+        {!isDownloading && (
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className={`${variant === 'landscape' ? 'w-10 h-10' : 'w-8 h-8'} bg-[#9f1239] rounded-full flex items-center justify-center text-white text-[10px] shadow-xl`}>
+              <i className="fas fa-play ml-0.5"></i>
+            </div>
+          </div>
+        )}
 
         {/* Media Tags */}
         {tags.length > 0 && variant === 'poster' && (
@@ -84,7 +108,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, showInfo = false, variant 
       </div>
       
       {/* Progress Bar for Landscape */}
-      {variant === 'landscape' && (
+      {variant === 'landscape' && !isDownloading && (
         <div className="mt-1.5 px-0.5">
           <div className="h-0.5 w-full bg-white/5 rounded-full overflow-hidden">
              <div className="h-full bg-[#9f1239] w-[35%] shadow-[0_0_8px_rgba(159,18,57,0.6)]"></div>

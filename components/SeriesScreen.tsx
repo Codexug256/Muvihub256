@@ -6,9 +6,10 @@ import MediaCard from './MediaCard';
 interface Props {
   series: Media[];
   onMediaClick: (m: Media) => void;
+  downloadProgress: Record<string, number>;
 }
 
-const SeriesScreen: React.FC<Props> = ({ series, onMediaClick }) => {
+const SeriesScreen: React.FC<Props> = ({ series, onMediaClick, downloadProgress }) => {
   return (
     <div className="px-5 pt-20 pb-10">
       <div className="flex justify-between items-center mb-8">
@@ -24,7 +25,12 @@ const SeriesScreen: React.FC<Props> = ({ series, onMediaClick }) => {
       ) : (
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
           {series.map(m => (
-            <MediaCard key={m.id} media={m} onClick={() => onMediaClick(m)} />
+            <MediaCard 
+              key={m.id} 
+              media={m} 
+              onClick={() => onMediaClick(m)} 
+              downloadProgress={downloadProgress[m.id]}
+            />
           ))}
         </div>
       )}

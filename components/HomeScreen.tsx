@@ -17,6 +17,7 @@ interface Props {
   onMoviesSeeAll?: () => void;
   onSeriesSeeAll?: () => void;
   clearFilters: () => void;
+  downloadProgress: Record<string, number>;
 }
 
 const HomeScreen: React.FC<Props> = ({ 
@@ -29,7 +30,8 @@ const HomeScreen: React.FC<Props> = ({
   onGenreSeeAll, 
   onMoviesSeeAll,
   onSeriesSeeAll,
-  clearFilters 
+  clearFilters,
+  downloadProgress
 }) => {
   
   // Split media into types
@@ -68,7 +70,12 @@ const HomeScreen: React.FC<Props> = ({
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-2">
             {allMedia.map(m => (
-              <MediaCard key={m.id} media={m} onClick={() => onMediaClick(m)} />
+              <MediaCard 
+                key={m.id} 
+                media={m} 
+                onClick={() => onMediaClick(m)} 
+                downloadProgress={downloadProgress[m.id]}
+              />
             ))}
           </div>
         </div>
@@ -90,7 +97,12 @@ const HomeScreen: React.FC<Props> = ({
                 <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
                   {continueWatching.map(m => (
                     <div key={m.id} className="flex-none w-[160px] sm:w-[200px]">
-                      <MediaCard media={m} onClick={() => onMediaClick(m)} variant="landscape" />
+                      <MediaCard 
+                        media={m} 
+                        onClick={() => onMediaClick(m)} 
+                        variant="landscape" 
+                        downloadProgress={downloadProgress[m.id]}
+                      />
                     </div>
                   ))}
                 </div>
@@ -109,7 +121,12 @@ const HomeScreen: React.FC<Props> = ({
                 <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
                   {recentlyAdded.map(m => (
                     <div key={m.id} className="flex-none w-[180px] sm:w-[220px]">
-                      <MediaCard media={m} onClick={() => onMediaClick(m)} variant="landscape" />
+                      <MediaCard 
+                        media={m} 
+                        onClick={() => onMediaClick(m)} 
+                        variant="landscape" 
+                        downloadProgress={downloadProgress[m.id]}
+                      />
                     </div>
                   ))}
                 </div>
@@ -134,7 +151,11 @@ const HomeScreen: React.FC<Props> = ({
                 <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
                   {movies.slice(0, 15).map(m => (
                     <div key={m.id} className="flex-none w-[31%] sm:w-[160px] md:w-[180px]">
-                      <MediaCard media={m} onClick={() => onMediaClick(m)} />
+                      <MediaCard 
+                        media={m} 
+                        onClick={() => onMediaClick(m)} 
+                        downloadProgress={downloadProgress[m.id]}
+                      />
                     </div>
                   ))}
                 </div>
@@ -159,7 +180,11 @@ const HomeScreen: React.FC<Props> = ({
                 <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
                   {series.slice(0, 15).map(m => (
                     <div key={m.id} className="flex-none w-[31%] sm:w-[160px] md:w-[180px]">
-                      <MediaCard media={m} onClick={() => onMediaClick(m)} />
+                      <MediaCard 
+                        media={m} 
+                        onClick={() => onMediaClick(m)} 
+                        downloadProgress={downloadProgress[m.id]}
+                      />
                     </div>
                   ))}
                 </div>
@@ -184,7 +209,11 @@ const HomeScreen: React.FC<Props> = ({
               <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
                 {shuffledAll.slice(0, 24).map(m => (
                   <div key={m.id} className="flex-none w-[31%] sm:w-[160px] md:w-[180px]">
-                    <MediaCard media={m} onClick={() => onMediaClick(m)} />
+                    <MediaCard 
+                      media={m} 
+                      onClick={() => onMediaClick(m)} 
+                      downloadProgress={downloadProgress[m.id]}
+                    />
                   </div>
                 ))}
               </div>
@@ -210,7 +239,11 @@ const HomeScreen: React.FC<Props> = ({
                 <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
                   {group.list.slice(0, 15).map(m => (
                     <div key={m.id} className="flex-none w-[31%] sm:w-[160px] md:w-[180px]">
-                      <MediaCard media={m} onClick={() => onMediaClick(m)} />
+                      <MediaCard 
+                        media={m} 
+                        onClick={() => onMediaClick(m)} 
+                        downloadProgress={downloadProgress[m.id]}
+                      />
                     </div>
                   ))}
                 </div>
