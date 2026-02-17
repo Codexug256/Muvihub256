@@ -221,13 +221,11 @@ const App: React.FC = () => {
     }));
   }, [movies, series]);
 
-  // Updated Hero Shuffling: Now only reshuffles "New Uploads" movies (last 24 hours)
+  // Hero Shuffling: Now only reshuffles "New Uploads" movies (last 24 hours)
   const featuredMedia = useMemo(() => {
     const dayAgo = Date.now() - 86400000;
     const newMovies = allMedia.filter(m => m.type === 'movie' && (m.createdAt || 0) > dayAgo);
     
-    // If there are no new movies in the last 24h, we fallback to the 15 most recent movies 
-    // to ensure the hero section is never empty but still presents the "freshest" content.
     const sourceList = newMovies.length > 0 ? newMovies : movies.slice(0, 15);
     
     if (sourceList.length === 0) return [];

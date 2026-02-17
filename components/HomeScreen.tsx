@@ -83,20 +83,40 @@ const HomeScreen: React.FC<Props> = ({
         <>
           <TMDBFeaturedCarousel onMovieClick={onMediaClick} localMedia={featuredMedia} />
           
-          <div className="px-5 mt-8">
+          {/* Modern UI Welcome Text Section */}
+          <div className="px-6 py-12 text-center bg-[#0a0a0a] relative overflow-hidden">
+            {/* Subtle background glow for modern depth */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-[#9f1239]/5 blur-[80px] rounded-full pointer-events-none"></div>
+            
+            <div className="relative z-10 space-y-3">
+              <h2 className="text-xl sm:text-3xl font-black uppercase tracking-tighter text-white leading-tight">
+                Welcome to <span className="text-[#9f1239] drop-shadow-[0_0_10px_rgba(159,18,57,0.3)]">Muvihub</span>
+              </h2>
+              <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-white/40 max-w-xs mx-auto">
+                All Your VJs movies and series in one place
+              </p>
+              <div className="flex items-center justify-center gap-2 mt-6">
+                <div className="w-8 h-[1px] bg-gradient-to-r from-transparent to-[#9f1239]"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#9f1239] shadow-[0_0_8px_rgba(159,18,57,0.8)]"></div>
+                <div className="w-8 h-[1px] bg-gradient-to-l from-transparent to-[#9f1239]"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="px-5 mt-4">
             
             {/* Continue Watching Section */}
             {continueWatching.length > 0 && (
-              <div className="mb-8">
-                <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
+              <div className="mb-10">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-sm font-black flex items-center gap-3 flex-1 uppercase tracking-[0.2em] text-white/90">
                     Continue Watching
-                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#9f1239] to-transparent"></div>
+                    <div className="h-[1px] flex-1 bg-gradient-to-r from-white/10 to-transparent"></div>
                   </h2>
                 </div>
-                <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
+                <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
                   {continueWatching.map(m => (
-                    <div key={m.id} className="flex-none w-[160px] sm:w-[200px]">
+                    <div key={m.id} className="flex-none w-[170px] sm:w-[210px]">
                       <MediaCard 
                         media={m} 
                         onClick={() => onMediaClick(m)} 
@@ -109,18 +129,19 @@ const HomeScreen: React.FC<Props> = ({
               </div>
             )}
 
-            {/* Recently Added Section - Displayed in Landscape Mode */}
+            {/* Recently Added Section */}
             {recentlyAdded.length > 0 && (
-              <div className="mb-8">
-                <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
-                    <i className="fas fa-clock text-[#9f1239] text-sm"></i> Recently Added
-                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#9f1239] to-transparent"></div>
+              <div className="mb-10">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-sm font-black flex items-center gap-3 flex-1 uppercase tracking-[0.2em] text-white/90">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#9f1239]"></span>
+                    Recently Added
+                    <div className="h-[1px] flex-1 bg-gradient-to-r from-white/10 to-transparent"></div>
                   </h2>
                 </div>
-                <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
+                <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
                   {recentlyAdded.map(m => (
-                    <div key={m.id} className="flex-none w-[180px] sm:w-[220px]">
+                    <div key={m.id} className="flex-none w-[190px] sm:w-[230px]">
                       <MediaCard 
                         media={m} 
                         onClick={() => onMediaClick(m)} 
@@ -135,22 +156,22 @@ const HomeScreen: React.FC<Props> = ({
 
             {/* Movies Horizontal Section */}
             {movies.length > 0 && (
-              <div className="mb-8">
-                <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
-                    <i className="fas fa-film text-[#9f1239] text-sm"></i> Latest Movies
-                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#9f1239] to-transparent"></div>
+              <div className="mb-10">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-sm font-black flex items-center gap-3 flex-1 uppercase tracking-[0.2em] text-white/90">
+                    Latest Movies
+                    <div className="h-[1px] flex-1 bg-gradient-to-r from-white/10 to-transparent"></div>
                   </h2>
                   <button 
                     onClick={onMoviesSeeAll} 
-                    className="ml-4 flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-[9px] font-black tracking-widest hover:border-[#9f1239] transition-all whitespace-nowrap"
+                    className="ml-4 flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-[8px] font-black tracking-widest hover:border-[#9f1239] hover:bg-white/[0.08] transition-all whitespace-nowrap"
                   >
-                    SEE ALL <i className="fas fa-chevron-right text-[7px]"></i>
+                    SEE ALL <i className="fas fa-chevron-right text-[6px]"></i>
                   </button>
                 </div>
-                <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
+                <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
                   {movies.slice(0, 15).map(m => (
-                    <div key={m.id} className="flex-none w-[31%] sm:w-[160px] md:w-[180px]">
+                    <div key={m.id} className="flex-none w-[120px] sm:w-[160px] md:w-[180px]">
                       <MediaCard 
                         media={m} 
                         onClick={() => onMediaClick(m)} 
@@ -164,22 +185,22 @@ const HomeScreen: React.FC<Props> = ({
 
             {/* Series Horizontal Section */}
             {series.length > 0 && (
-              <div className="mb-8">
-                <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
-                    <i className="fas fa-tv text-[#9f1239] text-sm"></i> Popular Series
-                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#9f1239] to-transparent"></div>
+              <div className="mb-10">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-sm font-black flex items-center gap-3 flex-1 uppercase tracking-[0.2em] text-white/90">
+                    Popular Series
+                    <div className="h-[1px] flex-1 bg-gradient-to-r from-white/10 to-transparent"></div>
                   </h2>
                   <button 
                     onClick={onSeriesSeeAll} 
-                    className="ml-4 flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-[9px] font-black tracking-widest hover:border-[#9f1239] transition-all whitespace-nowrap"
+                    className="ml-4 flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-[8px] font-black tracking-widest hover:border-[#9f1239] hover:bg-white/[0.08] transition-all whitespace-nowrap"
                   >
-                    SEE ALL <i className="fas fa-chevron-right text-[7px]"></i>
+                    SEE ALL <i className="fas fa-chevron-right text-[6px]"></i>
                   </button>
                 </div>
-                <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
+                <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
                   {series.slice(0, 15).map(m => (
-                    <div key={m.id} className="flex-none w-[31%] sm:w-[160px] md:w-[180px]">
+                    <div key={m.id} className="flex-none w-[120px] sm:w-[160px] md:w-[180px]">
                       <MediaCard 
                         media={m} 
                         onClick={() => onMediaClick(m)} 
@@ -191,24 +212,24 @@ const HomeScreen: React.FC<Props> = ({
               </div>
             )}
 
-            {/* Discover Pick Section (Horizontal shelf) */}
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-3">
-                <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
+            {/* Discover Pick Section */}
+            <div className="mb-10">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-sm font-black flex items-center gap-3 flex-1 uppercase tracking-[0.2em] text-white/90">
                   Discover Pick
-                  <div className="h-[1px] flex-1 bg-gradient-to-r from-[#9f1239] to-transparent"></div>
+                  <div className="h-[1px] flex-1 bg-gradient-to-r from-white/10 to-transparent"></div>
                 </h2>
                 <button 
                   onClick={onSeeAll} 
-                  className="ml-4 flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-[9px] font-black tracking-widest hover:border-[#9f1239] transition-all whitespace-nowrap"
+                  className="ml-4 flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-[8px] font-black tracking-widest hover:border-[#9f1239] hover:bg-white/[0.08] transition-all whitespace-nowrap"
                 >
-                  SEE ALL <i className="fas fa-chevron-right text-[7px]"></i>
+                  SEE ALL <i className="fas fa-chevron-right text-[6px]"></i>
                 </button>
               </div>
               
-              <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
+              <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
                 {shuffledAll.slice(0, 24).map(m => (
-                  <div key={m.id} className="flex-none w-[31%] sm:w-[160px] md:w-[180px]">
+                  <div key={m.id} className="flex-none w-[120px] sm:w-[160px] md:w-[180px]">
                     <MediaCard 
                       media={m} 
                       onClick={() => onMediaClick(m)} 
@@ -219,26 +240,26 @@ const HomeScreen: React.FC<Props> = ({
               </div>
             </div>
 
-            {/* Rendered Category Groups (Horizontal shelf for each genre) */}
+            {/* Category Groups */}
             {groupedContent.map((group) => (
-              <div key={group.title} className="mb-8">
-                <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-xl font-black flex items-center gap-4 flex-1 uppercase tracking-tighter">
-                    <i className={`${group.icon} text-[#9f1239] text-sm`}></i>
+              <div key={group.title} className="mb-10">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-sm font-black flex items-center gap-3 flex-1 uppercase tracking-[0.2em] text-white/90">
+                    <i className={`${group.icon} text-[#9f1239] text-xs`}></i>
                     {group.title}
-                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#9f1239] to-transparent"></div>
+                    <div className="h-[1px] flex-1 bg-gradient-to-r from-white/10 to-transparent"></div>
                   </h2>
                   <button 
                     onClick={() => onGenreSeeAll(group.tags[0])} 
-                    className="ml-4 flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-[9px] font-black tracking-widest hover:border-[#9f1239] transition-all whitespace-nowrap"
+                    className="ml-4 flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-[8px] font-black tracking-widest hover:border-[#9f1239] hover:bg-white/[0.08] transition-all whitespace-nowrap"
                   >
-                    SEE ALL <i className="fas fa-chevron-right text-[7px]"></i>
+                    SEE ALL <i className="fas fa-chevron-right text-[6px]"></i>
                   </button>
                 </div>
                 
-                <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
+                <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-5 px-5">
                   {group.list.slice(0, 15).map(m => (
-                    <div key={m.id} className="flex-none w-[31%] sm:w-[160px] md:w-[180px]">
+                    <div key={m.id} className="flex-none w-[120px] sm:w-[160px] md:w-[180px]">
                       <MediaCard 
                         media={m} 
                         onClick={() => onMediaClick(m)} 

@@ -16,7 +16,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, variant = 'poster', downlo
   const [loaded, setLoaded] = useState(false);
   const tags = media.extractedTags || extractTagsFromDescription(media.description);
   
-  // High Priority: Firebase/Local Assets - These are the most accurate for the brand
+  // High Priority: Firebase/Local Assets
   const fbPoster = media.poster || media.image;
   const fbBackdrop = media.image || media.poster;
 
@@ -33,90 +33,72 @@ const MediaCard: React.FC<Props> = ({ media, onClick, variant = 'poster', downlo
   return (
     <div 
       onClick={onClick}
-      className="relative flex-none w-full cursor-pointer group transition-all duration-300"
+      className="relative flex-none w-full cursor-pointer group transition-all duration-500 ease-out"
     >
       {/* Image Container */}
       <div 
-        className={`relative w-full overflow-hidden rounded-xl border border-white/5 bg-[#121212] group-hover:border-[#9f1239]/50 transition-all duration-300 shadow-xl flex items-center justify-center ${variant === 'landscape' ? 'aspect-video' : 'aspect-[2/3]'}`}
+        className={`relative w-full overflow-hidden rounded-2xl border border-white/5 bg-[#121212] group-hover:border-[#9f1239]/40 transition-all duration-500 shadow-2xl flex items-center justify-center ${variant === 'landscape' ? 'aspect-video' : 'aspect-[2/3]'}`}
       >
         {/* Skeleton Placeholder */}
         {!loaded && (
           <div className="absolute inset-0 skeleton"></div>
         )}
 
-        {/* Media Image with performance optimization */}
+        {/* Media Image */}
         {primaryUrl && (
           <img 
             src={primaryUrl} 
             alt={media.title}
-            className={`w-full h-full object-cover transition-opacity duration-500 group-hover:scale-110 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+            className={`w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105 group-hover:brightness-110 ${loaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setLoaded(true)}
             loading="lazy"
             // @ts-ignore
             fetchpriority="high"
-            onError={(e) => { 
-              const img = e.target as HTMLImageElement;
-              // If current source is Firebase, try TMDB fallback immediately
-              if (img.src === fbPoster || img.src === fbBackdrop) {
-                const fallback = variant === 'landscape' ? tmdbBackdrop : tmdbPoster;
-                if (fallback && img.src !== fallback) {
-                  img.src = fallback;
-                } else {
-                  setLoaded(true);
-                }
-              } else {
-                setLoaded(true); 
-              }
-            }}
           />
         )}
         
         {/* Download Progress Overlay */}
         {isDownloading && (
-          <div className="absolute inset-0 z-30 bg-black/70 flex flex-col items-center justify-center p-3">
-             <div className="w-10 h-10 border-2 border-white/10 border-t-[#9f1239] rounded-full animate-spin mb-2"></div>
-             <span className="text-[10px] font-black text-[#9f1239] tracking-tighter">{downloadProgress}%</span>
-             <div className="absolute bottom-0 left-0 w-full h-1 bg-white/10">
-                <div 
-                  className="h-full bg-[#9f1239] transition-all duration-300" 
-                  style={{ width: `${downloadProgress}%` }}
-                ></div>
-             </div>
+          <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center p-3">
+             <div className="w-8 h-8 border-2 border-white/10 border-t-[#9f1239] rounded-full animate-spin mb-2"></div>
+             <span className="text-[9px] font-black text-white/90 tracking-tighter">{downloadProgress}%</span>
           </div>
         )}
 
-        {/* Play Overlay (Only if not downloading) */}
+        {/* Minimal Play Icon Overlay (Modern UI style) */}
         {!isDownloading && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className={`${variant === 'landscape' ? 'w-10 h-10' : 'w-8 h-8'} bg-[#9f1239] rounded-full flex items-center justify-center text-white text-[10px] shadow-xl`}>
-              <i className="fas fa-play ml-0.5"></i>
+          <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className={`w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 shadow-2xl scale-50 group-hover:scale-100 transition-transform duration-500`}>
+              <i className="fas fa-play text-[10px] ml-1"></i>
             </div>
           </div>
         )}
 
-        {/* Media Tags */}
+        {/* Content Badge */}
         {tags.length > 0 && variant === 'poster' && (
-          <div className="absolute top-2 left-2 z-10">
-            <span className="bg-[#9f1239] text-white text-[6px] font-black px-1.5 py-0.5 rounded-md shadow-lg uppercase tracking-widest opacity-90">#{tags[0]}</span>
+          <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
+            <span className="bg-black/40 backdrop-blur-md text-white/80 text-[6px] font-black px-2 py-1 rounded-lg border border-white/10 uppercase tracking-widest shadow-xl">
+              #{tags[0]}
+            </span>
           </div>
         )}
       </div>
 
-      {/* Content Section */}
-      <div className="pt-2 px-0.5 flex flex-col gap-0.5">
-        <h3 className={`font-black truncate uppercase tracking-tighter text-white/90 group-hover:text-white transition-colors ${variant === 'landscape' ? 'text-[10px]' : 'text-[9px]'}`}>
+      {/* Content Section - Simplified and Modernized */}
+      <div className="pt-3 px-1 flex flex-col gap-0.5">
+        <h3 className={`font-black truncate uppercase tracking-tighter text-white/80 group-hover:text-white transition-colors ${variant === 'landscape' ? 'text-[11px]' : 'text-[10px]'}`}>
           {media.title}
         </h3>
-        <p className="text-[7px] font-bold text-white/40 uppercase tracking-[0.15em] leading-none">
+        <p className="text-[7px] font-bold text-white/30 uppercase tracking-[0.2em] leading-none">
           {media.genre}
         </p>
       </div>
       
-      {/* Progress Bar for Landscape */}
+      {/* Visual progress indicator for 'landscape' items (recently added/continue watching) */}
       {variant === 'landscape' && !isDownloading && (
-        <div className="mt-1.5 px-0.5">
+        <div className="mt-2 px-1">
           <div className="h-0.5 w-full bg-white/5 rounded-full overflow-hidden">
-             <div className="h-full bg-[#9f1239] w-[35%] shadow-[0_0_8px_rgba(159,18,57,0.6)]"></div>
+             <div className="h-full bg-[#9f1239] w-[35%] shadow-[0_0_8px_rgba(159,18,57,0.4)]"></div>
           </div>
         </div>
       )}
