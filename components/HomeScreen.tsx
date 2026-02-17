@@ -18,6 +18,7 @@ interface Props {
   onSeriesSeeAll?: () => void;
   clearFilters: () => void;
   downloadProgress: Record<string, number>;
+  featuredMedia?: Media[];
 }
 
 const HomeScreen: React.FC<Props> = ({ 
@@ -31,7 +32,8 @@ const HomeScreen: React.FC<Props> = ({
   onMoviesSeeAll,
   onSeriesSeeAll,
   clearFilters,
-  downloadProgress
+  downloadProgress,
+  featuredMedia = []
 }) => {
   
   // Split media into types
@@ -52,8 +54,6 @@ const HomeScreen: React.FC<Props> = ({
       return { ...group, list: shuffleArray(filtered) };
     }).filter(g => g.list.length > 0);
   }, [allMedia]);
-
-  const featuredMedia = useMemo(() => shuffledAll.slice(0, 8), [shuffledAll]);
 
   return (
     <div className="pb-10">

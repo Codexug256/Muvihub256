@@ -16,7 +16,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, variant = 'poster', downlo
   const [loaded, setLoaded] = useState(false);
   const tags = media.extractedTags || extractTagsFromDescription(media.description);
   
-  // High Priority: Firebase/Local Assets
+  // High Priority: Firebase/Local Assets - These are the most accurate for the brand
   const fbPoster = media.poster || media.image;
   const fbBackdrop = media.image || media.poster;
 
@@ -44,7 +44,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, variant = 'poster', downlo
           <div className="absolute inset-0 skeleton"></div>
         )}
 
-        {/* Media Image */}
+        {/* Media Image with performance optimization */}
         {primaryUrl && (
           <img 
             src={primaryUrl} 
@@ -53,14 +53,17 @@ const MediaCard: React.FC<Props> = ({ media, onClick, variant = 'poster', downlo
             onLoad={() => setLoaded(true)}
             loading="lazy"
             // @ts-ignore
-            fetchpriority="auto"
+            fetchpriority="high"
             onError={(e) => { 
               const img = e.target as HTMLImageElement;
-              // If current source is Firebase, try TMDB fallback
+              // If current source is Firebase, try TMDB fallback immediately
               if (img.src === fbPoster || img.src === fbBackdrop) {
                 const fallback = variant === 'landscape' ? tmdbBackdrop : tmdbPoster;
-                if (fallback) img.src = fallback;
-                else setLoaded(true);
+                if (fallback && img.src !== fallback) {
+                  img.src = fallback;
+                } else {
+                  setLoaded(true);
+                }
               } else {
                 setLoaded(true); 
               }

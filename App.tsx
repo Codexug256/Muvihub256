@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { auth, db, storage } from './services/firebase';
 import { Media, UserProfile, Download, ToastState } from './types';
-import { extractTagsFromDescription, extractYearFromTitle } from './utils';
+import { extractTagsFromDescription, extractYearFromTitle, shuffleArray } from './utils';
 import { fetchMovieDetails, fetchTVDetails, fetchSeasonDetails } from './services/tmdb';
 import { CATEGORY_GROUPS } from './constants';
 
@@ -221,6 +221,13 @@ const App: React.FC = () => {
     }));
   }, [movies, series]);
 
+  // Stable Hero Shuffling: Focus only on movies
+  const featuredMedia = useMemo(() => {
+    const movieOnlyList = allMedia.filter(m => m.type === 'movie');
+    if (movieOnlyList.length === 0) return [];
+    return shuffleArray(movieOnlyList).slice(0, 8);
+  }, [movies.length]); // Only reshuffle when the count of movies changes significantly
+
   const filteredMedia = useMemo(() => {
     let list = allMedia;
     const dayAgo = Date.now() - 86400000;
@@ -268,8 +275,6 @@ const App: React.FC = () => {
   };
 
   const handlePlayRequest = (m: Media) => {
-    // 5-minute preview logic: Allowed to play regardless of isUnlocked status
-    // The player will handle the mid-stream limit.
     setPlayerData({ url: m.video || '', title: m.title, poster: m.image || m.poster || '' });
     
     // Update Continue Watching
@@ -521,6 +526,7 @@ const App: React.FC = () => {
                       onSeriesSeeAll={() => setActiveScreen('series')}
                       clearFilters={() => { setSearchQuery(''); setSearchGenre(''); setShowAllMovies(false); setShowNewUploads(false); setSelectedGenreSeeAll(''); }}
                       downloadProgress={downloadProgress}
+                      featuredMedia={featuredMedia}
                     />
                   )}
                   {activeScreen === 'movies' && <MoviesScreen movies={movies} onMediaClick={handleMediaClick} downloadProgress={downloadProgress} />}

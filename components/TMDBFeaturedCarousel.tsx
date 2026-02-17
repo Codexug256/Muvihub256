@@ -1,8 +1,6 @@
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { getTMDBImageUrl } from '../services/tmdb';
+import React, { useState, useEffect, useRef } from 'react';
 import { Media } from '../types';
-import { shuffleArray } from '../utils';
 
 interface Props {
   onMovieClick: (m: Media) => void;
@@ -13,11 +11,8 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
   const [currentIndex, setCurrentIndex] = useState(0);
   const intervalRef = useRef<any>(null);
 
-  const featuredItems = useMemo(() => {
-    if (localMedia.length === 0) return [];
-    // Shuffle and pick top 8 items from present movies for the hero section
-    return shuffleArray(localMedia).slice(0, 8);
-  }, [localMedia]);
+  // Use the list directly from props to ensure stability and avoid key issues during reshuffling
+  const featuredItems = localMedia;
 
   useEffect(() => {
     if (featuredItems.length > 0) {
@@ -27,7 +22,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
       }, 6000);
     }
     return () => clearInterval(intervalRef.current);
-  }, [featuredItems]);
+  }, [featuredItems.length]);
 
   if (featuredItems.length === 0) return (
     <div className="h-screen w-full skeleton rounded-b-[3rem]"></div>
@@ -45,14 +40,14 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
             key={m.id} 
             className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${i === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
           >
-            {/* Background Image */}
+            {/* Background Image with optimized loading */}
             <img 
               src={bgImage} 
               alt={m.title}
               className="w-full h-full object-cover"
-              loading={i === 0 ? "eager" : "lazy"}
+              loading={i === currentIndex ? "eager" : "lazy"}
               // @ts-ignore
-              fetchpriority={i === 0 ? "high" : "low"}
+              fetchpriority={i === currentIndex ? "high" : "low"}
             />
             
             {/* Overlay Gradients */}
