@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { auth, db, storage } from './services/firebase';
 import { Media, UserProfile, Download, ToastState } from './types';
 import { extractTagsFromDescription, extractYearFromTitle, shuffleArray } from './utils';
-import { fetchMovieDetails, fetchTVDetails, fetchSeasonDetails } from './services/tmdb';
+import { fetchMovieDetails, fetchTVDetails, fetchSeasonDetails, fetchNowPlaying } from './services/tmdb';
 import { CATEGORY_GROUPS } from './constants';
 
 // Component imports
@@ -29,6 +29,7 @@ const App: React.FC = () => {
   const [userProfile, setUserProfile] = useState<UserProfile>({});
   const [movies, setMovies] = useState<Media[]>([]);
   const [series, setSeries] = useState<Media[]>([]);
+  const [tmdbNowPlaying, setTmdbNowPlaying] = useState<Media[]>([]);
   const [episodes, setEpisodes] = useState<Record<string, Media[]>>({});
   const [downloads, setDownloads] = useState<Download[]>([]);
   const [myList, setMyList] = useState<Media[]>([]);
@@ -91,6 +92,25 @@ const App: React.FC = () => {
     const seriesRef = db.ref('series');
     const userRef = db.ref(`users/${user.uid}`);
     const downloadsRef = db.ref(`downloads/${user.uid}`);
+
+    // Load TMDB Now Playing for Hero
+    const loadTmdbHero = async () => {
+      const results = await fetchNowPlaying();
+      if (results && results.length > 0) {
+        const transformed: Media[] = results.map((m: any) => ({
+          id: `tmdb-${m.id}`,
+          title: m.title,
+          type: 'tmdb_movie',
+          genre: 'New Release',
+          description: m.overview,
+          image: `https://image.tmdb.org/t/p/original${m.backdrop_path}`,
+          poster: `https://image.tmdb.org/t/p/w500${m.poster_path}`,
+          tmdbData: m
+        }));
+        setTmdbNowPlaying(transformed);
+      }
+    };
+    loadTmdbHero();
 
     moviesRef.on('value', async snapshot => {
       const data = snapshot.val();
@@ -221,16 +241,17 @@ const App: React.FC = () => {
     }));
   }, [movies, series]);
 
-  // Hero Shuffling: Now only reshuffles "New Uploads" movies (last 24 hours)
+  // Hero: Use TMDB Now Playing primarily, fallback to local new uploads
   const featuredMedia = useMemo(() => {
+    if (tmdbNowPlaying.length > 0) return tmdbNowPlaying.slice(0, 10);
+    
     const dayAgo = Date.now() - 86400000;
     const newMovies = allMedia.filter(m => m.type === 'movie' && (m.createdAt || 0) > dayAgo);
-    
     const sourceList = newMovies.length > 0 ? newMovies : movies.slice(0, 15);
     
     if (sourceList.length === 0) return [];
     return shuffleArray(sourceList).slice(0, 8);
-  }, [allMedia.length, movies.length]);
+  }, [tmdbNowPlaying, allMedia.length, movies.length]);
 
   const filteredMedia = useMemo(() => {
     let list = allMedia;

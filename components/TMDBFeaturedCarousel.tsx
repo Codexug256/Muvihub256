@@ -1,6 +1,7 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Media } from '../types';
+import { getTMDBImageUrl } from '../services/tmdb';
 
 interface Props {
   onMovieClick: (m: Media) => void;
@@ -8,35 +9,163 @@ interface Props {
 }
 
 const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }) => {
-  // Use the static hero image as requested
-  const heroImage = "https://iili.io/qdpmQXs.jpg";
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // Auto-rotate the featured stack
+  useEffect(() => {
+    if (localMedia.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveIndex((current) => (current + 1) % localMedia.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [localMedia.length]);
+
+  if (localMedia.length === 0) return null;
 
   return (
-    <div className="relative h-[75vh] w-full overflow-hidden">
+    <div className="relative h-[85vh] w-full overflow-hidden flex items-center justify-center bg-black">
+      <style>{`
+        .cover-flow-container {
+          perspective: 1400px;
+          transform-style: preserve-3d;
+        }
+        .poster-card {
+          transition: all 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+          transform-style: preserve-3d;
+        }
+        .poster-reflection {
+          mask-image: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 60%);
+          transform: scaleY(-1) translateY(-100%);
+          filter: blur(4px);
+          opacity: 0.3;
+        }
+        .genre-tag {
+          background: #eab308; /* Yellow */
+          color: #000;
+          font-weight: 900;
+          font-size: 7px;
+          padding: 2px 6px;
+          border: 1px solid #000;
+          text-transform: uppercase;
+          border-radius: 2px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .rating-badge {
+          background: rgba(0, 0, 0, 0.6);
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #fbbf24;
+          font-size: 10px;
+          font-weight: 900;
+          padding: 2px 8px;
+          border-radius: 6px;
+        }
+      `}</style>
+
+      {/* Cinematic Background Blur */}
       <div className="absolute inset-0 z-0">
         <img 
-          src={heroImage} 
-          alt="Hero Banner"
-          className="w-full h-full object-cover"
-          // @ts-ignore
-          fetchpriority="high"
+          src={localMedia[activeIndex].poster || localMedia[activeIndex].image || getTMDBImageUrl(localMedia[activeIndex].tmdbData?.poster_path)} 
+          className="w-full h-full object-cover blur-[80px] opacity-40 scale-125 transition-all duration-1000"
+          alt=""
         />
-        
-        {/* Modern UI Overlay: Deeper bottom gradient for better transition to content */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/20 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent"></div>
-        
-        {/* Subtle vignette for a more premium look */}
-        <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.4)]"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-black/40"></div>
       </div>
-      
-      {/* Content Section - Title, Synopsis, and Buttons removed per request */}
-      {/* We only leave the bottom gradient area for a smooth flow into the welcome section */}
 
-      {/* Scroll Down Hint - Modernized: More subtle and floating */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 animate-bounce opacity-20 transition-opacity hover:opacity-50">
-        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center p-1">
-          <div className="w-1 h-2 bg-white/50 rounded-full"></div>
+      {/* Cover Flow Stack */}
+      <div className="relative w-full max-w-5xl h-[550px] flex items-center justify-center cover-flow-container z-10">
+        {localMedia.map((m, index) => {
+          const offset = index - activeIndex;
+          
+          // Logic to handle wrapping for the stack
+          let displayOffset = offset;
+          if (offset > localMedia.length / 2) displayOffset -= localMedia.length;
+          if (offset < -localMedia.length / 2) displayOffset += localMedia.length;
+          
+          const isActive = index === activeIndex;
+          const zIndex = 100 - Math.abs(displayOffset);
+          const opacity = isActive ? 1 : Math.max(0, 0.5 - Math.abs(displayOffset) * 0.15);
+          
+          // Smooth Positioning for modern UI
+          const translateX = displayOffset * 110; 
+          const translateZ = isActive ? 150 : -200 * Math.abs(displayOffset); 
+          const rotateY = displayOffset * -30; 
+          const scale = isActive ? 1.05 : 0.75;
+
+          const posterUrl = m.poster || m.image || getTMDBImageUrl(m.tmdbData?.poster_path);
+          const genres = m.genre?.split(/[&,]/).map(g => g.trim()) || ['Featured'];
+          const rating = m.tmdbData?.vote_average ? m.tmdbData.vote_average.toFixed(1) : '8.5';
+          const summary = m.description || m.tmdbData?.overview || "Exclusive Luganda translated content.";
+
+          return (
+            <div 
+              key={m.id}
+              onClick={() => onMovieClick(m)}
+              className="absolute w-[240px] sm:w-[300px] aspect-[2/3] poster-card cursor-pointer"
+              style={{
+                zIndex,
+                opacity,
+                transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
+              }}
+            >
+              {/* Main Poster */}
+              <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden border-[1px] border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.9)] bg-zinc-900">
+                <img 
+                  src={posterUrl} 
+                  className="w-full h-full object-cover" 
+                  alt={m.title}
+                />
+                
+                {/* Active Card Content */}
+                {isActive && (
+                  <>
+                    {/* Top Badges */}
+                    <div className="absolute top-5 left-0 w-full flex justify-between items-center px-5 z-20">
+                      <div className="flex gap-1">
+                        {genres.slice(0, 2).map((g, i) => (
+                          <span key={i} className="genre-tag">{g}</span>
+                        ))}
+                      </div>
+                      <div className="rating-badge flex items-center gap-1.5">
+                        <i className="fas fa-star text-[8px]"></i>
+                        {rating}
+                      </div>
+                    </div>
+
+                    {/* Bottom Info Overlay */}
+                    <div className="absolute bottom-0 left-0 w-full p-6 pt-16 bg-gradient-to-t from-black via-black/90 to-transparent flex flex-col gap-2">
+                      <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-tighter leading-tight drop-shadow-md">
+                        {m.title}
+                      </h2>
+                      <p className="text-[9px] text-white/60 line-clamp-2 leading-relaxed font-medium">
+                        {summary}
+                      </p>
+                      <div className="mt-2 w-10 h-0.5 bg-[#9f1239] rounded-full"></div>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Reflection Effect */}
+              <div className="absolute top-[100%] left-0 w-full aspect-[2/3] poster-reflection pointer-events-none">
+                <div className="w-full h-full rounded-[2.5rem] overflow-hidden border-[1px] border-white/5">
+                   <img src={posterUrl} className="w-full h-full object-cover" alt="" />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Pagination Line Indicators */}
+      <div className="absolute bottom-12 left-0 w-full flex justify-center gap-2 z-20 px-10">
+        <div className="max-w-md w-full flex gap-1">
+          {localMedia.map((_, i) => (
+            <div 
+              key={i}
+              className={`h-0.5 flex-1 transition-all duration-700 rounded-full ${i === activeIndex ? 'bg-[#9f1239] shadow-[0_0_10px_rgba(159,18,57,0.8)]' : 'bg-white/10'}`}
+            />
+          ))}
         </div>
       </div>
     </div>
