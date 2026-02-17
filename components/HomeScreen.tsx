@@ -83,27 +83,7 @@ const HomeScreen: React.FC<Props> = ({
         <>
           <TMDBFeaturedCarousel onMovieClick={onMediaClick} localMedia={featuredMedia} />
           
-          {/* Modern UI Welcome Text Section */}
-          <div className="px-6 py-12 text-center bg-[#0a0a0a] relative overflow-hidden">
-            {/* Subtle background glow for modern depth */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-[#9f1239]/5 blur-[80px] rounded-full pointer-events-none"></div>
-            
-            <div className="relative z-10 space-y-3">
-              <h2 className="text-xl sm:text-3xl font-black uppercase tracking-tighter text-white leading-tight">
-                Welcome to <span className="text-[#9f1239] drop-shadow-[0_0_10px_rgba(159,18,57,0.3)]">Muvihub</span>
-              </h2>
-              <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-white/40 max-w-xs mx-auto">
-                All Your VJs movies and series in one place
-              </p>
-              <div className="flex items-center justify-center gap-2 mt-6">
-                <div className="w-8 h-[1px] bg-gradient-to-r from-transparent to-[#9f1239]"></div>
-                <div className="w-1.5 h-1.5 rounded-full bg-[#9f1239] shadow-[0_0_8px_rgba(159,18,57,0.8)]"></div>
-                <div className="w-8 h-[1px] bg-gradient-to-l from-transparent to-[#9f1239]"></div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="px-5 mt-4">
+          <div className="px-5 mt-8">
             
             {/* Continue Watching Section */}
             {continueWatching.length > 0 && (

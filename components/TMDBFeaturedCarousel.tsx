@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Media } from '../types';
 import { getTMDBImageUrl } from '../services/tmdb';
 
@@ -10,20 +10,52 @@ interface Props {
 
 const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const touchStart = useRef<number | null>(null);
+  const touchEnd = useRef<number | null>(null);
+
+  // Minimum swipe distance in pixels
+  const minSwipeDistance = 50;
 
   // Auto-rotate the featured stack
   useEffect(() => {
     if (localMedia.length <= 1) return;
     const interval = setInterval(() => {
       setActiveIndex((current) => (current + 1) % localMedia.length);
-    }, 6000);
+    }, 8000); // Slower rotation for better user experience
     return () => clearInterval(interval);
   }, [localMedia.length]);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchEnd.current = null;
+    touchStart.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    touchEnd.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart.current || !touchEnd.current) return;
+    const distance = touchStart.current - touchEnd.current;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      setActiveIndex((current) => (current + 1) % localMedia.length);
+    } else if (isRightSwipe) {
+      setActiveIndex((current) => (current - 1 + localMedia.length) % localMedia.length);
+    }
+  };
 
   if (localMedia.length === 0) return null;
 
   return (
-    <div className="relative h-[85vh] w-full overflow-hidden flex items-center justify-center bg-black">
+    <div 
+      className="relative h-[85vh] w-full overflow-hidden flex items-center justify-center bg-black touch-pan-y"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       <style>{`
         .cover-flow-container {
           perspective: 1400px;
@@ -40,15 +72,15 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
           opacity: 0.3;
         }
         .genre-tag {
-          background: #eab308; /* Yellow */
-          color: #000;
+          background: #9f1239; /* UI Color Red */
+          color: #fff;
           font-weight: 900;
           font-size: 7px;
-          padding: 2px 6px;
-          border: 1px solid #000;
+          padding: 3px 8px;
           text-transform: uppercase;
-          border-radius: 2px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+          border-radius: 4px;
+          box-shadow: 0 4px 12px rgba(159, 18, 57, 0.4);
+          letter-spacing: 0.1em;
         }
         .rating-badge {
           background: rgba(0, 0, 0, 0.6);
@@ -66,7 +98,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
       <div className="absolute inset-0 z-0">
         <img 
           src={localMedia[activeIndex].poster || localMedia[activeIndex].image || getTMDBImageUrl(localMedia[activeIndex].tmdbData?.poster_path)} 
-          className="w-full h-full object-cover blur-[80px] opacity-40 scale-125 transition-all duration-1000"
+          className="w-full h-full object-cover blur-[100px] opacity-40 scale-125 transition-all duration-1000"
           alt=""
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-black/40"></div>
@@ -77,7 +109,6 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
         {localMedia.map((m, index) => {
           const offset = index - activeIndex;
           
-          // Logic to handle wrapping for the stack
           let displayOffset = offset;
           if (offset > localMedia.length / 2) displayOffset -= localMedia.length;
           if (offset < -localMedia.length / 2) displayOffset += localMedia.length;
@@ -86,7 +117,6 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
           const zIndex = 100 - Math.abs(displayOffset);
           const opacity = isActive ? 1 : Math.max(0, 0.5 - Math.abs(displayOffset) * 0.15);
           
-          // Smooth Positioning for modern UI
           const translateX = displayOffset * 110; 
           const translateZ = isActive ? 150 : -200 * Math.abs(displayOffset); 
           const rotateY = displayOffset * -30; 
@@ -100,7 +130,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
           return (
             <div 
               key={m.id}
-              onClick={() => onMovieClick(m)}
+              onClick={() => isActive ? onMovieClick(m) : setActiveIndex(index)}
               className="absolute w-[240px] sm:w-[300px] aspect-[2/3] poster-card cursor-pointer"
               style={{
                 zIndex,
@@ -116,12 +146,11 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
                   alt={m.title}
                 />
                 
-                {/* Active Card Content */}
                 {isActive && (
                   <>
                     {/* Top Badges */}
                     <div className="absolute top-5 left-0 w-full flex justify-between items-center px-5 z-20">
-                      <div className="flex gap-1">
+                      <div className="flex gap-2">
                         {genres.slice(0, 2).map((g, i) => (
                           <span key={i} className="genre-tag">{g}</span>
                         ))}
@@ -163,7 +192,8 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
           {localMedia.map((_, i) => (
             <div 
               key={i}
-              className={`h-0.5 flex-1 transition-all duration-700 rounded-full ${i === activeIndex ? 'bg-[#9f1239] shadow-[0_0_10px_rgba(159,18,57,0.8)]' : 'bg-white/10'}`}
+              onClick={() => setActiveIndex(i)}
+              className={`h-0.5 flex-1 cursor-pointer transition-all duration-700 rounded-full ${i === activeIndex ? 'bg-[#9f1239] shadow-[0_0_10px_rgba(159,18,57,0.8)]' : 'bg-white/10'}`}
             />
           ))}
         </div>
