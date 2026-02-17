@@ -8,6 +8,8 @@ interface Props {
   onClose: () => void;
   onDownload: () => void;
   downloadProgress?: number;
+  isUnlocked?: boolean;
+  onLimitReached?: () => void;
 }
 
 const formatTime = (seconds: number) => {
@@ -19,7 +21,16 @@ const formatTime = (seconds: number) => {
   return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
 };
 
-const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDownload, downloadProgress }) => {
+const PremiumVideoPlayer: React.FC<Props> = ({ 
+  url, 
+  title, 
+  poster, 
+  onClose, 
+  onDownload, 
+  downloadProgress, 
+  isUnlocked = false,
+  onLimitReached 
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -52,7 +63,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
   const resetControlsTimeout = useCallback(() => {
     setShowControls(true);
     if (controlsTimeout.current) clearTimeout(controlsTimeout.current);
-    // Controls disappear after 3 seconds of inactivity
     controlsTimeout.current = setTimeout(hideControls, 3000);
   }, [hideControls]);
 
@@ -64,7 +74,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
       try {
         await videoRef.current.play();
         setIsPlaying(true);
-        // Immediately hide controls when playing starts
         setShowControls(false);
       } catch (err) {
         console.error("Playback failed:", err);
@@ -111,10 +120,18 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
 
   const handleTimeUpdate = () => {
     if (videoRef.current) {
-      const p = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      const vTime = videoRef.current.currentTime;
+      const p = (vTime / videoRef.current.duration) * 100;
       setProgress(p || 0);
-      setCurrentTime(videoRef.current.currentTime);
+      setCurrentTime(vTime);
       setDuration(videoRef.current.duration);
+
+      // 5-minute limit logic (300 seconds)
+      if (!isUnlocked && vTime >= 300) {
+        videoRef.current.pause();
+        setIsPlaying(false);
+        if (onLimitReached) onLimitReached();
+      }
     }
   };
 
@@ -132,7 +149,15 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
     const rect = e.currentTarget.getBoundingClientRect();
     const x = clientX - rect.left;
     const pct = Math.max(0, Math.min(1, x / rect.width));
-    videoRef.current.currentTime = pct * duration;
+    
+    // Check if seeking past limit for non-premium
+    const targetTime = pct * duration;
+    if (!isUnlocked && targetTime >= 300) {
+      videoRef.current.currentTime = 299; // Cap at near limit
+      if (onLimitReached) onLimitReached();
+    } else {
+      videoRef.current.currentTime = targetTime;
+    }
     resetControlsTimeout();
   };
 
@@ -188,7 +213,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
       className="fixed inset-0 z-[9999] bg-black flex items-center justify-center overflow-hidden touch-none select-none"
       onMouseMove={resetControlsTimeout}
       onClick={() => {
-        // If controls are hidden, show them.
         if (!showControls) {
           resetControlsTimeout();
         }
@@ -215,13 +239,24 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
         }
       `}</style>
 
-      {/* Poster Background / Underlay: Visible when buffering or at start to avoid default player look */}
+      {/* Poster Background / Underlay */}
       <div className={`absolute inset-0 transition-opacity duration-1000 pointer-events-none ${(currentTime < 0.5 || isBuffering) ? 'opacity-100' : 'opacity-0'}`}>
-        <img src={poster} className="w-full h-full object-cover blur-3xl opacity-20 scale-110" alt="" />
+        <img 
+          src={poster} 
+          className="w-full h-full object-cover blur-3xl opacity-20 scale-110" 
+          alt="" 
+          // @ts-ignore
+          fetchpriority="high"
+        />
         <div className="absolute inset-0 bg-black/60"></div>
-        {/* Actual landscape poster in background */}
         <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-            <img src={poster} className="w-full h-full object-cover opacity-30" alt="" />
+            <img 
+              src={poster} 
+              className="w-full h-full object-cover opacity-30" 
+              alt="" 
+              // @ts-ignore
+              fetchpriority="high"
+            />
         </div>
       </div>
 
@@ -239,11 +274,9 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
         disablePictureInPicture={false}
       />
 
-      {/* Main Touch Overlay */}
       <div 
         className="absolute inset-0 z-10" 
         onClick={(e) => {
-          // If controls are hidden, show them. If they are visible, toggle playback.
           if (!showControls) {
             resetControlsTimeout();
           } else {
@@ -258,7 +291,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
         }}
       ></div>
 
-      {/* Loading State Indicator */}
       {isBuffering && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-50 pointer-events-none bg-black/20 backdrop-blur-[2px]">
           <div className="w-14 h-14 border-4 border-white/5 border-t-[#9f1239] rounded-full animate-spin"></div>
@@ -266,7 +298,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
         </div>
       )}
 
-      {/* Visual Feedback for Double Tap */}
       {showSkipFeedback && (
         <div className={`absolute top-1/2 ${showSkipFeedback === 'forward' ? 'right-[20%]' : 'left-[20%]'} z-30 pointer-events-none`}>
           <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex flex-col items-center justify-center animate-feedback backdrop-blur-md">
@@ -276,10 +307,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
         </div>
       )}
 
-      {/* Control UI Layout */}
       <div className={`absolute inset-0 z-40 transition-all duration-500 ease-in-out ${showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        
-        {/* Top Navigation & Info */}
         <div className="absolute top-0 left-0 w-full p-6 pt-10 video-player-gradient-top flex justify-between items-start">
           <div className="flex items-center gap-5">
             <button 
@@ -319,7 +347,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
           </div>
         </div>
 
-        {/* Central Controls */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-14 sm:gap-24">
           <button onClick={(e) => skip(-10, e)} className="w-16 h-16 flex items-center justify-center text-white/40 hover:text-white transition-all active:scale-90">
             <i className="fas fa-rotate-left text-3xl"></i>
@@ -337,33 +364,24 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
           </button>
         </div>
 
-        {/* Bottom Bar Area */}
         <div className="absolute bottom-0 left-0 w-full p-6 pb-12 video-player-gradient-bottom">
-          
-          {/* Seek Bar with Dynamic Glow */}
           <div className="relative group px-2 mb-8">
             <div 
               className="relative h-1.5 w-full bg-white/10 rounded-full cursor-pointer touch-none" 
               onClick={handleSeek}
               onTouchMove={handleSeek}
             >
-              {/* Buffer Level */}
               <div className="absolute top-0 left-0 h-full bg-white/5 rounded-full" style={{ width: '95%' }}></div>
-              
-              {/* Progress Line */}
               <div 
                 className="absolute top-0 left-0 h-full bg-[#9f1239] rounded-full shadow-[0_0_15px_rgba(159,18,57,0.8)]" 
                 style={{ width: `${progress}%` }}
               ></div>
-
-              {/* Seek Handle */}
               <div 
                 className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 border-2 border-[#9f1239]" 
                 style={{ left: `${progress}%`, marginLeft: '-8px' }}
               ></div>
             </div>
             
-            {/* Hover Time Indicator */}
             <div className="absolute -top-10 left-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ left: `${progress}%`, transform: 'translateX(-50%)' }}>
                <span className="bg-black/80 backdrop-blur-md px-2 py-1 rounded text-[10px] font-mono border border-white/10 text-white">
                  {formatTime(currentTime)}
@@ -379,7 +397,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
                  <span className="text-[13px] font-black text-white/40 font-mono tracking-tighter">{formatTime(duration)}</span>
               </div>
 
-              {/* Volume Slider */}
               <div className="hidden sm:flex items-center gap-3 group/vol">
                 <button onClick={() => setIsMuted(!isMuted)} className="text-white/40 hover:text-white transition-colors">
                   <i className={`fas ${isMuted || volume === 0 ? 'fa-volume-mute text-[#9f1239]' : 'fa-volume-up'} text-sm`}></i>
@@ -401,7 +418,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({ url, title, poster, onClose, onDo
             </div>
 
             <div className="flex items-center gap-5">
-              {/* Playback Speed Menu */}
               <div className="relative">
                 <button 
                   onClick={(e) => { e.stopPropagation(); setShowSpeedMenu(!showSpeedMenu); }}

@@ -52,6 +52,8 @@ const MediaCard: React.FC<Props> = ({ media, onClick, variant = 'poster', downlo
             className={`w-full h-full object-cover transition-opacity duration-500 group-hover:scale-110 ${loaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setLoaded(true)}
             loading="lazy"
+            // @ts-ignore
+            fetchpriority="auto"
             onError={(e) => { 
               const img = e.target as HTMLImageElement;
               // If current source is Firebase, try TMDB fallback

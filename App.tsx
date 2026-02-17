@@ -268,20 +268,16 @@ const App: React.FC = () => {
   };
 
   const handlePlayRequest = (m: Media) => {
-    if (isUnlocked) {
-      setPlayerData({ url: m.video || '', title: m.title, poster: m.image || m.poster || '' });
-      
-      // Update Continue Watching
-      setContinueWatching(prev => {
-        const filtered = prev.filter(item => item.id !== m.id);
-        const newList = [m, ...filtered].slice(0, 10);
-        return newList;
-      });
-    } else {
-      setPendingMedia(m);
-      setPendingAction('play');
-      setShowAccessGate(true);
-    }
+    // 5-minute preview logic: Allowed to play regardless of isUnlocked status
+    // The player will handle the mid-stream limit.
+    setPlayerData({ url: m.video || '', title: m.title, poster: m.image || m.poster || '' });
+    
+    // Update Continue Watching
+    setContinueWatching(prev => {
+      const filtered = prev.filter(item => item.id !== m.id);
+      const newList = [m, ...filtered].slice(0, 10);
+      return newList;
+    });
   };
 
   const handleUnlock = () => {
@@ -557,6 +553,12 @@ const App: React.FC = () => {
           onClose={() => setPlayerData(null)}
           onDownload={() => playPageMedia && handleDownload(playPageMedia)}
           downloadProgress={playPageMedia ? downloadProgress[playPageMedia.id] : undefined}
+          isUnlocked={isUnlocked}
+          onLimitReached={() => {
+            setShowAccessGate(true);
+            setPendingMedia(playPageMedia);
+            setPendingAction('play');
+          }}
         />
       )}
 
