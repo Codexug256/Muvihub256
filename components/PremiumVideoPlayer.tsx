@@ -9,7 +9,6 @@ interface Props {
   onDownload: () => void;
   downloadProgress?: number;
   isUnlocked?: boolean;
-  onLimitReached?: () => void;
 }
 
 const formatTime = (seconds: number) => {
@@ -28,8 +27,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({
   onClose, 
   onDownload, 
   downloadProgress, 
-  isUnlocked = false,
-  onLimitReached 
+  isUnlocked = false
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -63,8 +61,16 @@ const PremiumVideoPlayer: React.FC<Props> = ({
   const resetControlsTimeout = useCallback(() => {
     setShowControls(true);
     if (controlsTimeout.current) clearTimeout(controlsTimeout.current);
+    // Auto-hide controls after 3 seconds of inactivity
     controlsTimeout.current = setTimeout(hideControls, 3000);
   }, [hideControls]);
+
+  const handleContainerClick = (e: React.MouseEvent) => {
+    // Show controls on tap if they are hidden
+    if (!showControls) {
+      resetControlsTimeout();
+    }
+  };
 
   const togglePlay = async (e?: React.MouseEvent | React.TouchEvent) => {
     e?.stopPropagation();
@@ -74,14 +80,15 @@ const PremiumVideoPlayer: React.FC<Props> = ({
       try {
         await videoRef.current.play();
         setIsPlaying(true);
-        setShowControls(false);
+        // Reset timeout so controls eventually hide after 3s
+        resetControlsTimeout();
       } catch (err) {
         console.error("Playback failed:", err);
       }
     } else {
       videoRef.current.pause();
       setIsPlaying(false);
-      resetControlsTimeout();
+      setShowControls(true); // Keep controls visible when paused
     }
   };
 
@@ -102,6 +109,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({
       setPlaybackSpeed(speed);
       setShowSpeedMenu(false);
     }
+    resetControlsTimeout();
   };
 
   const togglePiP = async (e: React.MouseEvent) => {
@@ -116,6 +124,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({
     } catch (err) {
       console.error("PiP failed:", err);
     }
+    resetControlsTimeout();
   };
 
   const handleTimeUpdate = () => {
@@ -125,13 +134,6 @@ const PremiumVideoPlayer: React.FC<Props> = ({
       setProgress(p || 0);
       setCurrentTime(vTime);
       setDuration(videoRef.current.duration);
-
-      // 5-minute limit logic (300 seconds)
-      if (!isUnlocked && vTime >= 300) {
-        videoRef.current.pause();
-        setIsPlaying(false);
-        if (onLimitReached) onLimitReached();
-      }
     }
   };
 
@@ -150,14 +152,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({
     const x = clientX - rect.left;
     const pct = Math.max(0, Math.min(1, x / rect.width));
     
-    // Check if seeking past limit for non-premium
-    const targetTime = pct * duration;
-    if (!isUnlocked && targetTime >= 300) {
-      videoRef.current.currentTime = 299; // Cap at near limit
-      if (onLimitReached) onLimitReached();
-    } else {
-      videoRef.current.currentTime = targetTime;
-    }
+    videoRef.current.currentTime = pct * duration;
     resetControlsTimeout();
   };
 
@@ -189,6 +184,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({
         doc.webkitExitFullscreen();
       }
     }
+    resetControlsTimeout();
   };
 
   useEffect(() => {
@@ -196,12 +192,16 @@ const PremiumVideoPlayer: React.FC<Props> = ({
     if (v) {
       v.play().catch(() => setIsPlaying(false));
     }
+    // Start with controls visible, then hide after 3s
+    resetControlsTimeout();
+    
     return () => {
       if (v) {
         v.pause();
         v.src = "";
         v.load();
       }
+      if (controlsTimeout.current) clearTimeout(controlsTimeout.current);
     };
   }, []);
 
@@ -212,11 +212,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({
       ref={containerRef}
       className="fixed inset-0 z-[9999] bg-black flex items-center justify-center overflow-hidden touch-none select-none"
       onMouseMove={resetControlsTimeout}
-      onClick={() => {
-        if (!showControls) {
-          resetControlsTimeout();
-        }
-      }}
+      onClick={handleContainerClick}
       onContextMenu={(e) => e.preventDefault()}
     >
       <style>{`
@@ -239,7 +235,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({
         }
       `}</style>
 
-      {/* Poster Background / Underlay */}
+      {/* Poster Background Underlay */}
       <div className={`absolute inset-0 transition-opacity duration-1000 pointer-events-none ${(currentTime < 0.5 || isBuffering) ? 'opacity-100' : 'opacity-0'}`}>
         <img 
           src={poster} 
@@ -274,6 +270,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({
         disablePictureInPicture={false}
       />
 
+      {/* Interactive Overlay */}
       <div 
         className="absolute inset-0 z-10" 
         onClick={(e) => {
@@ -307,7 +304,10 @@ const PremiumVideoPlayer: React.FC<Props> = ({
         </div>
       )}
 
-      <div className={`absolute inset-0 z-40 transition-all duration-500 ease-in-out ${showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+      {/* Control UI Layout */}
+      <div className={`absolute inset-0 z-40 transition-all duration-500 ease-in-out ${showControls ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+        
+        {/* Top Info Bar */}
         <div className="absolute top-0 left-0 w-full p-6 pt-10 video-player-gradient-top flex justify-between items-start">
           <div className="flex items-center gap-5">
             <button 
@@ -347,6 +347,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({
           </div>
         </div>
 
+        {/* Playback Controls (Center) */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-14 sm:gap-24">
           <button onClick={(e) => skip(-10, e)} className="w-16 h-16 flex items-center justify-center text-white/40 hover:text-white transition-all active:scale-90">
             <i className="fas fa-rotate-left text-3xl"></i>
@@ -364,6 +365,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({
           </button>
         </div>
 
+        {/* Bottom Timeline Bar */}
         <div className="absolute bottom-0 left-0 w-full p-6 pb-12 video-player-gradient-bottom">
           <div className="relative group px-2 mb-8">
             <div 
@@ -448,6 +450,7 @@ const PremiumVideoPlayer: React.FC<Props> = ({
               <button 
                 className="w-12 h-12 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl text-white/70 hover:text-white transition-all"
                 onClick={toggleFullscreen}
+                title="Fullscreen"
               >
                 <i className="fas fa-expand-alt text-sm"></i>
               </button>

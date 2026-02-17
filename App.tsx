@@ -226,7 +226,7 @@ const App: React.FC = () => {
     const movieOnlyList = allMedia.filter(m => m.type === 'movie');
     if (movieOnlyList.length === 0) return [];
     return shuffleArray(movieOnlyList).slice(0, 8);
-  }, [movies.length]); // Only reshuffle when the count of movies changes significantly
+  }, [movies.length]);
 
   const filteredMedia = useMemo(() => {
     let list = allMedia;
@@ -275,14 +275,22 @@ const App: React.FC = () => {
   };
 
   const handlePlayRequest = (m: Media) => {
-    setPlayerData({ url: m.video || '', title: m.title, poster: m.image || m.poster || '' });
-    
-    // Update Continue Watching
-    setContinueWatching(prev => {
-      const filtered = prev.filter(item => item.id !== m.id);
-      const newList = [m, ...filtered].slice(0, 10);
-      return newList;
-    });
+    // Enforce unlock before playing
+    if (isUnlocked) {
+      setPlayerData({ url: m.video || '', title: m.title, poster: m.image || m.poster || '' });
+      
+      // Update Continue Watching
+      setContinueWatching(prev => {
+        const filtered = prev.filter(item => item.id !== m.id);
+        const newList = [m, ...filtered].slice(0, 10);
+        return newList;
+      });
+    } else {
+      // Prompt for password
+      setPendingMedia(m);
+      setPendingAction('play');
+      setShowAccessGate(true);
+    }
   };
 
   const handleUnlock = () => {
@@ -560,11 +568,6 @@ const App: React.FC = () => {
           onDownload={() => playPageMedia && handleDownload(playPageMedia)}
           downloadProgress={playPageMedia ? downloadProgress[playPageMedia.id] : undefined}
           isUnlocked={isUnlocked}
-          onLimitReached={() => {
-            setShowAccessGate(true);
-            setPendingMedia(playPageMedia);
-            setPendingAction('play');
-          }}
         />
       )}
 
