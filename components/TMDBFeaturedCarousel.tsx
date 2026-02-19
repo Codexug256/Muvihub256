@@ -97,7 +97,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
       {/* Cinematic Background Blur */}
       <div className="absolute inset-0 z-0">
         <img 
-          src={localMedia[activeIndex].poster || localMedia[activeIndex].image || getTMDBImageUrl(localMedia[activeIndex].tmdbData?.poster_path)} 
+          src={localMedia[activeIndex].poster || localMedia[activeIndex].image || getTMDBImageUrl(localMedia[activeIndex].tmdbData?.poster_path, 'w500')} 
           className="w-full h-full object-cover blur-[80px] opacity-40 scale-125 transition-all duration-1000"
           alt=""
         />
@@ -122,7 +122,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
           const rotateY = displayOffset * -25; 
           const scale = isActive ? 0.95 : 0.65;
 
-          const posterUrl = m.poster || m.image || getTMDBImageUrl(m.tmdbData?.poster_path);
+          const posterUrl = m.poster || m.image || getTMDBImageUrl(m.tmdbData?.poster_path, 'w342');
           const genres = m.genre?.split(/[&,]/).map(g => g.trim()) || ['Featured'];
           const rating = m.tmdbData?.vote_average ? m.tmdbData.vote_average.toFixed(1) : '8.5';
 
@@ -160,11 +160,8 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
                       </div>
                     </div>
 
-                    {/* Bottom Info Overlay - No Synopsis as requested */}
+                    {/* Bottom Info Overlay - Title removed as requested */}
                     <div className="absolute bottom-0 left-0 w-full p-4 pt-12 bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col gap-1">
-                      <h2 className="text-sm sm:text-lg font-black text-white uppercase tracking-tighter leading-tight drop-shadow-md truncate">
-                        {m.title}
-                      </h2>
                       <div className="mt-1 w-8 h-0.5 bg-[#9f1239] rounded-full"></div>
                     </div>
                   </>

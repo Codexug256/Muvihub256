@@ -103,7 +103,8 @@ const App: React.FC = () => {
           type: 'tmdb_movie',
           genre: 'New Release',
           description: m.overview,
-          image: `https://image.tmdb.org/t/p/original${m.backdrop_path}`,
+          // Optimized sizes for faster initial load
+          image: `https://image.tmdb.org/t/p/w1280${m.backdrop_path}`,
           poster: `https://image.tmdb.org/t/p/w500${m.poster_path}`,
           tmdbData: m
         }));
