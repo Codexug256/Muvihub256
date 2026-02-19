@@ -16,7 +16,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, variant = 'poster', downlo
   const [loaded, setLoaded] = useState(false);
   const tags = media.extractedTags || extractTagsFromDescription(media.description);
   
-  // High Priority: Firebase/Local Assets
+  // High Priority: Firebase Storage Assets (Local Uploads)
   const fbPoster = media.poster || media.image;
   const fbBackdrop = media.image || media.poster;
 
@@ -24,6 +24,7 @@ const MediaCard: React.FC<Props> = ({ media, onClick, variant = 'poster', downlo
   const tmdbPoster = getTMDBImageUrl(media.tmdbData?.poster_path, 'w300');
   const tmdbBackdrop = getTMDBImageUrl(media.tmdbData?.backdrop_path, 'w300');
 
+  // Logic: Always use Firebase Storage image if it exists, otherwise fall back to TMDB
   const primaryUrl = variant === 'landscape' 
     ? (fbBackdrop || tmdbBackdrop) 
     : (fbPoster || tmdbPoster);

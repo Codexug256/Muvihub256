@@ -241,17 +241,27 @@ const App: React.FC = () => {
     }));
   }, [movies, series]);
 
-  // Hero: Use TMDB Now Playing primarily, fallback to local new uploads
+  // Hero: Use local content from Firebase Storage first, fallback to TMDB Now Playing
   const featuredMedia = useMemo(() => {
-    if (tmdbNowPlaying.length > 0) return tmdbNowPlaying.slice(0, 10);
+    // 1. Get local new releases (last 7 days) that have local assets
+    const weekAgo = Date.now() - (7 * 86400000);
+    const localNew = allMedia.filter(m => (m.createdAt || 0) > weekAgo && (m.poster || m.image));
     
-    const dayAgo = Date.now() - 86400000;
-    const newMovies = allMedia.filter(m => m.type === 'movie' && (m.createdAt || 0) > dayAgo);
-    const sourceList = newMovies.length > 0 ? newMovies : movies.slice(0, 15);
+    // 2. Mix with latest local uploads that have local assets
+    const localLatest = allMedia.filter(m => m.poster || m.image).slice(0, 10);
     
-    if (sourceList.length === 0) return [];
-    return shuffleArray(sourceList).slice(0, 8);
-  }, [tmdbNowPlaying, allMedia.length, movies.length]);
+    // Combine unique local items
+    const combinedLocal = [...localNew, ...localLatest].filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
+    
+    // 3. Use local combined if enough items, otherwise fill with TMDB Now Playing
+    if (combinedLocal.length >= 8) {
+      return combinedLocal.slice(0, 10);
+    }
+    
+    // Fill the rest with TMDB items but keep local items at the start
+    const result = [...combinedLocal, ...tmdbNowPlaying].filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
+    return result.slice(0, 10);
+  }, [tmdbNowPlaying, allMedia]);
 
   const filteredMedia = useMemo(() => {
     let list = allMedia;
