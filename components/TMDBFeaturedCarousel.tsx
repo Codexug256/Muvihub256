@@ -179,18 +179,7 @@ const TMDBFeaturedCarousel: React.FC<Props> = ({ onMovieClick, localMedia = [] }
         })}
       </div>
 
-      {/* Pagination Line Indicators */}
-      <div className="absolute bottom-6 left-0 w-full flex justify-center gap-2 z-20 px-10">
-        <div className="max-w-xs w-full flex gap-1">
-          {localMedia.map((_, i) => (
-            <div 
-              key={i}
-              onClick={() => setActiveIndex(i)}
-              className={`h-0.5 flex-1 cursor-pointer transition-all duration-700 rounded-full ${i === activeIndex ? 'bg-[#9f1239] shadow-[0_0_8px_rgba(159,18,57,0.8)]' : 'bg-white/10'}`}
-            />
-          ))}
-        </div>
-      </div>
+      {/* Pagination Line Indicators removed as requested */}
     </div>
   );
 };

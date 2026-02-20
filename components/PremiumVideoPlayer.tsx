@@ -6,9 +6,8 @@ interface Props {
   title: string;
   poster: string;
   onClose: () => void;
-  onDownload: () => void;
-  downloadProgress?: number;
   isUnlocked?: boolean;
+  isInline?: boolean;
 }
 
 const formatTime = (seconds: number) => {
@@ -25,9 +24,8 @@ const PremiumVideoPlayer: React.FC<Props> = ({
   title, 
   poster, 
   onClose, 
-  onDownload, 
-  downloadProgress, 
-  isUnlocked = false
+  isUnlocked = false,
+  isInline = false
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -198,19 +196,21 @@ const PremiumVideoPlayer: React.FC<Props> = ({
     return () => {
       if (v) {
         v.pause();
+        // Don't clear src if we might be switching between inline and fullscreen
+        // but for this app's logic, we probably should clean up
         v.src = "";
         v.load();
       }
       if (controlsTimeout.current) clearTimeout(controlsTimeout.current);
     };
-  }, []);
+  }, [url]); // Re-run if URL changes
 
-  const isDownloading = downloadProgress !== undefined;
+  // Remove isDownloading check as we removed the button
 
   return (
     <div 
       ref={containerRef}
-      className="fixed inset-0 z-[9999] bg-black flex items-center justify-center overflow-hidden touch-none select-none"
+      className={`${isInline ? 'absolute inset-0 rounded-2xl' : 'fixed inset-0 z-[9999]'} bg-black flex items-center justify-center overflow-hidden touch-none select-none group/player`}
       onMouseMove={resetControlsTimeout}
       onClick={handleContainerClick}
       onContextMenu={(e) => e.preventDefault()}
@@ -308,68 +308,60 @@ const PremiumVideoPlayer: React.FC<Props> = ({
       <div className={`absolute inset-0 z-40 transition-all duration-500 ease-in-out ${showControls ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
         
         {/* Top Info Bar */}
-        <div className="absolute top-0 left-0 w-full p-6 pt-10 video-player-gradient-top flex justify-between items-start">
-          <div className="flex items-center gap-5">
-            <button 
-              onClick={(e) => { e.stopPropagation(); onClose(); }} 
-              className="w-12 h-12 bg-white/5 skip-btn-blur border border-white/10 rounded-2xl flex items-center justify-center text-white hover:bg-[#9f1239] transition-all"
-            >
-              <i className="fas fa-chevron-left"></i>
-            </button>
+        <div className="absolute top-0 left-0 w-full p-4 sm:p-6 pt-8 sm:pt-10 video-player-gradient-top flex justify-between items-start">
+          <div className="flex items-center gap-3 sm:gap-5">
+            {!isInline && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); onClose(); }} 
+                className="w-10 h-10 sm:w-12 sm:h-12 bg-white/5 skip-btn-blur border border-white/10 rounded-xl sm:rounded-2xl flex items-center justify-center text-white hover:bg-[#9f1239] transition-all"
+              >
+                <i className="fas fa-chevron-left"></i>
+              </button>
+            )}
             <div className="flex flex-col">
-              <h2 className="text-lg font-black text-white uppercase tracking-tight truncate max-w-[200px] sm:max-w-md drop-shadow-2xl">
+              <h2 className="text-sm sm:text-lg font-black text-white uppercase tracking-tight truncate max-w-[150px] sm:max-w-md drop-shadow-2xl">
                 {title}
               </h2>
-              <div className="flex items-center gap-3 mt-1 opacity-60">
-                <span className="text-[8px] font-black text-[#9f1239] uppercase tracking-widest bg-[#9f1239]/10 px-2 py-0.5 rounded border border-[#9f1239]/20">Premium 4K</span>
-                <span className="text-[8px] font-black text-white uppercase tracking-widest">VJ Luganda Commentary</span>
+              <div className="flex items-center gap-2 sm:gap-3 mt-0.5 sm:mt-1 opacity-60">
+                <span className="text-[6px] sm:text-[8px] font-black text-[#9f1239] uppercase tracking-widest bg-[#9f1239]/10 px-1.5 sm:px-2 py-0.5 rounded border border-[#9f1239]/20">Premium 4K</span>
+                <span className="text-[6px] sm:text-[8px] font-black text-white uppercase tracking-widest">VJ Luganda Commentary</span>
               </div>
             </div>
           </div>
           
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
              <button 
               onClick={togglePiP}
-              className={`w-12 h-12 rounded-2xl bg-white/5 skip-btn-blur border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all ${!isPiPSupported && 'hidden'}`}
+              className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/5 skip-btn-blur border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all ${!isPiPSupported && 'hidden'}`}
             >
-              <i className="fas fa-clone text-sm"></i>
-            </button>
-            <button 
-              onClick={(e) => { e.stopPropagation(); !isDownloading && onDownload(); }}
-              className={`w-12 h-12 rounded-2xl border border-white/10 skip-btn-blur flex items-center justify-center transition-all ${isDownloading ? 'bg-[#9f1239]/20' : 'bg-white/5 text-white/70 hover:text-white'}`}
-            >
-              {isDownloading ? (
-                <span className="text-[9px] font-black text-[#9f1239]">{downloadProgress}%</span>
-              ) : (
-                <i className="fas fa-download text-sm"></i>
-              )}
+              <i className="fas fa-clone text-xs sm:text-sm"></i>
             </button>
           </div>
         </div>
 
         {/* Playback Controls (Center) */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-14 sm:gap-24">
-          <button onClick={(e) => skip(-10, e)} className="w-16 h-16 flex items-center justify-center text-white/40 hover:text-white transition-all active:scale-90">
-            <i className="fas fa-rotate-left text-3xl"></i>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-8 sm:gap-24">
+          <button onClick={(e) => skip(-10, e)} className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center text-white/40 hover:text-white transition-all active:scale-90">
+            <i className="fas fa-rotate-left text-xl sm:text-3xl"></i>
           </button>
           
           <button 
             onClick={togglePlay}
-            className="w-24 h-24 text-white/60 flex items-center justify-center hover:scale-110 hover:text-white active:scale-90 transition-all"
+            className="w-16 h-16 sm:w-24 sm:h-24 text-white/60 flex items-center justify-center hover:scale-110 hover:text-white active:scale-90 transition-all"
           >
-            <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play ml-2'} text-7xl drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]`}></i>
+            <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play ml-1 sm:ml-2'} text-4xl sm:text-7xl drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]`}></i>
           </button>
 
-          <button onClick={(e) => skip(10, e)} className="w-16 h-16 flex items-center justify-center text-white/40 hover:text-white transition-all active:scale-90">
-            <i className="fas fa-rotate-right text-3xl"></i>
+          <button onClick={(e) => skip(10, e)} className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center text-white/40 hover:text-white transition-all active:scale-90">
+            <i className="fas fa-rotate-right text-xl sm:text-3xl"></i>
           </button>
         </div>
 
         {/* Bottom Timeline Bar */}
-        <div className="absolute bottom-0 left-0 w-full p-6 pb-12 video-player-gradient-bottom">
-          <div className="relative group px-2 mb-8">
+        <div className="absolute bottom-0 left-0 w-full p-4 sm:p-6 pb-8 sm:pb-12 video-player-gradient-bottom">
+          <div className="relative group px-1 sm:px-2 mb-4 sm:mb-8">
             <div 
-              className="relative h-1.5 w-full bg-white/10 rounded-full cursor-pointer touch-none" 
+              className="relative h-1 sm:h-1.5 w-full bg-white/10 rounded-full cursor-pointer touch-none" 
               onClick={handleSeek}
               onTouchMove={handleSeek}
             >
@@ -379,27 +371,27 @@ const PremiumVideoPlayer: React.FC<Props> = ({
                 style={{ width: `${progress}%` }}
               ></div>
               <div 
-                className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 border-2 border-[#9f1239]" 
-                style={{ left: `${progress}%`, marginLeft: '-8px' }}
+                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 bg-white rounded-full shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 border-2 border-[#9f1239]" 
+                style={{ left: `${progress}%`, marginLeft: '-6px' }}
               ></div>
             </div>
             
-            <div className="absolute -top-10 left-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ left: `${progress}%`, transform: 'translateX(-50%)' }}>
-               <span className="bg-black/80 backdrop-blur-md px-2 py-1 rounded text-[10px] font-mono border border-white/10 text-white">
+            <div className="absolute -top-8 sm:-top-10 left-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ left: `${progress}%`, transform: 'translateX(-50%)' }}>
+               <span className="bg-black/80 backdrop-blur-md px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[8px] sm:text-[10px] font-mono border border-white/10 text-white">
                  {formatTime(currentTime)}
                </span>
             </div>
           </div>
 
-          <div className="flex justify-between items-center px-2">
-            <div className="flex items-center gap-8">
-              <div className="flex items-center gap-3">
-                 <span className="text-[13px] font-black text-white font-mono tracking-tighter">{formatTime(currentTime)}</span>
-                 <span className="text-[10px] text-white/20 font-black">/</span>
-                 <span className="text-[13px] font-black text-white/40 font-mono tracking-tighter">{formatTime(duration)}</span>
+          <div className="flex justify-between items-center px-1 sm:px-2">
+            <div className="flex items-center gap-4 sm:gap-8">
+              <div className="flex items-center gap-2 sm:gap-3">
+                 <span className="text-[11px] sm:text-[13px] font-black text-white font-mono tracking-tighter">{formatTime(currentTime)}</span>
+                 <span className="text-[8px] sm:text-[10px] text-white/20 font-black">/</span>
+                 <span className="text-[11px] sm:text-[13px] font-black text-white/40 font-mono tracking-tighter">{formatTime(duration)}</span>
               </div>
 
-              <div className="hidden sm:flex items-center gap-3 group/vol">
+              <div className="hidden md:flex items-center gap-3 group/vol">
                 <button onClick={() => setIsMuted(!isMuted)} className="text-white/40 hover:text-white transition-colors">
                   <i className={`fas ${isMuted || volume === 0 ? 'fa-volume-mute text-[#9f1239]' : 'fa-volume-up'} text-sm`}></i>
                 </button>
@@ -419,26 +411,26 @@ const PremiumVideoPlayer: React.FC<Props> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-3 sm:gap-5">
               <div className="relative">
                 <button 
                   onClick={(e) => { e.stopPropagation(); setShowSpeedMenu(!showSpeedMenu); }}
-                  className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest text-white/70 hover:text-white hover:bg-[#9f1239] transition-all"
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white/5 border border-white/10 rounded-lg sm:rounded-xl text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-white/70 hover:text-white hover:bg-[#9f1239] transition-all"
                 >
-                  <i className="fas fa-gauge-high mr-2 opacity-40"></i>
+                  <i className="fas fa-gauge-high mr-1 sm:mr-2 opacity-40"></i>
                   {playbackSpeed}x
                 </button>
                 
                 {showSpeedMenu && (
-                  <div className="absolute bottom-full right-0 mb-4 bg-black/90 backdrop-blur-3xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-slide-up w-28 z-[100]">
-                    <div className="p-3 border-b border-white/5 text-center">
-                      <p className="text-[7px] font-black uppercase tracking-widest text-white/30">Playback Speed</p>
+                  <div className="absolute bottom-full right-0 mb-4 bg-black/90 backdrop-blur-3xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl animate-slide-up w-24 sm:w-28 z-[100]">
+                    <div className="p-2 sm:p-3 border-b border-white/5 text-center">
+                      <p className="text-[6px] sm:text-[7px] font-black uppercase tracking-widest text-white/30">Speed</p>
                     </div>
                     {speeds.map(s => (
                       <button 
                         key={s} 
                         onClick={(e) => handleSpeedChange(s, e)}
-                        className={`w-full py-4 text-[10px] font-black uppercase tracking-widest transition-colors ${playbackSpeed === s ? 'bg-[#9f1239] text-white' : 'text-white/40 hover:bg-white/5'}`}
+                        className={`w-full py-3 sm:py-4 text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-colors ${playbackSpeed === s ? 'bg-[#9f1239] text-white' : 'text-white/40 hover:bg-white/5'}`}
                       >
                         {s}x
                       </button>
@@ -448,11 +440,11 @@ const PremiumVideoPlayer: React.FC<Props> = ({
               </div>
 
               <button 
-                className="w-12 h-12 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl text-white/70 hover:text-white transition-all"
+                className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white/5 border border-white/10 rounded-lg sm:rounded-xl text-white/70 hover:text-white transition-all"
                 onClick={toggleFullscreen}
-                title="Fullscreen"
+                title={isInline ? "Wide Screen" : "Exit Fullscreen"}
               >
-                <i className="fas fa-expand-alt text-sm"></i>
+                <i className={`fas ${isInline ? 'fa-expand-alt' : 'fa-compress-alt'} text-xs sm:text-sm`}></i>
               </button>
             </div>
           </div>

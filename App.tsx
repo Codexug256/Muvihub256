@@ -523,6 +523,7 @@ const App: React.FC = () => {
           isInList={myList.some(i => i.id === playPageMedia.id)}
           onToggleList={(e) => toggleMyList(playPageMedia, e)}
           globalDownloadProgress={downloadProgress}
+          isUnlocked={isUnlocked}
         />
       ) : (
         <>
@@ -601,8 +602,6 @@ const App: React.FC = () => {
           title={playerData.title} 
           poster={playerData.poster} 
           onClose={() => setPlayerData(null)}
-          onDownload={() => playPageMedia && handleDownload(playPageMedia)}
-          downloadProgress={playPageMedia ? downloadProgress[playPageMedia.id] : undefined}
           isUnlocked={isUnlocked}
         />
       )}

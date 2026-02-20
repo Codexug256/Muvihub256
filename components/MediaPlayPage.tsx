@@ -1,8 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Media } from '../types';
 import { getTMDBImageUrl } from '../services/tmdb';
 import MediaCard from './MediaCard';
+import PremiumVideoPlayer from './PremiumVideoPlayer';
 
 interface Props {
   media: Media;
@@ -16,6 +17,7 @@ interface Props {
   isInList: boolean;
   onToggleList: (e: React.MouseEvent) => void;
   globalDownloadProgress?: Record<string, number>;
+  isUnlocked?: boolean;
 }
 
 const MediaPlayPage: React.FC<Props> = ({ 
@@ -29,10 +31,25 @@ const MediaPlayPage: React.FC<Props> = ({
   onMediaClick, 
   isInList, 
   onToggleList,
-  globalDownloadProgress = {}
+  globalDownloadProgress = {},
+  isUnlocked = false
 }) => {
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [loadedCast, setLoadedCast] = useState<Record<string, boolean>>({});
+  const [isPlayingInline, setIsPlayingInline] = useState(false);
+  const [activeEpisode, setActiveEpisode] = useState<Media | null>(null);
+
+  // Auto-select first episode for series
+  useEffect(() => {
+    if (media.type === 'series' && episodes.length > 0 && !activeEpisode) {
+      setActiveEpisode(episodes[0]);
+    }
+  }, [media, episodes, activeEpisode]);
+
+  // Reset inline player when media changes
+  useEffect(() => {
+    setIsPlayingInline(false);
+  }, [media.id]);
 
   // Prioritize Firebase images over TMDB for the play page header and poster
   const backdrop: string | undefined = (media.image || media.poster || (media.tmdbData?.backdrop_path 
@@ -47,11 +64,12 @@ const MediaPlayPage: React.FC<Props> = ({
   const cast = media.tmdbData?.credits?.cast?.slice(0, 15) || [];
 
   const handleMainPlay = () => {
-    if (media.type === 'series' && episodes.length > 0) {
-      onPlay(episodes[0]);
-    } else {
-      onPlay(media);
-    }
+    setIsPlayingInline(true);
+  };
+
+  const handleEpisodePlay = (ep: Media) => {
+    setActiveEpisode(ep);
+    setIsPlayingInline(true);
   };
 
   const isDownloading = downloadProgress !== undefined;
@@ -79,25 +97,39 @@ const MediaPlayPage: React.FC<Props> = ({
       `}</style>
 
       {/* Hero Header */}
-      <div className="relative h-[65vh] w-full bg-[#050505]">
+      <div className="relative h-[45vh] sm:h-[65vh] w-full bg-[#050505] overflow-hidden">
         {/* Hero Skeleton */}
-        {!heroLoaded && (
+        {!heroLoaded && !isPlayingInline && (
           <div className="absolute inset-0 skeleton"></div>
         )}
-        <div className="absolute inset-0">
-          {backdrop && (
-            <img 
-              src={backdrop} 
-              className={`w-full h-full object-cover transition-opacity duration-700 ${heroLoaded ? 'opacity-100' : 'opacity-0'}`} 
-              alt={media.title} 
-              onLoad={() => setHeroLoaded(true)}
+        
+        {isPlayingInline ? (
+          <div className="absolute inset-0 z-30">
+            <PremiumVideoPlayer 
+              url={(activeEpisode || media).video || ''} 
+              title={(activeEpisode || media).title} 
+              poster={backdrop || ''} 
+              onClose={() => setIsPlayingInline(false)}
+              isUnlocked={isUnlocked}
+              isInline={true}
             />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent"></div>
-          <div className="absolute inset-0 bg-black/30"></div>
-        </div>
+          </div>
+        ) : (
+          <div className="absolute inset-0">
+            {backdrop && (
+              <img 
+                src={backdrop} 
+                className={`w-full h-full object-cover transition-opacity duration-700 ${heroLoaded ? 'opacity-100' : 'opacity-0'}`} 
+                alt={media.title} 
+                onLoad={() => setHeroLoaded(true)}
+              />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent"></div>
+            <div className="absolute inset-0 bg-black/30"></div>
+          </div>
+        )}
 
-        <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-20">
+        <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-40">
           <button onClick={onClose} className="w-10 h-10 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center text-white hover:bg-[#9f1239] transition-all">
             <i className="fas fa-chevron-left"></i>
           </button>
@@ -109,42 +141,33 @@ const MediaPlayPage: React.FC<Props> = ({
             >
               <i className={`fas ${isInList ? 'fa-check' : 'fa-plus'}`}></i>
             </button>
+          </div>
+        </div>
+
+        {!isPlayingInline && (
+          <>
             <button 
-              onClick={() => !isDownloading && onDownload(media)}
-              className={`relative w-10 h-10 flex flex-col items-center justify-center bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl transition-all ${isDownloading ? 'cursor-default' : 'text-white hover:bg-white/20'}`}
+              onClick={handleMainPlay}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 play-emphasis w-20 h-20 bg-[#9f1239] text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-20 group"
             >
-              {isDownloading ? (
-                <>
-                  <div className="absolute bottom-1 left-1 right-1 h-[2px] bg-[#9f1239] rounded-full" style={{ width: `${downloadProgress}%` }}></div>
-                  <span className="text-[7px] font-black text-[#9f1239]">{downloadProgress}%</span>
-                </>
-              ) : (
-                <i className="fas fa-download"></i>
-              )}
+              <i className="fas fa-play text-2xl ml-1 group-hover:scale-110 transition-transform"></i>
             </button>
-          </div>
-        </div>
 
-        <button 
-          onClick={handleMainPlay}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 play-emphasis w-20 h-20 bg-[#9f1239] text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-20 group"
-        >
-          <i className="fas fa-play text-2xl ml-1 group-hover:scale-110 transition-transform"></i>
-        </button>
-
-        <div className="absolute bottom-8 left-0 w-full px-5 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="bg-[#9f1239] text-white text-[8px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest shadow-lg">
-              VJ TRANSLATED
-            </span>
-            <span className="text-white/80 font-black text-[9px] bg-white/5 px-2 py-0.5 rounded-md backdrop-blur-md border border-white/10 uppercase tracking-widest">
-              {media.genre}
-            </span>
-          </div>
-          <h1 className="text-3xl sm:text-5xl font-black leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] uppercase tracking-tighter px-4">
-            {media.title}
-          </h1>
-        </div>
+            <div className="absolute bottom-8 left-0 w-full px-5 text-center">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <span className="bg-[#9f1239] text-white text-[8px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest shadow-lg">
+                  VJ TRANSLATED
+                </span>
+                <span className="text-white/80 font-black text-[9px] bg-white/5 px-2 py-0.5 rounded-md backdrop-blur-md border border-white/10 uppercase tracking-widest">
+                  {media.genre}
+                </span>
+              </div>
+              <h1 className="text-3xl sm:text-5xl font-black leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] uppercase tracking-tighter px-4">
+                {media.title}
+              </h1>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="px-5 -mt-6 relative z-10 max-w-6xl mx-auto space-y-12">
@@ -230,8 +253,8 @@ const MediaPlayPage: React.FC<Props> = ({
               {episodes.map(ep => (
                 <div 
                   key={ep.id} 
-                  onClick={() => onPlay(ep)}
-                  className="flex-none w-[260px] flex flex-col gap-3 p-3 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-[#9f1239]/40 hover:bg-white/[0.04] transition-all cursor-pointer group"
+                  onClick={() => handleEpisodePlay(ep)}
+                  className={`flex-none w-[260px] flex flex-col gap-3 p-3 border rounded-2xl transition-all cursor-pointer group ${activeEpisode?.id === ep.id ? 'bg-[#9f1239]/10 border-[#9f1239]' : 'bg-white/[0.02] border-white/5 hover:border-[#9f1239]/40 hover:bg-white/[0.04]'}`}
                 >
                   <div className="relative aspect-video rounded-xl overflow-hidden bg-[#121212] flex items-center justify-center">
                     <div className="absolute inset-0 skeleton"></div>
